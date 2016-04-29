@@ -11,7 +11,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160429155046) do
+ActiveRecord::Schema.define(version: 20160429182131) do
+
+  create_table "fedora_object_aggregation_keys", force: :cascade do |t|
+    t.integer  "fedora_object_id", null: false
+    t.string   "aggregation_key",  null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+  end
+
+  add_index "fedora_object_aggregation_keys", ["aggregation_key"], name: "index_fedora_object_aggregation_keys_on_aggregation_key"
+  add_index "fedora_object_aggregation_keys", ["fedora_object_id"], name: "index_fedora_object_aggregation_keys_on_fedora_object_id"
 
   create_table "fedora_objects", force: :cascade do |t|
     t.string   "pid",               null: false
