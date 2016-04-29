@@ -11,7 +11,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160429182131) do
+ActiveRecord::Schema.define(version: 20160429183404) do
+
+  create_table "fedora_access_events", force: :cascade do |t|
+    t.string   "event",      null: false
+    t.string   "pid",        null: false
+    t.string   "location",   null: false
+    t.datetime "event_time", null: false
+    t.string   "agent",      null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "fedora_access_events", ["agent"], name: "index_fedora_access_events_on_agent"
+  add_index "fedora_access_events", ["event"], name: "index_fedora_access_events_on_event"
+  add_index "fedora_access_events", ["event_time"], name: "index_fedora_access_events_on_event_time"
+  add_index "fedora_access_events", ["location"], name: "index_fedora_access_events_on_location"
+  add_index "fedora_access_events", ["pid"], name: "index_fedora_access_events_on_pid"
 
   create_table "fedora_object_aggregation_keys", force: :cascade do |t|
     t.integer  "fedora_object_id", null: false
