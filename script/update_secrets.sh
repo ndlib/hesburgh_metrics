@@ -35,5 +35,5 @@ if [ ! -d .bundle ]; then
 	mkdir .bundle
 fi
 
-cp $secret_repo/bundle_config .bundle/config
+cp $secret_repo/hesburgh_metrics/bundle_config .bundle/config
 	
