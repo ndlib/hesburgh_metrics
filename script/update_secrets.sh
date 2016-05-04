@@ -29,3 +29,11 @@ for f in $files_to_copy; do
         exit 1
     fi
 done
+
+# copy .bundle/config from secrets
+if [ ! -d .bundle ]; then
+	mkdir .bundle
+fi
+
+cp $secret_repo/bundle_config .bundle/config
+	
