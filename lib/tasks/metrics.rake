@@ -2,7 +2,7 @@ require 'uri'
 require 'zlib'
 namespace :metrics do
 
-    desc "Harvest a directory of nginx log files. directory is in HARVEST_DIR env variable. Optional path to state file in HARVEST_STATE."
+    desc "Harvest a directory of webserver log files. directory is in HARVEST_DIR env variable."
     task :harvest_weblogs => :environment do
       harvest_config = {}
       harvest_config['DB_NAME'] = ENV['METRICS_DB_NAME']
@@ -12,9 +12,9 @@ namespace :metrics do
       harvest_config['LOGDIR_FILE_MASK'] = ENV['METRICS_L_FILE_MASK']
       harvest_config['LOGFILE_MASK'] = ENV['METRICS_LOGFILE_MASK']
       harvest_config['LOGFILE_FORMAT'] = ENV['METRICS_LOGFILE_FORMAT']
+      harvest_config['WEBLOG_STATEFILE'] = ENV['METRICS_WEBLOG_STATEFILE']
       unless harvest_config['LOGDIR'].nil?
-        #HarvestNginx.slurp_directory(hdir, 'access.log-*.gz', hstate)
-        harvest_config.print
+        HarvestWeblogs.harvest_directory(harvest_config)
       end
     end
 end
