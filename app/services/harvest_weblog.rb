@@ -1,4 +1,4 @@
-class HarvestNginx
+class HarvestWeblogs
   # utility class to help with filtering out lines
   class LineRecord
     attr_accessor :event, :event_time, :pid, :ip, :agent
