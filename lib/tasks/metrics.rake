@@ -1,8 +1,10 @@
 require 'uri'
 require 'zlib'
+require '/home/app/metrics/current/app/services/harvest_weblog'
+
 namespace :metrics do
 
-    desc "Harvest a directory of webserver log files. directory is in HARVEST_DIR env variable."
+    desc "Harvest a directory of webserver log files. directory is in METRICS_LOGDIR env variable."
     task :harvest_weblogs => :environment do
       harvest_config = {}
       harvest_config['DB_NAME'] = ENV['METRICS_DB_NAME']
