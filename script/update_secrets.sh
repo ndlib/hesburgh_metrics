@@ -36,4 +36,6 @@ if [ ! -d .bundle ]; then
 fi
 
 cp $secret_repo/hesburgh_metrics/bundle_config .bundle/config
+
+cp -f $secret_repo/hesburgh_metrics/metrics-env.sh /home/app/metrics/shared/system
 	
