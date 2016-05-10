@@ -1,27 +1,35 @@
+require 'mysql2'
+
+# Harvest a Web Logg, and save to mysql
+#
 class HarvestWeblogs
-  # utility class to help with filtering out lines
+  @db_connection = nil
+
+  #Util Class that parses a single line
   class LineRecord
-    attr_accessor :event, :event_time, :pid, :ip, :agent
+    attr_accessor :agent, :event, :event_time, :ip, :method, :path, :pid, :status
 
 
-    # save this as a UsageEvent in the database
-    def save
-      ue = UsageEvent.new
-      ue.ip_address = ip
-      ue.event_time = event_time
-      ue.event = event
-      ue.username = user
-      ue.pid = pid
-      ue.agent = agent
-      ue.save
+    # parse the line record
+    def initialize(line)
+      fields = line.split(' ')
+      @ip = fields[0]
+      @event = nil 
+      @status = fields[9]
+      @method = fields[6].sub('"','')
+      @path = fields[7]
+      @event_time = DateTime.strptime(fields[3].sub('[',''), "%d/%b/%Y:%H:%M:%S")
+      @pid  = nil
+      @agent = line
     end
   end
 
+  # method returns false if line is not to be  logged, true otherwise
+  #
   def self.handle_one_record(r)
-     return unless r.status == "200"
-     return unless r.method == "GET"
-     return if r.agent =~ /(bot|spider|yahoo)/i
-     return if r.agent =~ /ruby/i    # our solr harvester agent
+     return false unless r.status == "200"
+     return false unless r.method == "GET"
+     return false if r.agent =~ /(bot|spider|yahoo)/i
 
      # since all paths are rooted, the first index is always ""
      p = r.path.split('/')
@@ -29,45 +37,34 @@ class HarvestWeblogs
 
      case p[1]
         when "downloads"
-         return if r.path.index("thumbnail") # don't record thumbnail downloads
+         return false if r.path.index("thumbnail") # don't record thumbnail downloads
            r.event = "download"
            id = p[2]
         when "files", "citations"
            r.event = "view"
-          x id = p[2]
+           id = p[2]
         when "concern"
-           case p[2]
-             when "generic_files", "citations"
+         return false if r.path.index("new") # don't record /concern/:class/new
                 r.event = "view"
                 id = p[3]
-           end
-        when "catalog" && p.length == 3
+        when "show"
             r.event = "view"
             id = p[2]
+	when "collections"
+	    r.event = "view"
+	    id = p[2]
+	
      end
-     return if id.nil?
-     # don't record API accesses
-     return if id.end_with?("xml") || id.end_with?("json")
-     # remove any prefixes (they shouldn't be there, but make sure)
-     id.gsub!('vecnet:', '')
+     return false if id.nil?
      r.pid = id
-     r.save
+     return true
    end
 
+   # Opens a gzipped file, and reads all of the lines
    def self.parse_file_gz(fname)
     Zlib::GzipReader.open(fname).each_line do |line|
-      r = LineRecord.new
-      fields = line.split('|')
-      r.ip = fields[0]
-      r.event_time = DateTime.strptime(fields[2], "%d/%b/%Y:%H:%M:%S %z")
-      r.method, r.path = fields[3].split
-      r.status = fields[4]
-      r.agent = fields[7]
-
-      pt = URI.unescape(fields[11]).strip
-      r.pubtkt = pt == '-' ? nil : pt
-
-      handle_one_record(r)
+      r = LineRecord.new(line)
+      db_write_record(r) if handle_one_record(r) == true
     end
    end
 
@@ -75,7 +72,10 @@ class HarvestWeblogs
    # the WEBLOG_STATEFILE, if present, list the files
    # arleady harvested- we need not do these again
    #
-   def self.harvest_directory(config)
+   def self.harvest_directory( config ) 
+
+     db_init(config)
+
      # keep two lists so files which are deleted are removed
      # from the state_fname file
      past_files = []
@@ -87,7 +87,7 @@ class HarvestWeblogs
      Dir.glob(File.join(config['LOGDIR'],config['LOGFILE_MASK'])) do |fname|
         ingested_files << fname
         next if past_files.include?(fname)
-        #self.parse_file_gz(fname)
+        self.parse_file_gz(fname)
      end
 
      if config['WEBLOG_STATEFILE']
@@ -96,4 +96,28 @@ class HarvestWeblogs
        end
      end
     end
-end
+
+    # Attempt to cneect to database- exit if unsuccessful
+    def self.db_init( config )
+      begin
+	@db_connection = Mysql2::Client.new(:host => config['DB_HOST'], :username => config['DB_USER'], :password => config['DB_PASSWORD'], :database => config['DB_NAME'])
+      rescue StandardError => e
+        puts "Error: #{e}"
+        exit 1
+      end
+
+    end
+
+    #Write one record to db
+    def self.db_write_record( line_record )
+      begin
+       create_time = DateTime.now
+       agent_format = line_record.agent.split('"')[5]
+       @db_connection.query("INSERT INTO fedora_access_events VALUES('', \'#{line_record.event}\', \'#{line_record.pid}\', \'#{line_record.ip}\', \'#{line_record.event_time}\', \'#{agent_format}\',\'#{create_time}\',\'#{create_time}\');")
+      rescue StandardError => e
+        puts "Error: #{e}"
+        exit 1
+      end
+    end
+
+    end
