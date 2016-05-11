@@ -1,4 +1,5 @@
 require 'mysql2'
+require 'ipaddr'
 
 # Harvest a Web Logg, and save to mysql
 #
@@ -31,7 +32,7 @@ class HarvestWeblogs
 	fae.pid = pid
 	fae.agent = agent_format
         fae.event = event
-        fae.location = ip 
+	fae.location = IPAddr.new(ip).mask(24).to_s.split("/")[0]
         fae.event_time = event_time
         fae.created_at = create_time
 	fae.updated_at = create_time
