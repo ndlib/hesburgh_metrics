@@ -32,6 +32,11 @@ gem 'jbuilder', '~> 2.0'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
+# for fedora harvester
+gem 'rubydora','~> 1.7.4'
+gem "rdf","~> 1.1.2"
+gem "rdf-rdfxml"
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
