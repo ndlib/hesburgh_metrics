@@ -26,63 +26,62 @@ class HarvestWeblogs
 
     # save the record using the active record framework
     def save
-	fae = FedoraAccessEvent.new
-        create_time = DateTime.now
-        agent_format = agent.split('"')[5]
-	fae.pid = pid
-	fae.agent = agent_format
-        fae.event = event
-	fae.location = IPAddr.new(ip).mask(24).to_s.split("/")[0]
-        fae.event_time = event_time
-        fae.created_at = create_time
-	fae.updated_at = create_time
-	fae.save
+      event = FedoraAccessEvent.new
+      create_time = DateTime.now
+      agent_format = agent.split('"')[5]
+      event.pid = pid
+      event.agent = agent_format
+      event.event = event
+      event.location = IPAddr.new(ip).mask(24).to_s.split("/")[0]
+      event.event_time = event_time
+      event.created_at = create_time
+      event.updated_at = create_time
+      event.save
     end
   end
 
   # method returns false if line is not to be  logged, true otherwise
   #
-  def self.handle_one_record(r)
-     return unless r.status == "200"
-     return unless r.method == "GET"
-     return if r.agent =~ /(bot|spider|yahoo)/i
+  def self.handle_one_record(record)
+     return unless record.status == "200"
+     return unless record.method == "GET"
+     return if record.agent =~ /(bot|spider|yahoo)/i
 
      # since all paths are rooted, the first index is always ""
-     p = r.path.split('/')
+     p = record.path.split('/')
      id = nil
 
      case p[1]
-        when "downloads"
-         return if r.path.index("thumbnail") # don't record thumbnail downloads
-           r.event = "download"
-           id = p[2]
-        when "files", "citations"
-           r.event = "view"
-           id = p[2]
-        when "concern"
-         return if r.path.index("new") # don't record /concern/:class/new
-                r.event = "view"
-                id = p[3]
-        when "show"
-            r.event = "view"
-            id = p[2]
-	when "collections"
-	    r.event = "view"
-	    id = p[2]
-	
+       when "downloads"
+         return if record.path.index("thumbnail") # don't record thumbnail downloads
+         record.event = "download"
+         id = p[2]
+       when "files", "citations"
+         record.event = "view"
+          id = p[2]
+       when "concern"
+         return if record.path.index("new") # don't record /concern/:class/new
+         record.event = "view"
+         id = p[3]
+       when "show"
+         record.event = "view"
+         id = p[2]
+       when "collections"
+         record.event = "view"
+         id = p[2]
      end
      return if id.nil?
-     r.pid = id
+     record.pid = id
      # we made it! save the record
-     r.save
+     record.save
      return 
    end
 
    # Opens a gzipped file, and reads all of the lines
    def self.parse_file_gz(fname)
     Zlib::GzipReader.open(fname).each_line do |line|
-      r = LineRecord.new(line)
-      handle_one_record(r)
+      record = LineRecord.new(line)
+      handle_one_record(record)
     end
    end
 
