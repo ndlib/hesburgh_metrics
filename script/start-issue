@@ -1,0 +1,174 @@
+#!/usr/bin/env ruby -wU
+
+#*******************************************************************************
+#
+# INTENT
+#
+# This script codifies the "moment" that someone starts "working" on an issue.
+# The goal is leveraging git to capture both the opening and closing moments
+# From those moments we can compute the elapsed time for resolving an issue.
+#
+# The script is "close" to where the developers are working, and is hopefully
+# easier to incorporate with developer workflow. Without using this script, we
+# have less precise "starting moment", if at all.
+#
+# The result is that we can now report two time-based attributes for issues:
+#
+# * Elapsed time: How long an issue took to complete
+# * Estimated effort: How much time we think it will take to complete; This is
+#   not elapsed time but instead an amount of focused time.
+#
+# The conjecture is given those two time-based attributes we can begin
+# improving the interpretation of our Feature estimates.
+#
+# Features will likely be comprised of a collection of issues; The estimate for
+# a feature is much less precise and I believe is equal parts "Estimated Effort"
+# and "Estimated Complexity".
+#
+#*******************************************************************************
+
+#*******************************************************************************
+#
+# CONFIGURATION OPTIONS
+#
+#*******************************************************************************
+
+CONFIG_KEYS = [:REMOTE, :FROM_BRANCH, :REPOSITORY_PATH, :ISSUE_TITLE, :STARTED_ISSUES_FILE].freeze
+
+REPOSITORY_PATH = ENV.fetch('REPOSITORY_PATH') { File.expand_path(File.join(File.dirname(__FILE__), '../')) }
+REMOTE = ENV.fetch('REMOTE', 'origin')
+FROM_BRANCH = ENV.fetch('FROM_BRANCH', 'master')
+
+issue_title_fetcher = lambda do
+  begin
+    remote_url = `cd #{REPOSITORY_PATH} && git config --get remote.#{REMOTE}.url`.strip
+    match = remote_url.match(/(\w+)\/(\w+)(?:\.git)?\Z/)
+    if match
+      require 'open-uri'
+      require 'json'
+      owner, repository = match.captures
+      document = open("https://api.github.com/repos/#{owner}/#{repository}/issues/#{ISSUE_NUMBER}.json").read
+      json = JSON.parse(document)
+      json.fetch('title').gsub(/\W+/, '-')
+    else
+      'issue-on-github'
+    end
+  rescue
+    'issue-on-github'
+  end
+end
+
+# TODO: Retrieve the dasherized issue from Github's API
+ISSUE_TITLE = ENV.fetch('ISSUE_TITLE', issue_title_fetcher)
+STARTED_ISSUES_FILE = ENV.fetch('STARTED_ISSUES_FILE', '.started-issues')
+
+#*******************************************************************************
+#
+# HELP OPTIONS
+#
+#*******************************************************************************
+
+if ARGV.grep(/-h/i).size == 1
+  $stdout.puts ""
+  $stdout.puts "$ ./#{File.basename(__FILE__)} 123"
+  $stdout.puts ""
+  $stdout.puts "This script will create an issue branch and update the remote repository."
+  $stdout.puts ""
+  $stdout.puts "* Create a new branch for the given issue number"
+  $stdout.puts "* Touch and append the issue number to a tracking file"
+  $stdout.puts "* Write a rudimentary commit message"
+  $stdout.puts "* Push that commit up to #{REMOTE}"
+  $stdout.puts ""
+  $stdout.puts "Note: There are steps to insure you have a clean working directory."
+  $stdout.puts "Note: If you have spaces in your configuration all bets are off!"
+  $stdout.puts ""
+  $stdout.puts "Current Configuration:"
+  CONFIG_KEYS.each do |key|
+    $stdout.puts "\t#{key}='#{Object.const_get(key)}'"
+  end
+  $stdout.puts ""
+  $stdout.puts "You can override the configuration option by adding the corresponding"
+  $stdout.puts "ENV variable."
+  $stdout.puts ""
+  $stdout.puts "Example:"
+  $stdout.puts "$ REMOTE=origin ./scripts/#{File.basename(__FILE__)}"
+  exit(0)
+end
+
+#*******************************************************************************
+#
+# GUARD
+#
+#*******************************************************************************
+
+# Guard that I have an issue number
+
+ISSUE_NUMBER = ARGV.shift
+
+unless ISSUE_NUMBER =~ /^\d+$/
+  $stderr.puts "Expected first parameter to be an issue number for REPOSITORY.\n\n"
+  $stderr.puts "See help for details on specifying an issue number.\n\n"
+  $stderr.puts "$ ./#{File.basename(__FILE__)} -h"
+  exit!(1)
+end
+
+# Capture the issue_title
+issue_title = ISSUE_TITLE.respond_to?(:call) ? ISSUE_TITLE.call : ISSUE_TITLE
+
+# Guard that directories exist
+[:REPOSITORY_PATH].each do |key|
+  repository_path = Object.const_get(key)
+  unless File.directory?(repository_path)
+    $stderr.puts "Expected directory for #{key} @ #{repository_path} to exist.\n\n"
+    $stderr.puts "See help for details on specifying #{key}.\n\n"
+    $stderr.puts "$ ./#{File.basename(__FILE__)} -h"
+    exit!(2)
+  end
+end
+
+# Guard that we have a clean working directory
+if `cd #{REPOSITORY_PATH} && git status --porcelain`.strip.size > 0
+  $stderr.puts "Repository @ #{REPOSITORY_PATH} did not have a clean working directory"
+  exit!(3)
+end
+
+#*******************************************************************************
+#
+# DO STUFF
+#
+#*******************************************************************************
+
+`cd #{REPOSITORY_PATH} && git checkout #{FROM_BRANCH}`
+`cd #{REPOSITORY_PATH} && git pull --rebase`
+
+TO_BRANCH = "#{ISSUE_NUMBER}-#{issue_title.gsub(/\W+/, '-')}"
+if `cd #{REPOSITORY_PATH} && git branch -l | grep '#{TO_BRANCH}$'`.strip.size > 0
+  $stderr.puts "ERROR: Branch #{TO_BRANCH} already exists"
+  exit!(4)
+end
+
+`cd #{REPOSITORY_PATH} && git checkout -b #{TO_BRANCH} && echo "#{ISSUE_NUMBER}" >> #{STARTED_ISSUES_FILE} && git add #{STARTED_ISSUES_FILE}`
+
+path_to_commit_message = File.expand_path(File.join(REPOSITORY_PATH, '../COMMIT.msg'))
+begin
+  File.open(path_to_commit_message, 'w+') do |file|
+    file.puts "Claiming issue #{ISSUE_NUMBER}"
+    file.puts ""
+    file.puts "relates to ##{ISSUE_NUMBER}"
+    file.puts ""
+
+    message = "$ ./script/#{File.basename(__FILE__)} #{ISSUE_NUMBER}"
+    CONFIG_KEYS.each_with_object(message) do |key, mem|
+      if ENV.key?(key.to_s)
+        mem = "#{key}=\"#{ENV[key.to_s].to_s}\" #{mem}"
+      end
+      mem
+    end
+    file.puts message
+    file.puts ""
+    file.puts "[skip ci]"
+  end
+  $stdout.puts `cd #{REPOSITORY_PATH} && git commit -F #{path_to_commit_message}`
+ensure
+  File.unlink(path_to_commit_message) rescue true
+end
