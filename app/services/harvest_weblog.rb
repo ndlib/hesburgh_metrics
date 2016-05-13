@@ -1,10 +1,8 @@
-require 'mysql2'
 require 'ipaddr'
 
 # Harvest a Web Logg, and save to mysql
 #
 class HarvestWeblogs
-  @db_connection = nil
 
   #Util Class that parses a single line
   class LineRecord
@@ -34,8 +32,6 @@ class HarvestWeblogs
       event.event = event
       event.location = IPAddr.new(ip).mask(24).to_s.split("/")[0]
       event.event_time = event_time
-      event.created_at = create_time
-      event.updated_at = create_time
       event.save
     end
   end
@@ -74,7 +70,6 @@ class HarvestWeblogs
      record.pid = id
      # we made it! save the record
      record.save
-     return 
    end
 
    # Opens a gzipped file, and reads all of the lines
