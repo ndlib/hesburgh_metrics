@@ -203,6 +203,7 @@ DEPENDENCIES
   jquery-rails
   mysql2
   rails (= 4.2.6)
+  rspec
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
   spring
