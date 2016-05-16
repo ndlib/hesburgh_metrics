@@ -20,6 +20,11 @@ if defined?(RSpec)
         t.rspec_opts = '--profile 10'
       end
 
+      types = begin
+        dirs = Dir['./app/**/*.rb'].map { |f| f.sub(%r{^\./(app/\w+)/.*}, '\\1') }.uniq.select { |f| File.directory?(f) }
+        Hash[dirs.map { |d| [d.split('/').last, d] }]
+      end
+
       types.each do |name, _dir|
         desc "Run, with code coverage, the examples in spec/#{name.downcase}"
         RSpec::Core::RakeTask.new(name) do |t|
