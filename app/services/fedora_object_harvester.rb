@@ -12,7 +12,7 @@ class FedoraObjectHarvester
   attr_reader :repo
 
   def initialize
-    @repo = Rubydora.connect :url => 'https://fedora-vm1.library.nd.edu:8443/fedora', :user => 'fedoraAdmin', :password => '***REMOVED***'
+    @repo = Rubydora.connect url: Figaro.env.fedora_url!, user: Figaro.env.fedora_user!, password: Figaro.env.fedora_password!
   end
   # query for objects and process one result at a time
   def harvest
