@@ -4,8 +4,7 @@ require 'rdf/ntriples'
 require 'rdf/rdfxml'
 
 def logger
-require 'logger'
-@logger ||= Logger.new(STDOUT)
+  Rails.logger
 end
 
 class FedoraObjectHarvester
