@@ -1,12 +1,11 @@
-
 namespace :metrics do
 
-  require 'uri'
-  require 'zlib'
-  require 'harvest_weblog'
-  
   desc "Harvest a directory of webserver log files. directory is in METRICS_LOGDIR env variable."
   task :harvest_weblogs => :environment do
+    require 'uri'
+    require 'zlib'
+    require 'harvest_weblog'
+    
     harvest_config = {}
     harvest_config['LOGDIR'] = ENV['METRICS_LOGDIR']
     harvest_config['LOGDIR_FILE_MASK'] = ENV['METRICS_L_FILE_MASK']
