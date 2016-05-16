@@ -1,6 +1,6 @@
 require 'uri'
 require 'zlib'
-require 'harvest_weblog'
+require_relative '../../app/services/harvest_weblog'
 
 namespace :metrics do
 
