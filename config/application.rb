@@ -22,5 +22,25 @@ module HesburghMetrics
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
+
+    [
+      'services'
+    ].each do |concept|
+      config.autoload_paths << Rails.root.join("app/#{concept}")
+    end
+
+
+    config.generators do |g|
+      g.assets = false
+      g.helper = false
+
+      g.test_framework :rspec,
+        fixtures: false,
+        view_specs: false,
+        helper_specs: false,
+        routing_specs: false,
+        controller_specs: false,
+        request_specs: false
+    end
   end
 end
