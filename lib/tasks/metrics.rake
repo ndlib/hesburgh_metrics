@@ -1,5 +1,5 @@
 namespace :metrics do
-  desc "Harvest a directory of webserver log files. directory is in METRICS_LOGDIR env variable."
+  desc "Harvest a directory of webserver log files. Webserver log directory is in METRICS_LOGDIR env variable."
   task :harvest_weblogs => :environment do
 
     require 'uri'
