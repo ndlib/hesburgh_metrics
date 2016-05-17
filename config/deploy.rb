@@ -144,7 +144,7 @@ RAILS_ROOT=#{current_path}
 
   def run_puppet()
     local_module_path = File.join(release_path, 'puppet', 'modules')
-    run %Q{sudo puppet apply --modulepath=#{local_module_path}:/global/puppet_standalone/modules:/etc/puppet/modules -e "class { 'lib_metrics': }"}
+    run %Q{sudo puppet apply --modulepath=/home/app/metrics/current/puppet/modules:/global/puppet_standalone/modules:/etc/puppet/modules -e "class { 'lib_metrics': }"}
   end
 
   desc "Run puppet using the modules supplied by the application"

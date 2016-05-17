@@ -5,7 +5,7 @@ class lib_metrics( $env = "staging" ) {
 
 	include lib_app_home
 
-	$rpm_files = [ 'sqlite-dev' ]
+	$rpm_files = 'sqlite-devel'
 
 	# RPMs required by the Metrics software stack
 
