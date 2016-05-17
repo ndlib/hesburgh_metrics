@@ -12,6 +12,7 @@
 ##   and expected to change this file.
 ################################################################################
 AllCops:
+  TargetRubyVersion: 2.0
   Include:
     - Rakefile
   Exclude:
