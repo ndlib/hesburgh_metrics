@@ -60,12 +60,16 @@ class HarvestWeblogs
     when 'downloads'
       id = check_is_download(record, p)
     when 'files', 'citations', 'show', 'collections'
-      record.event = 'view'
-      id = p[2]
+      id = check_is_view(record, p)
     when 'concern'
       id = check_is_concern(record, p)
     end
     id
+  end
+
+  def self.check_is_view(record, p)
+    record.event = 'view'
+    p[2]
   end
 
   def self.check_is_download(record, p)
