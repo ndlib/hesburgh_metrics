@@ -4,7 +4,6 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'debug_inspector', '0.0.2'
 gem 'mysql2'
-gem 'rspec'
 gem 'rails', '4.2.6'
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
@@ -37,7 +36,7 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
   gem 'commitment', github: 'ndlib/commitment', ref: 'f7f83ca2f8437c018cd9083cf71ce57788c1c0f6'
-  gem 'rspec-rails', '~>3.4.0', require: false
+  gem 'rspec-rails', '~>3.4.0'
 end
 
 group :development do
