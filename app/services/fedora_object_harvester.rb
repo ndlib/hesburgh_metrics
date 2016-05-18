@@ -147,5 +147,4 @@ class FedoraObjectHarvester
       end
     end
   end
-
 end

@@ -39,6 +39,18 @@ PercentLiteralDelimiters:
   Description: 'Use `%`-literal delimiters consistently'
   Enabled: false
 
+Metrics/MethodLength:
+  CountComments: false  # count full line comments?
+  Max: 10
+  Exclude:
+   - app/services/fedora_object_harvester.rb
+  
+Metrics/AbcSize:
+  Enabled: true
+  Max: 16
+  Exclude:
+   - app/services/fedora_object_harvester.rb
+
 Documentation:
   Description: 'Document classes and non-namespace modules.'
   Enabled: true
