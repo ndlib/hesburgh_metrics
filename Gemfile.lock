@@ -217,6 +217,7 @@ DEPENDENCIES
   jquery-rails
   mysql2
   rails (= 4.2.6)
+  rspec-core
   rspec-rails (~> 3.4.0)
   sass-rails (~> 5.0)
   spring
