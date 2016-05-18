@@ -33,11 +33,11 @@ class HarvestWeblogs
       this_event.save
     end
 
-    def self.agent_format(agent)
+    def agent_format(agent)
       agent.split('"')[5]
     end
 
-    def self.ip_format(ip)
+    def ip_format(ip)
       IPAddr.new(ip).mask(24).to_s.split('/')[0]
     end
   end
