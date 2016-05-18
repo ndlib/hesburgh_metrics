@@ -24,14 +24,21 @@ class HarvestWeblogs
 
     # save the record using the active record framework
     def save
-      event = FedoraAccessEvent.new
-      agent_format = agent.split('"')[5]
-      event.pid = pid
-      event.agent = agent_format
-      event.event = event
-      event.location = IPAddr.new(ip).mask(24).to_s.split('/')[0]
-      event.event_time = event_time
-      event.save
+      this_event = FedoraAccessEvent.new
+      this_event.pid = pid
+      this_event.agent = agent_format(agent)
+      this_event.event = event
+      this_event.location = ip_format(ip)
+      this_event.event_time = event_time
+      this_event.save
+    end
+
+    def self.agent_format(agent)
+      agent.split('"')[5]
+    end
+
+    def self.ip_format(ip)
+      IPAddr.new(ip).mask(24).to_s.split('/')[0]
     end
   end
 
