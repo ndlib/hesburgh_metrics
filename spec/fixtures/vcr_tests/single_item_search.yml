@@ -207,6 +207,8 @@ http_interactions:
         <info:fedora/und:02870v85054> <http://purl.org/dc/terms/modifier> "2015-01-20T14:53:43-05:00" .
         <info:fedora/und:02870v85054> <http://purl.org/dc/terms/title> "el_salvador_1995_export_version.dta" .
         <info:fedora/und:02870v85054> <http://purl.org/dc/terms/type> "GenericFile" .
+        <info:fedora/und:02870v85054> <http://purl.org/dc/terms/creator#administrative_unit> "University of Notre Dame::College of Science::Non-Departmental" .
+        <info:fedora/und:02870v85054> <http://purl.org/dc/terms/creator#administrative_unit> "University of Notre Dame" .
     http_version:
   recorded_at: Thu, 19 May 2016 14:33:17 GMT
 - request:

@@ -24,7 +24,7 @@ class FedoraObjectHarvester
       mimetype = get_mimetype(doc)
       bytes = (mimetype.nil? ? 0 : get_bytes(doc))
       parent_pid = (af_model == 'GenericFile' ? get_parent_pid(doc) : pid)
-      obj_injest_date = doc.profile["objCreateDate"]
+      obj_ingest_date = doc.profile["objCreateDate"]
       obj_modified_date = doc.profile["objLastModDate"]
       access_rights = get_access_rights(doc)
       fedora_object = FedoraObject.create!(
@@ -34,7 +34,7 @@ class FedoraObjectHarvester
         mimetype: mimetype,
         bytes: bytes,
         parent_pid: parent_pid,
-        obj_injest_date: obj_injest_date,
+        obj_ingest_date: obj_ingest_date,
         obj_modified_date: obj_modified_date,
         access_rights: access_rights
       )
@@ -146,5 +146,6 @@ class FedoraObjectHarvester
         data_array << statement.object
       end
     end
+    data_array
   end
 end
