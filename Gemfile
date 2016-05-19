@@ -43,6 +43,8 @@ group :development, :test do
   gem 'byebug'
   gem 'commitment', github: 'ndlib/commitment', ref: 'f7f83ca2f8437c018cd9083cf71ce57788c1c0f6'
   gem 'rspec-rails', '~>3.4.0'
+  gem 'vcr'
+  gem 'webmock'
 end
 
 group :development do
