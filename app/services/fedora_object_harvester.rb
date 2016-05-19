@@ -100,7 +100,7 @@ class FedoraObjectHarvester
   def read_rights(this_access)
     machine_group_rights = this_access.elements['machine'].elements['group']
     return 'private' if machine_group_rights.nil?
-    case machine_group_rights.first
+    case machine_group_rights.first.to_s
     when 'public'
       'public'
     when 'registered'
@@ -113,9 +113,9 @@ class FedoraObjectHarvester
   # <embargo><human/><machine><date>2016-06-01</date></machine></embargo>
   # concatenate (embargo) onto prior string if it exists
   def embargo_rights(this_access)
-    machine_group_rights = this_access.elements['machine'].elements['group']
+    machine_group_rights = this_access.elements['machine'].elements['date']
     return if machine_group_rights.nil?
-    return ' (embargo)' unless machine_group_rights.elements['date'].first.nil?
+    return ' (embargo)' unless machine_group_rights.first.nil?
   end
 
   ## ============================================================================

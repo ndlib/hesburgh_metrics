@@ -18,4 +18,22 @@ RSpec.describe FedoraObjectHarvester do
     subject { described_class.new.repo }
     it { is_expected.to respond_to(:search) }
   end
+
+  context '#parse_xml_rights' do
+    subject { described_class.new.send(:parse_xml_rights, content) }
+    context 'for public with embargo' do
+      let (:content) { %(<rightsMetadata xmlns="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1" version="0.1"><copyright><human type="title"/><human type="description"/><machine type="uri"/></copyright><access type="discover"><human/><machine/></access><access type="read"><human/><machine><group>public</group></machine></access><access type="edit"><human/><machine><person>msisk1</person></machine></access><embargo><human/><machine><date>2016-06-01</date></machine></embargo></rightsMetadata>) }
+      it { is_expected.to eq('public (embargo)') }
+    end
+    context 'for local' do
+      let (:content) { %(<rightsMetadata xmlns="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1" version="0.1"><copyright><human type="title"/><human type="description"/><machine type="uri"/></copyright><access type="discover"><human/><machine/></access><access type="read"><human/><machine><group>registered</group></machine></access><access type="edit"><human/><machine><person>msisk1</person></machine></access><embargo><human/><machine/></embargo></rightsMetadata>) }
+      subject { described_class.new.send(:parse_xml_rights, content) }
+      it { is_expected.to eq('local') }
+    end
+    context 'for undefined rights value' do
+      let (:content) { %(<rightsMetadata xmlns="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1" version="0.1"><copyright><human type="title"/><human type="description"/><machine type="uri"/></copyright><access type="discover"><human/><machine/></access><access type="read"><human/><machine><group>something</group></machine></access><access type="edit"><human/><machine><person>msisk1</person></machine></access><embargo><human/><machine/></embargo></rightsMetadata>) }
+      subject { described_class.new.send(:parse_xml_rights, content) }
+      it { is_expected.to eq('error') }
+    end
+  end
 end
