@@ -1,5 +1,14 @@
 require 'coverage_helper'
 
+require 'webmock/rspec'
+require 'vcr'
+
+# See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+VCR.configure do |c|
+  c.cassette_library_dir = 'spec/fixtures/vcr_tests'
+  c.hook_into :webmock
+end
+
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
