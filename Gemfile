@@ -32,11 +32,19 @@ gem 'jbuilder', '~> 2.0'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
+# for fedora harvester
+gem 'rubydora','~> 1.7.4'
+gem 'rdf','~> 1.1.2'
+gem 'rdf-rdfxml'
+gem 'figaro'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
   gem 'commitment', github: 'ndlib/commitment', ref: 'f7f83ca2f8437c018cd9083cf71ce57788c1c0f6'
   gem 'rspec-rails', '~>3.4.0'
+  gem 'vcr', require: false
+  gem 'webmock', require: false
 end
 
 group :development do

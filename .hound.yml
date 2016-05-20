@@ -12,6 +12,7 @@
 ##   and expected to change this file.
 ################################################################################
 AllCops:
+  TargetRubyVersion: 2.0
   Include:
     - Rakefile
   Exclude:
@@ -29,6 +30,8 @@ LineLength:
   Description: 'Limit lines to 140 characters.'
   Max: 140
   Enabled: true
+  Exclude:
+   - spec/services/fedora_object_harvester_spec.rb
 
 Style/StringLiterals:
   Description: 'Checks if uses of quotes match the configured preference.'
@@ -37,6 +40,23 @@ Style/StringLiterals:
 PercentLiteralDelimiters:
   Description: 'Use `%`-literal delimiters consistently'
   Enabled: false
+
+Metrics/MethodLength:
+  CountComments: false  # count full line comments?
+  Max: 10
+  Exclude:
+   - app/services/fedora_object_harvester.rb
+
+Metrics/AbcSize:
+  Enabled: true
+  Max: 16
+  Exclude:
+   - app/services/fedora_object_harvester.rb
+
+Lint/ParenthesesAsGroupedExpression:
+  Enabled: true
+  Exclude:
+   - spec/services/fedora_object_harvester_spec.rb
 
 Documentation:
   Description: 'Document classes and non-namespace modules.'
