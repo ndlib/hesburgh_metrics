@@ -60,7 +60,7 @@ class FedoraObjectHarvester
 
   # if content datastream exists, use mimetype of datastream, else nil
   def get_mimetype(doc)
-    doc.datastreams['content'].nil? ? nil : doc.datastreams['content'].mimeType
+    doc.datastreams['content'].nil? ? nil.to_s : doc.datastreams['content'].mimeType
   end
 
   def get_bytes(doc)
