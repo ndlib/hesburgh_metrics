@@ -73,7 +73,7 @@ GEM
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
     debug_inspector (0.0.2)
-    deprecation (1.0.0)
+    deprecation (0.2.2)
       activesupport
     diff-lcs (1.2.5)
     docile (1.1.5)
@@ -274,6 +274,7 @@ DEPENDENCIES
   coffee-rails (~> 4.1.0)
   commitment!
   debug_inspector (= 0.0.2)
+  deprecation (~> 0.2.2)
   figaro
   jbuilder (~> 2.0)
   jquery-rails
