@@ -16,7 +16,7 @@ git clone "git@git.library.nd.edu:$secret_repo"
 
 files_to_copy="
     database.yml
-    fedora.yml
+    application.yml
     "
 
 for f in $files_to_copy; do
@@ -38,4 +38,3 @@ fi
 cp $secret_repo/hesburgh_metrics/bundle_config .bundle/config
 
 cp -f $secret_repo/hesburgh_metrics/metrics-env.sh /home/app/metrics/shared/system
-	
