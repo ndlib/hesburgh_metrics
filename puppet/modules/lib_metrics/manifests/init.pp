@@ -20,11 +20,20 @@ class lib_metrics( $env = "staging" ) {
 
 
 	# Schedule Metrics Collection
+        # weblogs
 	cron { 'harvest_weblogs': 
 		command => '/home/app/metrics/current/script/harvest_metrics.sh',
 		user => 'root',
 		hour => 2,
 		minute => 0,
+	}
+
+        # fedora
+	cron { 'harvest_fedora': 
+		command => '/home/app/metrics/current/script/harvest_fedora.sh',
+		user => 'app',
+		hour => 2,
+		minute => 15,
 	}
 } 
 
