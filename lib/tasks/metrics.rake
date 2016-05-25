@@ -15,4 +15,10 @@ namespace :metrics do
       HarvestWeblogs.harvest_directory(harvest_config)
     end
   end
+
+  desc 'Harvest fedora objects via the Fedora API.'
+  task harvest_fedora: :environment do
+    require 'fedora_object_harvester'
+    FedoraObjectHarvester.new.harvest
+  end
 end
