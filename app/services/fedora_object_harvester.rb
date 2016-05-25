@@ -24,7 +24,7 @@ class FedoraObjectHarvester
         af_model: af_model,
         resource_type: get_resource_type(doc) || af_model,
         mimetype: (af_model == 'GenericFile' ? get_mimetype(doc) : nil.to_s),
-        bytes: (af_model == 'GenericFile' ? 0 : get_bytes(doc)),
+        bytes: (af_model == 'GenericFile' ? get_bytes(doc) : 0),
         parent_pid: (af_model == 'GenericFile' ? get_parent_pid(doc) : pid),
         obj_ingest_date: doc.profile["objCreateDate"],
         obj_modified_date: doc.profile["objLastModDate"],
