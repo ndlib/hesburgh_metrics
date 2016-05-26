@@ -3,6 +3,9 @@ require 'coverage_helper'
 require 'webmock/rspec'
 require 'vcr'
 
+GEM_ROOT = File.expand_path("../../", __FILE__)
+$:.unshift File.join(GEM_ROOT, "lib")
+
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 VCR.configure do |c|
   c.cassette_library_dir = 'spec/fixtures/vcr_tests'

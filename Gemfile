@@ -46,6 +46,7 @@ group :development, :test do
   gem 'rspec-rails', '~>3.4.0'
   gem 'vcr', require: false
   gem 'webmock', require: false
+  gem 'memfs', require: false
 end
 
 group :development do
