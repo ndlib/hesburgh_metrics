@@ -18,25 +18,17 @@ class FedoraObjectHarvester
   # query for objects and process one result at a time
   def harvest
     @repo.search 'pid~und:*' do |doc|
-      pid = doc.pid
       af_model = get_af_model(doc)
-      resource_type = get_resource_type(doc) || af_model
-      mimetype = get_mimetype(doc)
-      bytes = (mimetype.nil? ? 0 : get_bytes(doc))
-      parent_pid = (af_model == 'GenericFile' ? get_parent_pid(doc) : pid)
-      obj_ingest_date = doc.profile["objCreateDate"]
-      obj_modified_date = doc.profile["objLastModDate"]
-      access_rights = get_access_rights(doc)
       fedora_object = FedoraObject.create!(
-        pid: pid,
+        pid: doc.pid,
         af_model: af_model,
-        resource_type: resource_type,
-        mimetype: mimetype,
-        bytes: bytes,
-        parent_pid: parent_pid,
-        obj_ingest_date: obj_ingest_date,
-        obj_modified_date: obj_modified_date,
-        access_rights: access_rights
+        resource_type: get_resource_type(doc) || af_model,
+        mimetype: get_mimetype(doc),
+        bytes: get_bytes(doc),
+        parent_pid: (af_model == 'GenericFile' ? get_parent_pid(doc) : pid),
+        obj_ingest_date: doc.profile["objCreateDate"],
+        obj_modified_date: doc.profile["objLastModDate"],
+        access_rights: get_access_rights(doc)
       )
       get_and_assign_aggregation_keys(doc, fedora_object)
     end
@@ -58,13 +50,16 @@ class FedoraObjectHarvester
     resource_types[0] # this is an array but should only have one
   end
 
+  DEFAULT_MIMETYPE = 'application/octet-stream'.freeze
   # if content datastream exists, use mimetype of datastream, else nil
   def get_mimetype(doc)
-    doc.datastreams['content'].nil? ? nil.to_s : doc.datastreams['content'].mimeType
+    return '' unless doc.datastreams.key?('content')
+    doc.datastreams['content'].mimeType || DEFAULT_MIMETYPE
   end
 
   def get_bytes(doc)
-    doc.datastreams['content'].size
+    return 0 unless doc.datastreams.key?('content')
+    doc.datastreams['content'].size || 0
   end
 
   # parse from XML <ns2:isPartOf rdf:resource='info:fedora/und:02870v85143' />
