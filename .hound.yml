@@ -26,6 +26,8 @@ AllCops:
 
 Rails:
   Enabled: true
+  Exclude:
+    - app/controllers/application_controller.rb
 
 LineLength:
   Description: 'Limit lines to 140 characters.'
@@ -41,6 +43,9 @@ Style/StringLiterals:
 PercentLiteralDelimiters:
   Description: 'Use `%`-literal delimiters consistently'
   Enabled: false
+
+Metrics/ClassLength:
+  Max: 110
 
 Metrics/MethodLength:
   CountComments: false  # count full line comments?
