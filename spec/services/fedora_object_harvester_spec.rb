@@ -19,6 +19,23 @@ RSpec.describe FedoraObjectHarvester do
     it { is_expected.to respond_to(:search) }
   end
 
+  context '#get_parent_pid' do
+    subject {described_class.new.send(:parse_xml_relsext, content, 'isPartOf') }
+    context 'for parse_xml_relsext for parent pid' do
+      let (:content) { %(<?xml version='1.0' encoding='utf-8' ?>
+      <rdf:RDF xmlns:ns0='http://projecthydra.org/ns/relations#' xmlns:ns1='info:fedora/fedora-system:def/model#' xmlns:ns2='info:fedora/fedora-system:def/relations-external#' xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+        <rdf:Description rdf:about='info:fedora/und:02870v85054'>
+          <ns0:hasEditor rdf:resource='info:fedora/und:ks65h991r5x' />
+          <ns0:hasEditorGroup rdf:resource='info:fedora/und:ms35t724s3j' />
+          <ns0:hasViewerGroup rdf:resource='info:fedora/und:7m01bk14722' />
+          <ns1:hasModel rdf:resource='info:fedora/afmodel:GenericFile' />
+          <ns2:isPartOf rdf:resource='info:fedora/und:zs25x636043' />
+        </rdf:Description>
+      </rdf:RDF>) }
+      it { is_expected.to eq('und:zs25x636043') }
+    end
+  end
+
   context '#parse_xml_rights' do
     subject { described_class.new.send(:parse_xml_rights, content) }
     context 'for public with embargo' do
