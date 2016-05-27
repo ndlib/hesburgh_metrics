@@ -18,9 +18,10 @@ class FedoraObjectHarvester
   # query for objects and process one result at a time
   def harvest
     @repo.search 'pid~und:*' do |doc|
+      pid = doc.pid
       af_model = get_af_model(doc)
       fedora_object = FedoraObject.create!(
-        pid: doc.pid,
+        pid: pid,
         af_model: af_model,
         resource_type: get_resource_type(doc) || af_model,
         mimetype: get_mimetype(doc),
