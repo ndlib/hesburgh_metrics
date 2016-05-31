@@ -53,4 +53,12 @@ RSpec.describe FedoraObjectHarvester do
       it { is_expected.to eq('error') }
     end
   end
+  context "#parse_triples" do
+    subject { described_class.new.send(:parse_triples, content, 'type') }
+    let (:content) { %(<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/title> "Collection with long description" .
+<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/description> "The most recent versions of V-Dem data" .
+<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/dateSubmitted> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .
+<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/modified> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .) }
+    it { is_expected.to eq([]) }
+  end
 end

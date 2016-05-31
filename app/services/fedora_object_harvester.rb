@@ -47,7 +47,7 @@ class FedoraObjectHarvester
   # for resource_type, use = dc/terms/type...
   # <info:fedora/und:02870v8524d> <http://purl.org/dc/terms/type> "GenericFile" .
   def get_resource_type(doc)
-    return '' unless doc.datastreams.key?('descMetadata')
+    return nil unless doc.datastreams.key?('descMetadata')
     resource_types = parse_triples(doc.datastreams['descMetadata'].content, 'type')
     resource_types[0] # this is an array but should only have one
   end
@@ -140,13 +140,18 @@ class FedoraObjectHarvester
   def parse_triples(stream, search_key)
     data_array = []
     parse_uri = 'http://purl.org/dc/terms/'
-    RDF::Reader.for(:ntriples).new(stream) do |reader|
-      reader.each_statement do |statement|
-        key = statement.predicate.to_s
-        normalized_key = key.sub(parse_uri, '')
-        next if normalized_key != search_key
-        data_array << statement.object
+    begin
+      RDF::Reader.for(:ntriples).new(stream) do |reader|
+        reader.each_statement do |statement|
+          key = statement.predicate.to_s
+          normalized_key = key.sub(parse_uri, '')
+          next if normalized_key != search_key
+          data_array << statement.object
+        end
       end
+    rescue RDF::ReaderError => e
+      logger.error(e)
+      # in case of read error so it doesn't crash
     end
     data_array
   end
