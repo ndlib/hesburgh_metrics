@@ -47,6 +47,7 @@ class FedoraObjectHarvester
   # for resource_type, use = dc/terms/type...
   # <info:fedora/und:02870v8524d> <http://purl.org/dc/terms/type> "GenericFile" .
   def get_resource_type(doc)
+    return '' unless doc.datastreams.key?('descMetadata')
     resource_types = parse_triples(doc.datastreams['descMetadata'].content, 'type')
     resource_types[0] # this is an array but should only have one
   end
@@ -65,6 +66,7 @@ class FedoraObjectHarvester
 
   # parse from XML <ns2:isPartOf rdf:resource='info:fedora/und:02870v85143' />
   def get_parent_pid(doc)
+    return '' unless doc.datastreams.key?('RELS-EXT')
     parse_xml_relsext(doc.datastreams['RELS-EXT'].content, 'isPartOf')
   end
 
@@ -73,7 +75,9 @@ class FedoraObjectHarvester
   # <http://purl.org/dc/terms/creator#administrative_unit>
   # "University of Notre Dame::College of Science::Non-Departmental" .
   def get_and_assign_aggregation_keys(doc, fedora_object)
+    return unless doc.datastreams.key?('descMetadata')
     agg_key_array = parse_triples(doc.datastreams['descMetadata'].content, 'creator#administrative_unit')
+    return unless agg_key_array.any?
     agg_key_array.each do |aggregation_key|
       fedora_object.fedora_object_aggregation_keys.create!(aggregation_key: aggregation_key)
     end
@@ -81,6 +85,8 @@ class FedoraObjectHarvester
 
   # values: public, public (embargo), local, local (embargo), private, private (embargo)
   def get_access_rights(doc)
+    return 'error' unless doc.datastreams.key?('rightsMetadata')
+    # TODO: this is an error situation we may want to report
     parse_xml_rights(doc.datastreams['rightsMetadata'].content)
   end
 
