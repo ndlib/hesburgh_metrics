@@ -38,6 +38,7 @@ gem 'rdf','~> 1.1.2'
 gem 'rdf-rdfxml'
 gem 'figaro'
 gem 'deprecation', '~> 0.2.2'
+gem 'errbit'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
