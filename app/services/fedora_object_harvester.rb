@@ -186,8 +186,7 @@ class FedoraObjectHarvester
           end
         end
       rescue RDF::ReaderError => e
-        logger.error(e)
-        # in case of read error so it doesn't crash
+        @exceptions << "PID: #{pid} \n #{e.inspect}"
       end
       data_array
     end
