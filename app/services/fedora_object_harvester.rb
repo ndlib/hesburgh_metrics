@@ -18,26 +18,30 @@ class FedoraObjectHarvester
   # query for objects and process one result at a time
   def harvest
     @repo.search 'pid~und:*' do |doc|
-      pid = doc.pid
-      af_model = get_af_model(doc)
-      fedora_object = FedoraObject.create!(
-        pid: pid,
-        af_model: af_model,
-        resource_type: get_resource_type(doc) || af_model,
-        mimetype: get_mimetype(doc),
-        bytes: get_bytes(doc),
-        parent_pid: (af_model == 'GenericFile' ? get_parent_pid(doc) : pid),
-        obj_ingest_date: doc.profile["objCreateDate"],
-        obj_modified_date: doc.profile["objLastModDate"],
-        access_rights: get_access_rights(doc)
-      )
-      get_and_assign_aggregation_keys(doc, fedora_object)
+      single_item_harvest(doc)
     end
   end
 
   private
 
   # ============================================================================
+  def single_item_harvest(doc)
+    pid = doc.pid
+    af_model = get_af_model(doc)
+    fedora_object = FedoraObject.create!(
+      pid: pid,
+      af_model: af_model,
+      resource_type: get_resource_type(doc) || af_model,
+      mimetype: get_mimetype(doc),
+      bytes: get_bytes(doc),
+      parent_pid: (af_model == 'GenericFile' ? get_parent_pid(doc) : pid),
+      obj_ingest_date: doc.profile["objCreateDate"],
+      obj_modified_date: doc.profile["objLastModDate"],
+      access_rights: get_access_rights(doc)
+    )
+    get_and_assign_aggregation_keys(doc, fedora_object)
+  end
+
   # splits the first element in objModels to find af_model in element 2
   def get_af_model(doc)
     doc.profile['objModels'][0].split(':')[2]
