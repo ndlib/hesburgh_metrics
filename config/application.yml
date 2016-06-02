@@ -14,8 +14,12 @@ development:
   fedora_user: fedora
   fedora_password: password
   fedora_url: https://something.com
+  airbrake_host: https://something.com
+  airbrake_project_key: ThisMeansNothingAtAll
 
 test:
   fedora_user: fedora
   fedora_password: password
   fedora_url: https://something.com # Keep the fedora_url as this is used as part of VCR tests.
+  airbrake_host: https://something.com
+  airbrake_project_key: ThisMeansNothingAtAll
