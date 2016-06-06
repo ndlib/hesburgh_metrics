@@ -21,13 +21,12 @@ RSpec.describe FedoraObjectHarvester do
 end
 
 RSpec.describe FedoraObjectHarvester::SingleItem do
-  let(:repo) { Rubydora.connect url: Figaro.env.fedora_url!, user: Figaro.env.fedora_user!, password: Figaro.env.fedora_password! }
   let(:doc) do
     # We need to stub out a "real" document from Rubydora, and this is our best
     # option (so says Jeremy).
     the_doc = nil
     VCR.use_cassette("single_item_search") do
-      the_doc = repo.search('pid~und:*').first
+      the_doc = harvester.repo.search('pid~und:*').first
     end
     the_doc
   end
