@@ -42,7 +42,7 @@ RSpec.describe FedoraObjectHarvester::SingleItem do
   end
 
   context '#parse_xml_relsext' do
-    subject { described_class.new(doc).send(:parse_xml_relsext, content, 'isPartOf') }
+    subject { single_item.send(:parse_xml_relsext, content, 'isPartOf') }
     context 'for parse_xml_relsext for parent pid' do
       let (:content) { %(<?xml version='1.0' encoding='utf-8' ?>
       <rdf:RDF xmlns:ns0='http://projecthydra.org/ns/relations#' xmlns:ns1='info:fedora/fedora-system:def/model#' xmlns:ns2='info:fedora/fedora-system:def/relations-external#' xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
@@ -59,25 +59,25 @@ RSpec.describe FedoraObjectHarvester::SingleItem do
   end
 
   context '#parse_xml_rights' do
-    subject { described_class.new(doc).send(:parse_xml_rights, content) }
+    subject { single_item.send(:parse_xml_rights, content) }
     context 'for public with embargo' do
       let (:content) { %(<rightsMetadata xmlns="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1" version="0.1"><copyright><human type="title"/><human type="description"/><machine type="uri"/></copyright><access type="discover"><human/><machine/></access><access type="read"><human/><machine><group>public</group></machine></access><access type="edit"><human/><machine><person>msisk1</person></machine></access><embargo><human/><machine><date>2016-06-01</date></machine></embargo></rightsMetadata>) }
       it { is_expected.to eq('public (embargo)') }
     end
     context 'for local' do
       let (:content) { %(<rightsMetadata xmlns="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1" version="0.1"><copyright><human type="title"/><human type="description"/><machine type="uri"/></copyright><access type="discover"><human/><machine/></access><access type="read"><human/><machine><group>registered</group></machine></access><access type="edit"><human/><machine><person>msisk1</person></machine></access><embargo><human/><machine/></embargo></rightsMetadata>) }
-      subject { described_class.new(doc).send(:parse_xml_rights, content) }
+      subject { single_item.send(:parse_xml_rights, content) }
       it { is_expected.to eq('local') }
     end
     context 'for undefined rights value' do
       let (:content) { %(<rightsMetadata xmlns="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1" version="0.1"><copyright><human type="title"/><human type="description"/><machine type="uri"/></copyright><access type="discover"><human/><machine/></access><access type="read"><human/><machine><group>something</group></machine></access><access type="edit"><human/><machine><person>msisk1</person></machine></access><embargo><human/><machine/></embargo></rightsMetadata>) }
-      subject { described_class.new(doc).send(:parse_xml_rights, content) }
+      subject { single_item.send(:parse_xml_rights, content) }
       it { is_expected.to eq('error') }
     end
   end
 
   context "#parse_triples" do
-    subject { described_class.new(doc).send(:parse_triples, content, 'type') }
+    subject { single_item.send(:parse_triples, content, 'type') }
     let (:content) { %(<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/title> "Collection with long description" .
 <info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/description> "The most recent versions of V-Dem data" .
 <info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/dateSubmitted> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .
