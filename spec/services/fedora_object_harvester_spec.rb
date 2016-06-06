@@ -31,6 +31,15 @@ RSpec.describe FedoraObjectHarvester::SingleItem do
     end
     the_doc
   end
+  let(:single_item) { described_class.new(doc) }
+
+  context '#parent_pid' do
+    subject { single_item.send(:parent_pid) }
+    context 'for non-GenericFile content' do
+      before { allow(single_item).to receive(:af_model).and_return('Book') }
+      it { is_expected.to eq(single_item.pid) }
+    end
+  end
 
   context '#parse_xml_relsext' do
     subject { described_class.new(doc).send(:parse_xml_relsext, content, 'isPartOf') }
