@@ -2,15 +2,24 @@ require 'rails_helper'
 
 RSpec.describe FedoraObjectHarvester do
   context '#harvest' do
-    subject { described_class.new.harvest }
-    it 'will transform returned objects from a search into FedoraObjects for reporting', functional: true do
+    let(:harvester) { described_class.new }
+    subject { harvester.harvest }
+    around do |spec|
       VCR.use_cassette("single_item_search") do
-        expect do
-          expect do
-            subject
-          end.to change { FedoraObject.count }.by(1)
-        end.to change { FedoraObjectAggregationKey.count }.by(2)
+        spec.call
       end
+    end
+    it 'will transform returned objects from a search into FedoraObjects for reporting', functional: true do
+      expect do
+        expect do
+          subject
+        end.to change { FedoraObject.count }.by(1)
+      end.to change { FedoraObjectAggregationKey.count }.by(2)
+    end
+    it 'will report to Airbrake any exceptions encountered' do
+      allow(harvester).to receive(:single_item_harvest).and_raise(RuntimeError)
+      expect(Airbrake).to receive(:notify_sync).and_call_original
+      subject
     end
   end
 

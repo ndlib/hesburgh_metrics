@@ -10,6 +10,9 @@ $:.unshift File.join(GEM_ROOT, "lib")
 VCR.configure do |c|
   c.cassette_library_dir = 'spec/fixtures/vcr_tests'
   c.hook_into :webmock
+  c.ignore_request do |request|
+    request.uri =~ %r{^#{Figaro.env.airbrake_host}}
+  end
 end
 
 RSpec.configure do |config|

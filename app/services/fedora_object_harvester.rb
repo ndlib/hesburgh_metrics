@@ -32,10 +32,9 @@ class FedoraObjectHarvester
 
   def report_any_exceptions
     return unless @exceptions.any?
-    Airbrake.notify_or_ignore(
-      error_class: 'FedoraObjectHarvesterError',
-      error_message: @exceptions.join("\n" + "=" * 80 + "\n"),
-      parameters: {}
+    Airbrake.notify_sync(
+      'FedoraObjectHarvesterError',
+      pids: @exceptions
     )
   end
 
