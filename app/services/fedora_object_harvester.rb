@@ -9,7 +9,7 @@ end
 
 # Harvest metrics data from Fedora Objects
 class FedoraObjectHarvester
-  attr_reader :repo
+  attr_reader :repo, :exceptions
 
   def initialize
     @repo = Rubydora.connect url: Figaro.env.fedora_url!, user: Figaro.env.fedora_user!, password: Figaro.env.fedora_password!
@@ -41,16 +41,17 @@ class FedoraObjectHarvester
 
   # ============================================================================
   def single_item_harvest(doc)
-    SingleItem.new(doc).harvest_item
+    SingleItem.new(doc, self).harvest_item
   end
 
   # Harvest metrics data for one fedora document
   class SingleItem
-    attr_reader :pid, :doc
+    attr_reader :pid, :doc, :harvester
 
-    def initialize(doc)
+    def initialize(doc, harvester)
       @pid = doc.pid
       @doc = doc
+      @harvester = harvester
     end
 
     def harvest_item
@@ -186,7 +187,7 @@ class FedoraObjectHarvester
           end
         end
       rescue RDF::ReaderError => e
-        @exceptions << "PID: #{pid} \n #{e.inspect}"
+        harvester.exceptions << "PID: #{pid} \n #{e.inspect}"
       end
       data_array
     end

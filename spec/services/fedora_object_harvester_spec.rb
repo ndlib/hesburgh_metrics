@@ -31,7 +31,8 @@ RSpec.describe FedoraObjectHarvester::SingleItem do
     end
     the_doc
   end
-  let(:single_item) { described_class.new(doc) }
+  let(:harvester) { FedoraObjectHarvester.new }
+  let(:single_item) { described_class.new(doc, harvester) }
 
   context '#parent_pid' do
     subject { single_item.send(:parent_pid) }
@@ -79,9 +80,19 @@ RSpec.describe FedoraObjectHarvester::SingleItem do
   context "#parse_triples" do
     subject { single_item.send(:parse_triples, content, 'type') }
     let (:content) { %(<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/title> "Collection with long description" .
-<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/description> "The most recent versions of V-Dem data" .
-<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/dateSubmitted> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .
-<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/modified> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .) }
-    it { is_expected.to eq([]) }
+      <info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/description> "The most recent versions of V-Dem data" .
+      <info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/dateSubmitted> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .
+      <info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/modified> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .) }
+    context 'without a type' do
+      it { is_expected.to eq([]) }
+    end
+
+    context 'when the RDF::Reader raise an RDF::ReaderError' do
+      before { expect(RDF::Reader).to receive(:for).and_raise(RDF::ReaderError.new("STRING", lineno: 1)) }
+      it 'will record an exception on the harvester' do
+        expect { subject }.to change { harvester.exceptions.count }.by(1)
+      end
+      it { is_expected.to eq([]) }
+    end
   end
 end
