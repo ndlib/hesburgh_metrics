@@ -1,0 +1,29 @@
+<info:fedora/und:00000001s4s> <http://id.loc.gov/vocabulary/relators/ths> "Susan Harris" .
+<info:fedora/und:00000001s4s> <http://purl.org/dc/terms/contributor> _:b0 .
+<info:fedora/und:00000001s4s> <http://purl.org/dc/terms/contributor> _:b1 .
+<info:fedora/und:00000001s4s> <http://purl.org/dc/terms/creator> "Julieann Ulin" .
+<info:fedora/und:00000001s4s> <http://purl.org/dc/terms/date> "2007-04-11" .
+<info:fedora/und:00000001s4s> <http://purl.org/dc/terms/date#approved> "2008-09-09" .
+<info:fedora/und:00000001s4s> <http://purl.org/dc/terms/date#created> "2010-06-07" .
+<info:fedora/und:00000001s4s> <http://purl.org/dc/terms/dateSubmitted> "2007-04-23" .
+<info:fedora/und:00000001s4s> <http://purl.org/dc/terms/description#abstract> "<p>This project takes an interdisciplinary approach to twentieth century Irish and American political rhetoric, housing studies and literature to treat the trope of the stranger in the house (as colonizer, lodger, or domestic servant) as enacting both domestic and national tensions. Operating against a reading of estrangement as somehow universally or essentially experienced, I locate the stranger within contemporaneous debates surrounding why and how that figure is ostracized. \rChapter 1 traces the Irish nationalist discourse that identified the presence of the English in Ireland as Ì¢åÛåÏstrangers in the houseÌ¢åÛå through its twentieth century depictions on the Irish stage in Yeats and Gregory's Cathleen ni Houlihan, their return to the trope in Yeats's The Dreaming of the Bones and Gregory's Dervorgilla, and its resurgence in recent works such as Frank McGuinness's Dolly West's Kitchen (1999) and Jamie O'Neill's At Swim, Two Boys (2001). Chapter 2 focuses on the boarding house as a site of competing constructions of Irish nationhood in James Joyce's Ì¢åÛåÏThe Boarding HouseÌ¢åÛå and Ulysses and Brian Moore's The Lonely Passion of Judith Hearne (a version of this chapter is forthcoming in James Joyce Quarterly in 2007). </p>\r\r<p>Chapter 3 focuses on political responses toward and literary depictions of Irish immigrants in the U.S. through journalist Alvan F. Sanborn's sketches and the fiction of Maeve Brennan. I propose a new reading of Brennan's Irish domestic servants through an awareness of the economics of the Ì¢åÛåÏservant problemÌ¢åÛå in the pages of The New Yorker during her tenure there. Richard Wright's critically neglected depiction of the Irish servant Peggy illustrates the difference between the position of the Irish and black domestic servant, and Chapter 4 examines the relationship between the African American stranger and the nation-as-home conceit through the black domestic servant figure in Wright's Native Son and Carson McCullers's neglected novel Clock Without Hands. \rIn conclusion, I argue for the need to attend to the power of the ever shifting designation of Ì¢åÛåÏstranger,Ì¢åÛå and suggest that it is from this position of stranger that the most severe critiques against the nation can be leveled and its deepest hypocrisies illuminated. </p>\r" .
+<info:fedora/und:00000001s4s> <http://purl.org/dc/terms/identifier#other> "etd-04232007-170306" .
+<info:fedora/und:00000001s4s> <http://purl.org/dc/terms/language> "English" .
+<info:fedora/und:00000001s4s> <http://purl.org/dc/terms/publisher> "University of Notre Dame" .
+<info:fedora/und:00000001s4s> <http://purl.org/dc/terms/publisher#country> "United States of America" .
+<info:fedora/und:00000001s4s> <http://purl.org/dc/terms/rights> "All rights reserved" .
+<info:fedora/und:00000001s4s> <http://purl.org/dc/terms/subject> "boarding house" .
+<info:fedora/und:00000001s4s> <http://purl.org/dc/terms/subject> "james joyce" .
+<info:fedora/und:00000001s4s> <http://purl.org/dc/terms/subject> "stranger" .
+<info:fedora/und:00000001s4s> <http://purl.org/dc/terms/subject> "domestic" .
+<info:fedora/und:00000001s4s> <http://purl.org/dc/terms/subject> "clock without hands" .
+<info:fedora/und:00000001s4s> <http://purl.org/dc/terms/subject> "dervorgilla" .
+<info:fedora/und:00000001s4s> <http://purl.org/dc/terms/title> "The Stranger in the House: Domestic Invasion in Twentieth-Century Irish and American Literature" .
+<info:fedora/und:00000001s4s> <http://www.ndltd.org/standards/metadata/etdms/1.1/degree> _:b2 .
+_:b0 <http://purl.org/dc/terms/contributor> "Susan Harris" .
+_:b0 <http://www.ndltd.org/standards/metadata/etdms/1.1/role> "Committee Member" .
+_:b1 <http://purl.org/dc/terms/contributor> "Luke Gibbons" .
+_:b1 <http://www.ndltd.org/standards/metadata/etdms/1.1/role> "Committee Member" .
+_:b2 <http://www.ndltd.org/standards/metadata/etdms/1.1/discipline> "English" .
+_:b2 <http://www.ndltd.org/standards/metadata/etdms/1.1/name> "PhD" .
+_:b2 <http://www.ndltd.org/standards/metadata/etdms/1.1/level> "Doctoral Dissertation" .

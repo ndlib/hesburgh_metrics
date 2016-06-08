@@ -94,13 +94,20 @@ RSpec.describe FedoraObjectHarvester::SingleItem do
     context 'without a type' do
       it { is_expected.to eq([]) }
     end
-
     context 'when the RDF::Reader raise an RDF::ReaderError' do
       before { expect(RDF::Reader).to receive(:for).and_raise(RDF::ReaderError.new("STRING", lineno: 1)) }
       it 'will record an exception on the harvester' do
         expect { subject }.to change { harvester.exceptions.count }.by(1)
       end
       it { is_expected.to eq([]) }
+    end
+    context 'for bad RDF data' do
+      open("../fixtures/badRDF.nt") { |f|
+        file_content = f.read
+      }
+      let (:content) { file_content }
+      subject { described_class.new(doc).send(:parse_triples, content, 'type') }
+      it { is_expected.to change { exceptions.count }.by(0) }
     end
   end
 end
