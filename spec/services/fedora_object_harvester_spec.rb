@@ -102,12 +102,12 @@ RSpec.describe FedoraObjectHarvester::SingleItem do
       it { is_expected.to eq([]) }
     end
     context 'for bad RDF data' do
-      open("../fixtures/badRDF.nt") { |f|
-        file_content = f.read
-      }
-      let (:content) { file_content }
-      subject { described_class.new(doc).send(:parse_triples, content, 'type') }
-      it { is_expected.to change { exceptions.count }.by(0) }
+      let (:content) { File.read(Rails.root + "spec/fixtures/badRDF.nt") }
+      subject { single_item.send(:parse_triples, content, 'type') }
+      it 'will record an exception on the harvester' do
+        expect { subject }.to change { harvester.exceptions.count }.by(1)
+      end
+      it { is_expected.to eq([]) }
     end
   end
 end
