@@ -181,7 +181,7 @@ class FedoraObjectHarvester
       RDF::NTriples::Reader.new(stream) do |reader|
         begin
           reader.each_statement do |statement|
-            next if !(statement.predicate.to_s == full_uri)
+            next unless statement.predicate.to_s == full_uri
             data_array << statement.object.to_s
           end
         rescue RDF::ReaderError => e
