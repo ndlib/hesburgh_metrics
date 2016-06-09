@@ -45,30 +45,50 @@ class FedoraObjectHarvester
 
   # Harvest metrics data for one fedora document
   class SingleItem
-    attr_reader :pid, :doc, :harvester
+    attr_reader :pid, :doc, :doc_last_modified, :harvester
 
     def initialize(doc, harvester)
       @pid = doc.pid
       @doc = doc
       @harvester = harvester
+      @doc_last_modified = doc.profile["objLastModDate"]
     end
 
+    # add new, update changed, or omit unchanged document
     def harvest_item
-      fedora_object = FedoraObject.create!(
-        pid: pid,
+      fedora_object = FedoraObject.find_or_initialize_by(pid: pid)
+      fedora_update(fedora_object) if fedora_object.new_record? || (fedora_object.updated_at > doc_last_modified)
+    end
+
+    private
+
+    def fedora_update(fedora_object)
+      fedora_object.update!(
         af_model: af_model,
         resource_type: resource_type,
         mimetype: mimetype,
         bytes: bytes,
         parent_pid: parent_pid,
         obj_ingest_date: doc.profile["objCreateDate"],
-        obj_modified_date: doc.profile["objLastModDate"],
+        obj_modified_date: doc_last_modified,
         access_rights: access_rights
       )
       get_and_assign_aggregation_keys(fedora_object)
     end
 
-    private
+    # parse from triples: creator#administrative_unit
+    # <info:fedora/und:7h149p31207>
+    # <http://purl.org/dc/terms/creator#administrative_unit>
+    # "University of Notre Dame::College of Science::Non-Departmental" .
+    def get_and_assign_aggregation_keys(fedora_object)
+      fedora_object.fedora_object_aggregation_keys.destroy_all
+      return unless doc.datastreams.key?('descMetadata')
+      agg_key_array = parse_triples(doc.datastreams['descMetadata'].content, 'creator#administrative_unit')
+      return unless agg_key_array.any?
+      agg_key_array.each do |aggregation_key|
+        fedora_object.fedora_object_aggregation_keys.create!(aggregation_key: aggregation_key)
+      end
+    end
 
     # splits the first element in objModels to find af_model in element 2
     def af_model
@@ -106,19 +126,6 @@ class FedoraObjectHarvester
       end
     end
 
-    # parse from triples: creator#administrative_unit
-    # <info:fedora/und:7h149p31207>
-    # <http://purl.org/dc/terms/creator#administrative_unit>
-    # "University of Notre Dame::College of Science::Non-Departmental" .
-    def get_and_assign_aggregation_keys(fedora_object)
-      return unless doc.datastreams.key?('descMetadata')
-      agg_key_array = parse_triples(doc.datastreams['descMetadata'].content, 'creator#administrative_unit')
-      return unless agg_key_array.any?
-      agg_key_array.each do |aggregation_key|
-        fedora_object.fedora_object_aggregation_keys.create!(aggregation_key: aggregation_key)
-      end
-    end
-
     # values: public, public (embargo), local, local (embargo), private, private (embargo)
     def access_rights
       return 'error' unless doc.datastreams.key?('rightsMetadata')
@@ -138,13 +145,17 @@ class FedoraObjectHarvester
     def read_rights(this_access)
       machine_group_rights = this_access.elements['machine'].elements['group']
       return 'private' if machine_group_rights.nil?
-      case machine_group_rights.first.to_s
-      when 'public'
-        'public'
-      when 'registered'
-        'local'
-      else
-        'error' # TODO: this is an error situation we may want to report
+      machine_group_rights.each.to_s do |value|
+        case value
+        when 'public'
+          'public'
+        when 'registered'
+          'local'
+        when 'private'
+          'private'
+        else
+          'error' # TODO: this is an error situation we may want to report
+        end
       end
     end
 
