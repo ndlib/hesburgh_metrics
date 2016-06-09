@@ -94,16 +94,25 @@ RSpec.describe FedoraObjectHarvester::SingleItem do
     context 'without a type' do
       it { is_expected.to eq([]) }
     end
-    context 'when the RDF::Reader raise an RDF::ReaderError' do
-      before { expect(RDF::Reader).to receive(:for).and_raise(RDF::ReaderError.new("STRING", lineno: 1)) }
+    # context 'when the RDF::Reader raise an RDF::ReaderError' do
+    #   subject { single_item.send(:parse_triples, content, 'type') }
+    #   before { expect(RDF::Reader).to receive(:for).and_raise(RDF::ReaderError.new("STRING", lineno: 1)) }
+    #   it 'will record an exception on the harvester' do
+    #     expect { subject }.to change { harvester.exceptions.count }.by(1)
+    #   end
+    #   it { is_expected.to eq([]) }
+    # end
+    let (:content) { File.read(Rails.root + "spec/fixtures/badRDF.nt") }
+    subject { single_item.send(:parse_triples, content, 'title') }
+    context 'for bad RDF data in a file' do
       it 'will record an exception on the harvester' do
         expect { subject }.to change { harvester.exceptions.count }.by(1)
       end
       it { is_expected.to eq([]) }
     end
-    context 'for bad RDF data' do
-      let (:content) { File.read(Rails.root + "spec/fixtures/badRDF.nt") }
-      subject { single_item.send(:parse_triples, content, 'type') }
+    let (:content) { "<http://example.com/123> <http://purl.org/dc/terms/title> \"<p>This project takes an interdisciplinary approach to twentieth century Irish and American political rhetoric, housing studies and literature to treat the trope of the stranger in the house (as colonizer, lodger, or domestic servant) as enacting both domestic and national tensions. Operating against a reading of estrangement as somehow universally or essentially experienced, I locate the stranger within contemporaneous debates surrounding why and how that figure is ostracized. \rChapter 1 traces the Irish nationalist discourse that identified the presence of the English in Ireland as Ì¢åÛåÏs. </p>\r\" ." }
+    subject { single_item.send(:parse_triples, content, 'title') }
+    context 'for more bad RDF data' do
       it 'will record an exception on the harvester' do
         expect { subject }.to change { harvester.exceptions.count }.by(1)
       end

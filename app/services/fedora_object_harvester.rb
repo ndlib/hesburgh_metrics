@@ -22,7 +22,7 @@ class FedoraObjectHarvester
       begin
         single_item_harvest(doc)
       rescue StandardError => e
-        @exceptions << "PID: #{doc.pid} \n #{e.inspect}"
+        @exceptions << "PID: #{doc.pid} -- #{e.inspect}"
       end
     end
     report_any_exceptions
@@ -176,17 +176,17 @@ class FedoraObjectHarvester
     def parse_triples(stream, search_key)
       data_array = []
       parse_uri = 'http://purl.org/dc/terms/'
-      begin
-        RDF::Reader.for(:ntriples).new(stream) do |reader|
+      full_uri = parse_uri + search_key
+      return data_array unless stream.include? full_uri
+      RDF::NTriples::Reader.new(stream) do |reader|
+        begin
           reader.each_statement do |statement|
-            key = statement.predicate.to_s
-            normalized_key = key.sub(parse_uri, '')
-            next if normalized_key != search_key
-            data_array << statement.object
+            next if !(statement.predicate.to_s == full_uri)
+            data_array << statement.object.to_s
           end
+        rescue RDF::ReaderError => e
+          harvester.exceptions << "PID: #{pid} -- #{e.inspect}"
         end
-      rescue RDF::ReaderError => e
-        harvester.exceptions << "PID: #{pid} \n #{e.inspect}"
       end
       data_array
     end
