@@ -50,6 +50,14 @@ RSpec.describe FedoraObjectHarvester::SingleItem do
     end
   end
 
+  context '#fedora_changed?' do
+    subject { single_item.send(:fedora_changed?, content) }
+    let (:content) { FedoraObject.new }
+    context 'for new record' do
+      it { is_expected.to eq(false) }
+    end
+  end
+
   context '#parse_xml_relsext' do
     subject { single_item.send(:parse_xml_relsext, content, 'isPartOf') }
     context 'for parse_xml_relsext for parent pid' do
@@ -70,7 +78,7 @@ RSpec.describe FedoraObjectHarvester::SingleItem do
   context '#parse_xml_rights' do
     subject { single_item.send(:parse_xml_rights, content) }
     context 'for public with embargo' do
-      let (:content) { %(<rightsMetadata xmlns="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1" version="0.1"><copyright><human type="title"/><human type="description"/><machine type="uri"/></copyright><access type="discover"><human/><machine/></access><access type="read"><human/><machine><group>public</group></machine></access><access type="edit"><human/><machine><person>msisk1</person></machine></access><embargo><human/><machine><date>2016-06-01</date></machine></embargo></rightsMetadata>) }
+      let (:content) { %(<rightsMetadata xmlns="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1" version="0.1"><copyright><human type="title"/><human type="description"/><machine type="uri"/></copyright><access type="discover"><human/><machine/></access><access type="read"><human/><machine><group>public</group></machine></access><access type="edit"><human/><machine><person>msisk1</person></machine></access><embargo><human/><machine><date>2030-06-01</date></machine></embargo></rightsMetadata>) }
       it { is_expected.to eq('public (embargo)') }
     end
     context 'for local' do
@@ -78,29 +86,32 @@ RSpec.describe FedoraObjectHarvester::SingleItem do
       subject { single_item.send(:parse_xml_rights, content) }
       it { is_expected.to eq('local') }
     end
-    context 'for undefined rights value' do
+    context 'for no defined rights value' do
       let (:content) { %(<rightsMetadata xmlns="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1" version="0.1"><copyright><human type="title"/><human type="description"/><machine type="uri"/></copyright><access type="discover"><human/><machine/></access><access type="read"><human/><machine><group>something</group></machine></access><access type="edit"><human/><machine><person>msisk1</person></machine></access><embargo><human/><machine/></embargo></rightsMetadata>) }
       subject { single_item.send(:parse_xml_rights, content) }
-      it { is_expected.to eq('error') }
+      it { is_expected.to eq('private') }
+    end
+    context 'for explicit private rights' do
+      let (:content) { %(<rightsMetadata xmlns="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1" version="0.1"><copyright><human type="title"/><human type="description"/><machine type="uri"/></copyright><access type="discover"><human/><machine><person>private</person></machine></access><access type="read"><human/><machine><person>private</person></machine></access><access type="edit"><human/><machine><person>msisk1</person></machine></access><embargo><human/><machine/></embargo></rightsMetadata>) }
+      subject { single_item.send(:parse_xml_rights, content) }
+      it { is_expected.to eq('private') }
     end
   end
 
   context "#parse_triples" do
-    subject { single_item.send(:parse_triples, content, 'type') }
-    let (:content) { %(<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/title> "Collection with long description" .
-      <info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/description> "The most recent versions of V-Dem data" .
-      <info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/dateSubmitted> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .
-      <info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/modified> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .) }
-    context 'without a type' do
-      it { is_expected.to eq([]) }
+    context 'parse some data normally' do
+      let (:content) { %(<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/title> "Collection with long description" .\n<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/description> "The most recent versions of V-Dem data" .\n<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/dateSubmitted> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .\n<info:fedora/und:00000001s4s> <http://purl.org/dc/terms/language> "English" .\n<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/modified> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .) }
+      subject { single_item.send(:parse_triples, content, 'language') }
+      it { is_expected.to eq(['English']) }
     end
-
-    context 'when the RDF::Reader raise an RDF::ReaderError' do
-      before { expect(RDF::Reader).to receive(:for).and_raise(RDF::ReaderError.new("STRING", lineno: 1)) }
+    context 'will handle reader errors Reader::Error on one statement' do
+      let (:content) { %(<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/title> "Collection with long description" .\n<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/description> "The most recent versions of V-Dem data" .\n<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/dateSubmitted> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .\n<info:fedora/und:00000001s4s> <http://purl.org/dc/terms/language> "English" .\n<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/modified> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .) }
+      subject { single_item.send(:parse_triples, content, 'language') }
       it 'will record an exception on the harvester' do
+        allow_any_instance_of(::RDF::NTriples::Reader).to receive(:each_statement).and_raise(RDF::ReaderError.new(''))
         expect { subject }.to change { harvester.exceptions.count }.by(1)
       end
-      it { is_expected.to eq([]) }
+      it { is_expected.to eq(['English']) }
     end
   end
 end
