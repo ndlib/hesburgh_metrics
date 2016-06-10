@@ -59,9 +59,7 @@ class FedoraObjectHarvester
       fedora_object = FedoraObject.find_or_initialize_by(pid: pid)
       return true unless fedora_object.new_record?
       return true if fedora_object.updated_at.present? && fedora_object.updated_at > doc_last_modified
-      # Do we want to parse the document's access rights? Or are we interested in the harvested fedora
-      # object's aggregation_keys?
-      return true if !fedora_object.new_record? && !access_rights.include?('embargo')
+      return true if !fedora_object.new_record? && fedora_object.access_rights.include?('embargo')
       fedora_update(fedora_object)
     end
 
