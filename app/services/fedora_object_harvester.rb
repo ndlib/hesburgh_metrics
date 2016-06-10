@@ -57,7 +57,12 @@ class FedoraObjectHarvester
     # add new, update changed, or omit unchanged document
     def harvest_item
       fedora_object = FedoraObject.find_or_initialize_by(pid: pid)
-      fedora_update(fedora_object) if fedora_object.new_record? || (fedora_object.updated_at > doc_last_modified) || fedora_object.access_rights.include?('embargo')
+      return true unless fedora_object.new_record?
+      return true if fedora_object.updated_at.present? && fedora_object.updated_at > doc_last_modified
+      # Do we want to parse the document's access rights? Or are we interested in the harvested fedora
+      # object's aggregation_keys?
+      return true if !fedora_object.new_record? && !access_rights.include?('embargo')
+      fedora_update(fedora_object)
     end
 
     private
@@ -90,7 +95,8 @@ class FedoraObjectHarvester
       if agg_key_array.any?
         # add any new aggregation keys which don't already exist
         agg_key_array.each do |aggregation_key|
-          fedora_object.fedora_object_aggregation_keys.create!(aggregation_key: aggregation_key) unless fedora_object.fedora_object_aggregation_keys.include? aggregation_key
+          next if fedora_object.fedora_object_aggregation_keys.include?(aggregation_key)
+          fedora_object.fedora_object_aggregation_keys.create!(aggregation_key: aggregation_key)
         end
         # destroy any prior aggregation keys which no longer exist
         fedora_object.fedora_object_aggregation_keys.each do |aggregation_key|
@@ -184,7 +190,7 @@ class FedoraObjectHarvester
       machine_date_rights = this_access.elements['machine'].elements['date']
       return if machine_date_rights.nil? || machine_date_rights.first.blank?
       embargo_date = Date.parse(machine_date_rights.to_s)
-      today = Date.parse(Time.new.to_s)
+      today = Time.zone.today
       return ' (embargo)' if embargo_date > today
     end
 
