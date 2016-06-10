@@ -83,40 +83,26 @@ RSpec.describe FedoraObjectHarvester::SingleItem do
       subject { single_item.send(:parse_xml_rights, content) }
       it { is_expected.to eq('private') }
     end
+    context 'for explicit private rights' do
+      let (:content) { %(<rightsMetadata xmlns="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1" version="0.1"><copyright><human type="title"/><human type="description"/><machine type="uri"/></copyright><access type="discover"><human/><machine><person>private</person></machine></access><access type="read"><human/><machine><person>private</person></machine></access><access type="edit"><human/><machine><person>msisk1</person></machine></access><embargo><human/><machine/></embargo></rightsMetadata>) }
+      subject { single_item.send(:parse_xml_rights, content) }
+      it { is_expected.to eq('private') }
+    end
   end
 
-  context "#parse_triples" do # none of these work... need to
-    # context 'parse some data normally' do
-    #   let (:content) { %(<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/title> "Collection with long description" .     <info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/description> "The most recent versions of V-Dem data" . <info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/dateSubmitted> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> . <info:fedora/und:00000001s4s> <http://purl.org/dc/terms/language> "English" . <info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/modified> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .) }
-    #   subject { single_item.send(:parse_triples, content, 'language') }
-    #   it { is_expected.to eq(['English']) }
-    # end
-
-    # context 'when the RDF::Reader raise an RDF::ReaderError' do
-    #   subject { single_item.send(:parse_triples, content, 'type') }
-    #   before { expect(RDF::Reader).to receive(:for).and_raise(RDF::ReaderError.new("STRING", lineno: 1)) }
-    #   it 'will record an exception on the harvester' do
-    #     expect { subject }.to change { harvester.exceptions.count }.by(1)
-    #   end
-    #   it { is_expected.to eq([]) }
-    # end
-
-    # context 'for bad RDF data in a file' do
-    #   let (:content) { File.read(Rails.root + "spec/fixtures/badRDF.nt") }
-    #   subject { single_item.send(:parse_triples, content, 'title') }
-    #   it 'will record an exception on the harvester' do
-    #     expect { subject }.to change { harvester.exceptions.count }.by(1)
-    #   end
-    #   it { is_expected.to eq([]) }
-    # end
-
-    # context 'parse some data that gives a Reader::Error on one statement' do
-    #   let (:content) { "<http://example.com/123> <http://purl.org/dc/terms/title> \"<p>This project takes an interdisciplinary approach to twentieth century Irish and American political rhetoric, housing studies and literature to treat the trope of the stranger in the house (as colonizer, lodger, or domestic servant) as enacting both domestic and national tensions. Operating against a reading of estrangement as somehow universally or essentially experienced, I locate the stranger within contemporaneous debates surrounding why and how that figure is ostracized. \rChapter 1 traces the Irish nationalist discourse that identified the presence of the English in Ireland as Ì¢åÛåÏs. </p>\r\" .<info:fedora/und:00000001s4s> <http://purl.org/dc/terms/language> \"English\" .\n" }
-    #   subject { single_item.send(:parse_triples, content, 'language') }
-    #     it 'will record an exception on the harvester' do
-    #       expect { subject }.to change { harvester.exceptions.count }.by(1)
-    #     end
-    #   it { is_expected.to eq(['English']) }
-    # end
+  context "#parse_triples" do
+    context 'parse some data normally' do
+      let (:content) { %(<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/title> "Collection with long description" .\n<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/description> "The most recent versions of V-Dem data" .\n<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/dateSubmitted> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .\n<info:fedora/und:00000001s4s> <http://purl.org/dc/terms/language> "English" .\n<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/modified> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .) }
+      subject { single_item.send(:parse_triples, content, 'language') }
+      it { is_expected.to eq(['English']) }
+    end
+    context 'will handle reader errors Reader::Error on one statement' do
+      let (:content) { %(<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/title> "Collection with long description" .\n<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/description> "The most recent versions of V-Dem data" .\n<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/dateSubmitted> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .\n<info:fedora/und:00000001s4s> <http://purl.org/dc/terms/language> "English" .\n<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/modified> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .) }
+      subject { single_item.send(:parse_triples, content, 'language') }
+      it 'will record an exception on the harvester' do
+        allow_any_instance_of(::RDF::NTriples::Reader).to receive(:each_statement).and_raise(RDF::ReaderError.new(''))
+        expect { subject }.to change { harvester.exceptions.count }.by(1)
+      end
+    end
   end
 end
