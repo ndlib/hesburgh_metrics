@@ -50,6 +50,14 @@ RSpec.describe FedoraObjectHarvester::SingleItem do
     end
   end
 
+  context '#fedora_changed?' do
+    subject { single_item.send(:fedora_changed?, content) }
+    let (:content) { FedoraObject.new }
+    context 'for new record' do
+      it { is_expected.to eq(false) }
+    end
+  end
+
   context '#parse_xml_relsext' do
     subject { single_item.send(:parse_xml_relsext, content, 'isPartOf') }
     context 'for parse_xml_relsext for parent pid' do
@@ -103,6 +111,7 @@ RSpec.describe FedoraObjectHarvester::SingleItem do
         allow_any_instance_of(::RDF::NTriples::Reader).to receive(:each_statement).and_raise(RDF::ReaderError.new(''))
         expect { subject }.to change { harvester.exceptions.count }.by(1)
       end
+      it { is_expected.to eq(['English']) }
     end
   end
 end

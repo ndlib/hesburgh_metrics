@@ -57,13 +57,16 @@ class FedoraObjectHarvester
     # add new, update changed, or omit unchanged document
     def harvest_item
       fedora_object = FedoraObject.find_or_initialize_by(pid: pid)
-      return true unless fedora_object.new_record?
-      return true if fedora_object.updated_at.present? && fedora_object.updated_at > doc_last_modified
-      return true if !fedora_object.new_record? && fedora_object.access_rights.include?('embargo')
-      fedora_update(fedora_object)
+      fedora_update(fedora_object) if fedora_object.new_record? || fedora_changed?(fedora_object)
     end
 
     private
+
+    def fedora_changed?(fedora_object)
+      return true if fedora_object.updated_at.present? && fedora_object.updated_at > doc_last_modified
+      return true if !fedora_object.new_record? && fedora_object.access_rights.include?('embargo')
+      false
+    end
 
     def fedora_update(fedora_object)
       fedora_object.update!(
