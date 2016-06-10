@@ -98,13 +98,10 @@ class FedoraObjectHarvester
           next if fedora_object.fedora_object_aggregation_keys.include?(aggregation_key)
           fedora_object.fedora_object_aggregation_keys.create!(aggregation_key: aggregation_key)
         end
-        # destroy any prior aggregation keys which no longer exist
-        fedora_object.fedora_object_aggregation_keys.each do |aggregation_key|
-          fedora_object.fedora_object_aggregation_keys.destroy unless agg_key_array.include? aggregation_key
-        end
-      # there are none now. Destroy any prior aggregation keys
-      elsif fedora_object.fedora_object_aggregation_keys.any?
-        fedora_object.fedora_object_aggregation_keys.destroy_all
+      end
+      # destroy any prior aggregation keys which no longer exist
+      fedora_object.fedora_object_aggregation_keys.each do |aggregation_key|
+        fedora_object.fedora_object_aggregation_keys.destroy unless agg_key_array.include? aggregation_key
       end
     end
 
