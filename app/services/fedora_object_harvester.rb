@@ -73,14 +73,14 @@ class FedoraObjectHarvester
         obj_modified_date: doc_last_modified,
         access_rights: access_rights
       )
-      get_and_assign_or_update_aggregation_keys(fedora_object)
+      get_and_add_or_delete_aggregation_keys(fedora_object)
     end
 
     # parse from triples: creator#administrative_unit
     # <info:fedora/und:7h149p31207>
     # <http://purl.org/dc/terms/creator#administrative_unit>
     # "University of Notre Dame::College of Science::Non-Departmental" .
-    def get_and_assign_or_update_aggregation_keys(fedora_object)
+    def get_and_add_or_delete_aggregation_keys(fedora_object)
       agg_key_array = []
       if doc.datastreams.key?('descMetadata')
         # load new aggregation_key agg_key_array
