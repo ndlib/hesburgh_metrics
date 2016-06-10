@@ -57,7 +57,7 @@ class FedoraObjectHarvester
     # add new, update changed, or omit unchanged document
     def harvest_item
       fedora_object = FedoraObject.find_or_initialize_by(pid: pid)
-      fedora_update(fedora_object) if fedora_object.new_record? || (fedora_object.updated_at > doc_last_modified)
+      fedora_update(fedora_object) if fedora_object.new_record? || (fedora_object.updated_at > doc_last_modified) || fedora_object.access_rights.include?('embargo')
     end
 
     private
@@ -73,20 +73,32 @@ class FedoraObjectHarvester
         obj_modified_date: doc_last_modified,
         access_rights: access_rights
       )
-      get_and_assign_aggregation_keys(fedora_object)
+      get_and_assign_or_update_aggregation_keys(fedora_object)
     end
 
     # parse from triples: creator#administrative_unit
     # <info:fedora/und:7h149p31207>
     # <http://purl.org/dc/terms/creator#administrative_unit>
     # "University of Notre Dame::College of Science::Non-Departmental" .
-    def get_and_assign_aggregation_keys(fedora_object)
-      fedora_object.fedora_object_aggregation_keys.destroy_all
-      return unless doc.datastreams.key?('descMetadata')
-      agg_key_array = parse_triples(doc.datastreams['descMetadata'].content, 'creator#administrative_unit')
-      return unless agg_key_array.any?
-      agg_key_array.each do |aggregation_key|
-        fedora_object.fedora_object_aggregation_keys.create!(aggregation_key: aggregation_key)
+    def get_and_assign_or_update_aggregation_keys(fedora_object)
+      agg_key_array = []
+      if doc.datastreams.key?('descMetadata')
+        # load new aggregation_key agg_key_array
+        agg_key_array = parse_triples(doc.datastreams['descMetadata'].content, 'creator#administrative_unit')
+      end
+      # if there are any aggregation keys now, add or update what is currently stored
+      if agg_key_array.any?
+        # add any new aggregation keys which don't already exist
+        agg_key_array.each do |aggregation_key|
+          fedora_object.fedora_object_aggregation_keys.create!(aggregation_key: aggregation_key) unless fedora_object.fedora_object_aggregation_keys.include? aggregation_key
+        end
+        # destroy any prior aggregation keys which no longer exist
+        fedora_object.fedora_object_aggregation_keys.each do |aggregation_key|
+          fedora_object.fedora_object_aggregation_keys.destroy unless agg_key_array.include? aggregation_key
+        end
+      # there are none now. Destroy any prior aggregation keys
+      elsif fedora_object.fedora_object_aggregation_keys.any?
+        fedora_object.fedora_object_aggregation_keys.destroy_all
       end
     end
 
@@ -143,28 +155,37 @@ class FedoraObjectHarvester
 
     # <access type="read"><human/><machine><group>public</group></machine></access>
     def read_rights(this_access)
+      rights_array = []
+
       machine_group_rights = this_access.elements['machine'].elements['group']
-      return 'private' if machine_group_rights.nil?
-      machine_group_rights.each.to_s do |value|
-        case value
-        when 'public'
-          'public'
-        when 'registered'
-          'local'
-        when 'private'
-          'private'
-        else
-          'error' # TODO: this is an error situation we may want to report
-        end
+      machine_group_rights.each do |value|
+        rights_array << value
+      end unless machine_group_rights.nil?
+
+      machine_person_rights = this_access.elements['machine'].elements['person']
+      machine_person_rights.each do |value|
+        rights_array << value
+      end unless machine_person_rights.nil?
+
+      if rights_array.include? 'public'
+        'public'
+      elsif rights_array.include? 'registered'
+        'local'
+      elsif rights_array.include? 'private'
+        'private'
+      else
+        'private'
       end
     end
 
     # <embargo><human/><machine><date>2016-06-01</date></machine></embargo>
     # concatenate (embargo) onto prior string if it exists
     def embargo_rights(this_access)
-      machine_group_rights = this_access.elements['machine'].elements['date']
-      return if machine_group_rights.nil?
-      return ' (embargo)' unless machine_group_rights.first.nil?
+      machine_date_rights = this_access.elements['machine'].elements['date']
+      return if machine_date_rights.nil? || machine_date_rights.first.blank?
+      embargo_date = Date.parse(machine_date_rights.to_s)
+      today = Date.parse(Time.new.to_s)
+      return ' (embargo)' if embargo_date > today
     end
 
     ## ============================================================================

@@ -70,7 +70,7 @@ RSpec.describe FedoraObjectHarvester::SingleItem do
   context '#parse_xml_rights' do
     subject { single_item.send(:parse_xml_rights, content) }
     context 'for public with embargo' do
-      let (:content) { %(<rightsMetadata xmlns="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1" version="0.1"><copyright><human type="title"/><human type="description"/><machine type="uri"/></copyright><access type="discover"><human/><machine/></access><access type="read"><human/><machine><group>public</group></machine></access><access type="edit"><human/><machine><person>msisk1</person></machine></access><embargo><human/><machine><date>2016-06-01</date></machine></embargo></rightsMetadata>) }
+      let (:content) { %(<rightsMetadata xmlns="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1" version="0.1"><copyright><human type="title"/><human type="description"/><machine type="uri"/></copyright><access type="discover"><human/><machine/></access><access type="read"><human/><machine><group>public</group></machine></access><access type="edit"><human/><machine><person>msisk1</person></machine></access><embargo><human/><machine><date>2030-06-01</date></machine></embargo></rightsMetadata>) }
       it { is_expected.to eq('public (embargo)') }
     end
     context 'for local' do
@@ -78,14 +78,14 @@ RSpec.describe FedoraObjectHarvester::SingleItem do
       subject { single_item.send(:parse_xml_rights, content) }
       it { is_expected.to eq('local') }
     end
-    context 'for undefined rights value' do
+    context 'for no defined rights value' do
       let (:content) { %(<rightsMetadata xmlns="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1" version="0.1"><copyright><human type="title"/><human type="description"/><machine type="uri"/></copyright><access type="discover"><human/><machine/></access><access type="read"><human/><machine><group>something</group></machine></access><access type="edit"><human/><machine><person>msisk1</person></machine></access><embargo><human/><machine/></embargo></rightsMetadata>) }
       subject { single_item.send(:parse_xml_rights, content) }
-      it { is_expected.to eq('error') }
+      it { is_expected.to eq('private') }
     end
   end
 
-  context "#parse_triples" do
+  context "#parse_triples" do # none of these work... need to
     # context 'parse some data normally' do
     #   let (:content) { %(<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/title> "Collection with long description" .     <info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/description> "The most recent versions of V-Dem data" . <info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/dateSubmitted> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> . <info:fedora/und:00000001s4s> <http://purl.org/dc/terms/language> "English" . <info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/modified> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .) }
     #   subject { single_item.send(:parse_triples, content, 'language') }
