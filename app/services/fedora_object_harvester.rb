@@ -119,7 +119,8 @@ class FedoraObjectHarvester
     def resource_type
       return af_model unless doc.datastreams.key?('descMetadata')
       resource_types = parse_triples(doc.datastreams['descMetadata'].content, 'type')
-      resource_types[0] || af_model # this is an array but should only have one
+      return af_model unless resource_types[0].present?
+      resource_types[0] # this is an array but should only have one
     end
 
     DEFAULT_MIMETYPE = 'application/octet-stream'.freeze
