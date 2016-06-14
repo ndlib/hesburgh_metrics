@@ -65,7 +65,7 @@ class FedoraObjectHarvester
     private
 
     def fedora_changed?(fedora_object)
-      return true if fedora_object.updated_at.present? && fedora_object.updated_at > doc_last_modified
+      return true if fedora_object.updated_at.present? && fedora_object.updated_at < doc_last_modified
       return true if !fedora_object.new_record? && fedora_object.access_rights.include?('embargo')
       false
     end
@@ -147,8 +147,7 @@ class FedoraObjectHarvester
 
     # values: public, public (embargo), local, local (embargo), private, private (embargo)
     def access_rights
-      return 'error' unless doc.datastreams.key?('rightsMetadata')
-      # TODO: this is an error situation we may want to report
+      return 'private' unless doc.datastreams.key?('rightsMetadata')
       parse_xml_rights(doc.datastreams['rightsMetadata'].content)
     end
 
