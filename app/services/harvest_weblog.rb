@@ -34,7 +34,7 @@ class HarvestWeblogs
     end
 
     def agent_format(agent)
-      agent.split('"')[5]
+      agent.split('"')[5].truncate(254)
     end
 
     def ip_format(ip)
