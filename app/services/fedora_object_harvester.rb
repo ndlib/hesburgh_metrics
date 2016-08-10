@@ -50,7 +50,7 @@ class FedoraObjectHarvester
     attr_reader :pid, :doc, :doc_last_modified, :harvester
 
     def initialize(doc, harvester)
-      @pid = doc.pid
+      @pid = strip_pid(doc.pid)
       @doc = doc
       @harvester = harvester
       @doc_last_modified = doc.profile["objLastModDate"]
@@ -63,6 +63,10 @@ class FedoraObjectHarvester
     end
 
     private
+
+    def strip_pid(work_pid)
+      work_pid.include?('und:') ? work_pid.partition('und:')[2] : work_pid
+    end
 
     def fedora_changed?(fedora_object)
       return true if fedora_object.updated_at.present? && fedora_object.updated_at < doc_last_modified
@@ -139,7 +143,7 @@ class FedoraObjectHarvester
     def parent_pid
       if af_model == 'GenericFile'
         return pid unless doc.datastreams.key?('RELS-EXT')
-        parse_xml_relsext(doc.datastreams['RELS-EXT'].content, 'isPartOf')
+        strip_pid(parse_xml_relsext(doc.datastreams['RELS-EXT'].content, 'isPartOf'))
       else
         pid
       end
