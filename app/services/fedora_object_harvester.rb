@@ -108,9 +108,16 @@ class FedoraObjectHarvester
       end
     end
 
-    # splits the first element in objModels to find af_model in element 2
     def af_model
-      @af_model ||= doc.profile['objModels'][0].split(':')[2]
+      @af_model ||= parse_af_model
+    end
+
+    # splits objModels to find af_model in element 2
+    def parse_af_model
+      doc.profile['objModels'].each do |model|
+        next unless model.include?('afmodel')
+        return model.split(':')[2]
+      end
     end
 
     # parse from triples
