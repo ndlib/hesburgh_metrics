@@ -65,7 +65,7 @@ class FedoraObjectHarvester
     private
 
     def strip_pid(work_pid)
-      work_pid.include?('und:') ? work_pid.partition('und:')[2] : work_pid
+      work_pid.sub('und:', '')
     end
 
     def fedora_changed?(fedora_object)
