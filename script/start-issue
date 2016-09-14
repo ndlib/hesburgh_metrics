@@ -39,27 +39,6 @@ REPOSITORY_PATH = ENV.fetch('REPOSITORY_PATH') { File.expand_path(File.join(File
 REMOTE = ENV.fetch('REMOTE', 'origin')
 FROM_BRANCH = ENV.fetch('FROM_BRANCH', 'master')
 
-issue_title_fetcher = lambda do
-  begin
-    remote_url = `cd #{REPOSITORY_PATH} && git config --get remote.#{REMOTE}.url`.strip
-    match = remote_url.match(/(\w+)\/(\w+)(?:\.git)?\Z/)
-    if match
-      require 'open-uri'
-      require 'json'
-      owner, repository = match.captures
-      document = open("https://api.github.com/repos/#{owner}/#{repository}/issues/#{ISSUE_NUMBER}.json").read
-      json = JSON.parse(document)
-      json.fetch('title').gsub(/\W+/, '-')
-    else
-      'issue-on-github'
-    end
-  rescue
-    'issue-on-github'
-  end
-end
-
-# TODO: Retrieve the dasherized issue from Github's API
-ISSUE_TITLE = ENV.fetch('ISSUE_TITLE', issue_title_fetcher)
 STARTED_ISSUES_FILE = ENV.fetch('STARTED_ISSUES_FILE', '.started-issues')
 
 #*******************************************************************************
@@ -77,7 +56,6 @@ if ARGV.grep(/-h/i).size == 1
   $stdout.puts "* Create a new branch for the given issue number"
   $stdout.puts "* Touch and append the issue number to a tracking file"
   $stdout.puts "* Write a rudimentary commit message"
-  $stdout.puts "* Push that commit up to #{REMOTE}"
   $stdout.puts ""
   $stdout.puts "Note: There are steps to insure you have a clean working directory."
   $stdout.puts "Note: If you have spaces in your configuration all bets are off!"
@@ -103,17 +81,81 @@ end
 
 # Guard that I have an issue number
 
+issue_source = nil
 ISSUE_NUMBER = ARGV.shift
 
-unless ISSUE_NUMBER =~ /^\d+$/
-  $stderr.puts "Expected first parameter to be an issue number for REPOSITORY.\n\n"
+if ISSUE_NUMBER =~ /^\w+-\d+$/
+  issue_source = :jira
+elsif ISSUE_NUMBER =~ /^\d+$/
+  issue_source = :github
+else
+  $stderr.puts "Expected first parameter to be a JIRA or GitHub issue number.\n\n"
   $stderr.puts "See help for details on specifying an issue number.\n\n"
   $stderr.puts "$ ./#{File.basename(__FILE__)} -h"
   exit!(1)
 end
 
+unless system("which jira")
+  $stderr.puts "Expected to find `jira' in your path."
+  $stderr.puts "Run the following:"
+  $stderr.puts "\tbrew tap ndlib/dlt\n\tbrew install go-jira\n\n"
+  exit!(9)
+end
+
+unless File.exist?(File.join(ENV['HOME'], '.jira.d/config.yml'))
+  $stderr.puts "Expected ~/.jira.d/config.yml to exist"
+  $stderr.puts "Run the following:"
+  $stderr.puts "\tmkdir ~/.jira.d\n\techo 'endpoint: https://jira.library.nd.edu' > ~/.jira.d/config.yml"
+  exit!(10)
+end
+
 # Capture the issue_title
-issue_title = ISSUE_TITLE.respond_to?(:call) ? ISSUE_TITLE.call : ISSUE_TITLE
+ISSUE_TITLE = ENV.fetch('ISSUE_TITLE', nil)
+if ISSUE_TITLE.nil?
+  case issue_source
+  when :github
+    issue_title = begin
+                    remote_url = `cd #{REPOSITORY_PATH} && git config --get remote.#{REMOTE}.url`.strip
+                    match = remote_url.match(/(\w+)\/(\w+)(?:\.git)?\Z/)
+                    if match
+                      require 'open-uri'
+                      require 'json'
+                      owner, repository = match.captures
+                      document = open("https://api.github.com/repos/#{owner}/#{repository}/issues/#{ISSUE_NUMBER}.json").read
+                      json = JSON.parse(document)
+                      json.fetch('title').gsub(/\W+/, '-')
+                    else
+                      'issue-on-github'
+                    end
+                  rescue
+                    'issue-on-github'
+                  end
+  when :jira
+    issue_title = begin
+                    require 'yaml'
+                    # TODO(dbrower): sometimes this will block waiting for the user to
+                    # enter a password. Is better way to handle the situation?
+                    document = `jira view #{ISSUE_NUMBER}`
+                    # sometimes there is garbage before the "issue:" line.
+                    document.sub!(/\A[^i]*/, '')
+                    issue = YAML.load(document)
+                    title = issue["summary"]
+                    if title == "<no value>"
+                      $stdout.puts "Problem finding issue #{ISSUE_NUMBER}"
+                      exit!(5)
+                    end
+                    title
+                  rescue
+                    $stdout.puts "Problem finding issue #{ISSUE_NUMBER}"
+                    exit!(6)
+                  end
+  end
+else
+  issue_title = ISSUE_TITLE
+end
+
+# Ensure that we don't have ridiculously long branch names
+issue_title = issue_title[0..30]
 
 # Guard that directories exist
 [:REPOSITORY_PATH].each do |key|
@@ -154,8 +196,10 @@ begin
   File.open(path_to_commit_message, 'w+') do |file|
     file.puts "Claiming issue #{ISSUE_NUMBER}"
     file.puts ""
-    file.puts "relates to ##{ISSUE_NUMBER}"
-    file.puts ""
+    if issue_source == :github
+      file.puts "relates to ##{ISSUE_NUMBER}"
+      file.puts ""
+    end
 
     message = "$ ./script/#{File.basename(__FILE__)} #{ISSUE_NUMBER}"
     CONFIG_KEYS.each_with_object(message) do |key, mem|
@@ -171,4 +215,12 @@ begin
   $stdout.puts `cd #{REPOSITORY_PATH} && git commit -F #{path_to_commit_message}`
 ensure
   File.unlink(path_to_commit_message) rescue true
+end
+
+# If the commit was successful, assign the issue to us and move into "In Progress"
+if issue_source == :jira
+  system("jira take #{ISSUE_NUMBER}")
+  exit!(5) unless $?.success?
+  system("jira --noedit transition \"In Progress\" #{ISSUE_NUMBER}")
+  exit!(5) unless $?.success?
 end

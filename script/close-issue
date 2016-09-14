@@ -6,12 +6,10 @@
 #
 #*******************************************************************************
 
-CONFIG_KEYS = [:REMOTE, :REPOSITORY_PATH, :STARTED_ISSUES_FILE].freeze
+CONFIG_KEYS = [:REPOSITORY_PATH, :STARTED_ISSUES_FILE].freeze
 
 REPOSITORY_PATH = ENV.fetch('REPOSITORY_PATH') { File.expand_path(File.join(File.dirname(__FILE__), '../')) }
-REMOTE = ENV.fetch('REMOTE', 'origin')
 
-# TODO: Retrieve the dasherized issue from Github's API
 STARTED_ISSUES_FILE = ENV.fetch('STARTED_ISSUES_FILE', '.started-issues')
 
 #*******************************************************************************
@@ -41,7 +39,7 @@ if ARGV.grep(/-h/i).size == 1
   $stdout.puts "ENV variable."
   $stdout.puts ""
   $stdout.puts "Example:"
-  $stdout.puts "$ REMOTE=origin ./scripts/#{File.basename(__FILE__)}"
+  $stdout.puts "$ REPOSITORY_PATH=.. ./scripts/#{File.basename(__FILE__)}"
   exit(0)
 end
 
@@ -63,10 +61,15 @@ end
 end
 
 # Guard that I know what the issue number is
-current_branch = `cd #{REPOSITORY_PATH} && git branch | grep '^*'`.sub(/^\*\s*/, '').strip
+current_branch = `cd #{REPOSITORY_PATH} && git branch | grep '^[*]'`.sub(/^\*\s*/, '').strip
 
-if current_branch =~ /^(\d+)[^\d]/
-  ISSUE_NUMBER = $1.to_i
+issue_source = :unknown
+if current_branch =~ /^(\w+-\d+)\D/  # jira issue
+  ISSUE_NUMBER = $1
+  issue_source = :jira
+elsif current_branch =~ /^(\d+)\D/   # github issue
+  ISSUE_NUMBER = $1
+  issue_source = :github
 else
   $stderr.puts "Expected to be able to determine issue number from branch #{current_branch} name @ #{REPOSITORY_PATH}.\n\n"
   $stderr.puts "See help for more information.\n\n"
@@ -96,7 +99,7 @@ started_issues_file_lines = File.read(File.join(REPOSITORY_PATH, STARTED_ISSUES_
 
 File.open(STARTED_ISSUES_FILE, 'w+') do |file|
   started_issues_file_lines.each do |line|
-    file.puts line unless line.to_i == ISSUE_NUMBER.to_i
+    file.puts line unless line.strip.downcase == ISSUE_NUMBER.downcase
   end
 end
 
@@ -107,8 +110,10 @@ begin
   File.open(path_to_commit_message, 'w+') do |file|
     file.puts "Closing issue #{ISSUE_NUMBER}"
     file.puts ""
-    file.puts "Closes ##{ISSUE_NUMBER}"
-    file.puts ""
+    if issue_source == :github
+      file.puts "Closes ##{ISSUE_NUMBER}"
+      file.puts ""
+    end
 
     message = "$ ./script/#{File.basename(__FILE__)} #{ISSUE_NUMBER}"
     CONFIG_KEYS.each_with_object(message) do |key, mem|
@@ -122,4 +127,10 @@ begin
   $stdout.puts `cd #{REPOSITORY_PATH} && git commit -F #{path_to_commit_message}`
 ensure
   File.unlink(path_to_commit_message) rescue true
+end
+
+# update jira and mark this issue as finished
+if issue_source == :jira
+  system("jira transition qa #{ISSUE_NUMBER} --noedit")
+  exit!(5) unless $?.success?
 end
