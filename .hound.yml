@@ -45,7 +45,7 @@ PercentLiteralDelimiters:
   Enabled: false
 
 Metrics/ClassLength:
-  Max: 150
+  Max: 160
 
 Metrics/MethodLength:
   CountComments: false  # count full line comments?

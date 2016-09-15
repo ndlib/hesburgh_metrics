@@ -50,6 +50,16 @@ RSpec.describe FedoraObjectHarvester::SingleItem do
     end
   end
 
+  context '#title' do
+    subject { single_item.send(:title) }
+    context 'for non-GenericFile content' do
+      let(:stream) { %(<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/title> "Collection with long description" .\n<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/description> "The most recent versions of V-Dem data" .\n<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/dateSubmitted> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .\n<info:fedora/und:00000001s4s> <http://purl.org/dc/terms/language> "English" .\n<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/modified> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .) }
+      let(:doc) { double('DigitalObject', datastreams: {'descMetadata' => double(content: stream) }, pid: 'und:mp48sb41h1s', profile: {}) }
+      before { allow(single_item).to receive(:af_model).and_return('Collection') }
+      it { is_expected.to eq("Collection with long description") }
+    end
+  end
+
   context '#fedora_changed?' do
     subject { single_item.send(:fedora_changed?, content) }
     let (:content) { FedoraObject.new }

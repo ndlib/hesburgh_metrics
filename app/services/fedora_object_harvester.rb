@@ -83,7 +83,8 @@ class FedoraObjectHarvester
         parent_pid: parent_pid,
         obj_ingest_date: doc.profile["objCreateDate"],
         obj_modified_date: doc_last_modified,
-        access_rights: access_rights
+        access_rights: access_rights,
+        title: title
       )
       get_and_add_or_delete_aggregation_keys(fedora_object)
     end
@@ -153,6 +154,18 @@ class FedoraObjectHarvester
         strip_pid(parse_xml_relsext(doc.datastreams['RELS-EXT'].content, 'isPartOf'))
       else
         pid
+      end
+    end
+
+    # parse title from content datastream
+    def title
+      if af_model == 'GenericFile'
+        return '' unless doc.datastreams.key?('content')
+        doc.datastreams['content'].label
+      else
+        return '' unless doc.datastreams.key?('descMetadata')
+        stream = doc.datastreams['descMetadata'].content
+        parse_triples(stream, 'title').first || ''
       end
     end
 
