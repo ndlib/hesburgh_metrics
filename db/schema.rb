@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160429183404) do
+ActiveRecord::Schema.define(version: 20160914212003) do
 
   create_table "fedora_access_events", force: :cascade do |t|
     t.string   "event",      null: false
@@ -40,17 +40,18 @@ ActiveRecord::Schema.define(version: 20160429183404) do
   add_index "fedora_object_aggregation_keys", ["fedora_object_id"], name: "index_fedora_object_aggregation_keys_on_fedora_object_id"
 
   create_table "fedora_objects", force: :cascade do |t|
-    t.string   "pid",               null: false
-    t.string   "af_model",          null: false
-    t.string   "resource_type",     null: false
-    t.string   "mimetype",          null: false
-    t.integer  "bytes",             null: false
-    t.string   "parent_pid",        null: false
-    t.datetime "obj_ingest_date",   null: false
-    t.datetime "obj_modified_date", null: false
-    t.string   "access_rights",     null: false
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
+    t.string   "pid",                            null: false
+    t.string   "af_model",                       null: false
+    t.string   "resource_type",                  null: false
+    t.string   "mimetype",                       null: false
+    t.integer  "bytes",                          null: false
+    t.string   "parent_pid",                     null: false
+    t.datetime "obj_ingest_date",                null: false
+    t.datetime "obj_modified_date",              null: false
+    t.string   "access_rights",                  null: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+    t.string   "title",             default: ""
   end
 
   add_index "fedora_objects", ["access_rights"], name: "index_fedora_objects_on_access_rights"
@@ -61,5 +62,6 @@ ActiveRecord::Schema.define(version: 20160429183404) do
   add_index "fedora_objects", ["parent_pid"], name: "index_fedora_objects_on_parent_pid"
   add_index "fedora_objects", ["pid"], name: "index_fedora_objects_on_pid"
   add_index "fedora_objects", ["resource_type"], name: "index_fedora_objects_on_resource_type"
+  add_index "fedora_objects", ["title"], name: "index_fedora_objects_on_title"
 
 end
