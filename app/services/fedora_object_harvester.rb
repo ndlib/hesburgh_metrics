@@ -74,6 +74,7 @@ class FedoraObjectHarvester
       false
     end
 
+    # truncate title to first 255 char (https://github.com/ndlib/hesburgh_metrics/issues/53)
     def fedora_update(fedora_object)
       fedora_object.update!(
         af_model: af_model,
@@ -84,7 +85,7 @@ class FedoraObjectHarvester
         obj_ingest_date: doc.profile["objCreateDate"],
         obj_modified_date: doc_last_modified,
         access_rights: access_rights,
-        title: title
+        title: title.slice(0,254)
       )
       get_and_add_or_delete_aggregation_keys(fedora_object)
     end
