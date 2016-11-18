@@ -53,7 +53,7 @@ class FedoraObjectHarvester
       @pid = strip_pid(doc.pid)
       @doc = doc
       @harvester = harvester
-      @doc_last_modified = doc.profile["objLastModDate"]
+      @doc_last_modified = doc.profile['objLastModDate']
     end
 
     # add new, update changed, or omit unchanged document
@@ -74,6 +74,7 @@ class FedoraObjectHarvester
       false
     end
 
+    # truncate title to first 255 char (https://github.com/ndlib/hesburgh_metrics/issues/53)
     def fedora_update(fedora_object)
       fedora_object.update!(
         af_model: af_model,
@@ -81,10 +82,10 @@ class FedoraObjectHarvester
         mimetype: mimetype,
         bytes: bytes,
         parent_pid: parent_pid,
-        obj_ingest_date: doc.profile["objCreateDate"],
+        obj_ingest_date: doc.profile['objCreateDate'],
         obj_modified_date: doc_last_modified,
         access_rights: access_rights,
-        title: title
+        title: title.slice(0, 254)
       )
       get_and_add_or_delete_aggregation_keys(fedora_object)
     end
@@ -225,9 +226,9 @@ class FedoraObjectHarvester
       # RELS-EXT is RDF-XML - parse it
       xml_hash = {}
       RDF::RDFXML::Reader.new(stream).each do |thing|
-        key = thing.predicate.to_s.split("#")
+        key = thing.predicate.to_s.split('#')
         next if key[1] != search_key
-        value = thing.object.to_s.split("/")
+        value = thing.object.to_s.split('/')
         xml_hash[key[1]] = value[1]
       end
       xml_hash[search_key]
