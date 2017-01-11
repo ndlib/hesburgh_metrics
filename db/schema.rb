@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170109183530) do
+ActiveRecord::Schema.define(version: 20170111184902) do
 
   create_table "curate_storage_details", force: :cascade do |t|
     t.string   "storage_type", limit: 255, null: false
@@ -65,6 +65,7 @@ ActiveRecord::Schema.define(version: 20170109183530) do
     t.datetime "created_at",                                 null: false
     t.datetime "updated_at",                                 null: false
     t.string   "title",             limit: 255, default: ""
+    t.string   "parent_type",       limit: 255, default: ""
   end
 
   add_index "fedora_objects", ["access_rights"], name: "index_fedora_objects_on_access_rights", using: :btree
@@ -73,6 +74,7 @@ ActiveRecord::Schema.define(version: 20170109183530) do
   add_index "fedora_objects", ["obj_ingest_date"], name: "index_fedora_objects_on_obj_ingest_date", using: :btree
   add_index "fedora_objects", ["obj_modified_date"], name: "index_fedora_objects_on_obj_modified_date", using: :btree
   add_index "fedora_objects", ["parent_pid"], name: "index_fedora_objects_on_parent_pid", using: :btree
+  add_index "fedora_objects", ["parent_type"], name: "index_fedora_objects_on_parent_type", using: :btree
   add_index "fedora_objects", ["pid"], name: "index_fedora_objects_on_pid", using: :btree
   add_index "fedora_objects", ["resource_type"], name: "index_fedora_objects_on_resource_type", using: :btree
   add_index "fedora_objects", ["title"], name: "index_fedora_objects_on_title", using: :btree

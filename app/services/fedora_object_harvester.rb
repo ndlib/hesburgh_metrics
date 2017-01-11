@@ -19,6 +19,7 @@ class FedoraObjectHarvester
   # query for objects and process one result at a time
   def harvest
     @repo.search 'pid~und:*' do |doc|
+      logger.error("Doc: #{doc.pid}")
       begin
         single_item_harvest(doc)
       rescue StandardError => e
@@ -33,10 +34,11 @@ class FedoraObjectHarvester
   def report_any_exceptions
     return unless @exceptions.any?
     @exceptions.each do |error_message|
-      Airbrake.notify_sync(
-        'FedoraObjectHarvesterError',
-        errors: error_message
-      )
+      logger.error("FedoraObjectHarvesterError, error: #{error_message}")
+      #Airbrake.notify_sync(
+      #  'FedoraObjectHarvesterError',
+      #  errors: error_message
+      #)
     end
   end
 
@@ -54,12 +56,14 @@ class FedoraObjectHarvester
       @doc = doc
       @harvester = harvester
       @doc_last_modified = doc.profile['objLastModDate']
+      @repo = Rubydora.connect url: Figaro.env.fedora_url!, user: Figaro.env.fedora_user!, password: Figaro.env.fedora_password!
     end
 
     # add new, update changed, or omit unchanged document
     def harvest_item
       fedora_object = FedoraObject.find_or_initialize_by(pid: pid)
       fedora_update(fedora_object) if fedora_object.new_record? || fedora_changed?(fedora_object)
+      #fedora_update(fedora_object) if af_model == 'GenericFile'
     end
 
     private
@@ -82,6 +86,7 @@ class FedoraObjectHarvester
         mimetype: mimetype,
         bytes: bytes,
         parent_pid: parent_pid,
+        parent_type: parent_type,
         obj_ingest_date: doc.profile['objCreateDate'],
         obj_modified_date: doc_last_modified,
         access_rights: access_rights,
@@ -155,6 +160,25 @@ class FedoraObjectHarvester
         strip_pid(parse_xml_relsext(doc.datastreams['RELS-EXT'].content, 'isPartOf'))
       else
         pid
+      end
+    end
+
+    def parent_type
+      if af_model == 'GenericFile'
+        parent_object = FedoraObject.find_by(pid: parent_pid)
+        if parent_object.present?
+          parent_object.af_model
+        else
+          return 'Unknown' unless doc.datastreams.key?('RELS-EXT')
+          parent_pid = parse_xml_relsext(doc.datastreams['RELS-EXT'].content, 'isPartOf')
+          parent_object = @repo.find "#{parent_pid}"
+          model= parent_object.profile['objModels'].select { |v| v.include?('afmodel') }
+          puts "Pid #{doc.pid}, parent_id:#{parent_pid}, type:#{model.inspect}"
+          return 'Unknown' if model.empty?
+          model.first.split(':')[2]
+        end
+      else
+        af_model
       end
     end
 
