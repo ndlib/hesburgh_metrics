@@ -19,7 +19,6 @@ class FedoraObjectHarvester
   # query for objects and process one result at a time
   def harvest
     @repo.search 'pid~und:*' do |doc|
-      logger.error("Doc: #{doc.pid}")
       begin
         single_item_harvest(doc)
       rescue StandardError => e
@@ -34,11 +33,10 @@ class FedoraObjectHarvester
   def report_any_exceptions
     return unless @exceptions.any?
     @exceptions.each do |error_message|
-      logger.error("FedoraObjectHarvesterError, error: #{error_message}")
-      #Airbrake.notify_sync(
-      #  'FedoraObjectHarvesterError',
-      #  errors: error_message
-      #)
+      Airbrake.notify_sync(
+        'FedoraObjectHarvesterError',
+        errors: error_message
+      )
     end
   end
 
@@ -64,7 +62,6 @@ class FedoraObjectHarvester
     def harvest_item
       fedora_object = FedoraObject.find_or_initialize_by(pid: pid)
       fedora_update(fedora_object) if fedora_object.new_record? || fedora_changed?(fedora_object)
-      #fedora_update(fedora_object) if af_model == 'GenericFile'
     end
 
     private

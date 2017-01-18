@@ -14,7 +14,7 @@ GIT
       simplecov
 
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   specs:
     actionmailer (4.2.6)
       actionpack (= 4.2.6)
@@ -299,3 +299,6 @@ DEPENDENCIES
   web-console (~> 2.0)
   webmock
   yard
+
+BUNDLED WITH
+   1.12.4
