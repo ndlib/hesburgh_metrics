@@ -49,7 +49,7 @@ class FedoraObjectHarvester
 
   # Harvest metrics data for one fedora document
   class SingleItem
-    attr_reader :pid, :doc, :doc_last_modified, :harvester
+    attr_reader :pid, :doc, :doc_last_modified, :harvester, :predicate_names
 
     def initialize(doc, harvester)
       @pid = strip_pid(doc.pid)
@@ -57,6 +57,7 @@ class FedoraObjectHarvester
       @harvester = harvester
       @doc_last_modified = doc.profile['objLastModDate']
       @repo = Rubydora.connect url: Figaro.env.fedora_url!, user: Figaro.env.fedora_user!, password: Figaro.env.fedora_password!
+      @predicate_names=['creator#administrative_unit','creator#affiliation']
     end
 
     # add new, update changed, or omit unchanged document
@@ -92,30 +93,32 @@ class FedoraObjectHarvester
         access_rights: access_rights,
         title: title.slice(0, 254)
       )
-      get_and_add_or_delete_aggregation_keys(fedora_object)
+      predicate_names.each do |predicate_name|
+        get_and_add_or_delete_aggregation_keys(fedora_object,predicate_name)
+      end
     end
 
     # parse from triples: creator#administrative_unit
     # <info:fedora/und:7h149p31207>
     # <http://purl.org/dc/terms/creator#administrative_unit>
     # "University of Notre Dame::College of Science::Non-Departmental" .
-    def get_and_add_or_delete_aggregation_keys(fedora_object)
+    def get_and_add_or_delete_aggregation_keys(fedora_object, predicate_name)
       agg_key_array = []
       if doc.datastreams.key?('descMetadata')
         # load new aggregation_key agg_key_array
-        agg_key_array = parse_triples(doc.datastreams['descMetadata'].content, 'creator#administrative_unit')
+        agg_key_array = parse_triples(doc.datastreams['descMetadata'].content, predicate_name)
       end
       # if there are any aggregation keys now, add or update what is currently stored
       if agg_key_array.any?
         # add any new aggregation keys which don't already exist
-        agg_key_array.each do |aggregation_key|
-          next if fedora_object.fedora_object_aggregation_keys.include?(aggregation_key)
-          fedora_object.fedora_object_aggregation_keys.create!(aggregation_key: aggregation_key)
+        agg_key_array.each do |key|
+          next if fedora_object.fedora_object_aggregation_keys.where(predicate_name:predicate_name, aggregation_key:key).present?
+          fedora_object.fedora_object_aggregation_keys.create!(predicate_name:predicate_name, aggregation_key: key)
         end
       end
       # destroy any prior aggregation keys which no longer exist
-      fedora_object.fedora_object_aggregation_keys.each do |aggregation_key|
-        fedora_object.fedora_object_aggregation_keys.destroy unless agg_key_array.include? aggregation_key
+      fedora_object.fedora_object_aggregation_keys.where(predicate_name:predicate_name).each do |aggregation_key|
+        fedora_object.fedora_object_aggregation_keys.where(predicate_name:predicate_name).destroy unless agg_key_array.include? aggregation_key
       end
     end
 

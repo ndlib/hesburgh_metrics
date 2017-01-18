@@ -11,13 +11,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170111184902) do
+ActiveRecord::Schema.define(version: 20170112165749) do
 
   create_table "curate_storage_details", force: :cascade do |t|
     t.string   "storage_type", limit: 255, null: false
     t.integer  "object_count", limit: 4,   null: false
     t.integer  "object_bytes", limit: 4,   null: false
-    t.datetime "harvest_date",             null: false
+    t.date     "harvest_date",             null: false
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
   end
@@ -47,10 +47,12 @@ ActiveRecord::Schema.define(version: 20170111184902) do
     t.string   "aggregation_key",  limit: 255, null: false
     t.datetime "created_at",                   null: false
     t.datetime "updated_at",                   null: false
+    t.string   "predicate_name",   limit: 255, null: false
   end
 
   add_index "fedora_object_aggregation_keys", ["aggregation_key"], name: "index_fedora_object_aggregation_keys_on_aggregation_key", using: :btree
   add_index "fedora_object_aggregation_keys", ["fedora_object_id"], name: "index_fedora_object_aggregation_keys_on_fedora_object_id", using: :btree
+  add_index "fedora_object_aggregation_keys", ["predicate_name"], name: "index_fedora_object_aggregation_keys_on_predicate_name", using: :btree
 
   create_table "fedora_objects", force: :cascade do |t|
     t.string   "pid",               limit: 255,              null: false
