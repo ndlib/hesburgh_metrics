@@ -55,7 +55,7 @@ class FedoraObjectHarvester
       @harvester = harvester
       @doc_last_modified = doc.profile['objLastModDate']
       @repo = Rubydora.connect url: Figaro.env.fedora_url!, user: Figaro.env.fedora_user!, password: Figaro.env.fedora_password!
-      @predicate_names=['creator#administrative_unit','creator#affiliation']
+      @predicate_names = ['creator#administrative_unit', 'creator#affiliation']
     end
 
     # add new, update changed, or omit unchanged document
@@ -91,7 +91,7 @@ class FedoraObjectHarvester
         title: title.slice(0, 254)
       )
       predicate_names.each do |predicate_name|
-        get_and_add_or_delete_aggregation_keys(fedora_object,predicate_name)
+        get_and_add_or_delete_aggregation_keys(fedora_object, predicate_name)
       end
     end
 
@@ -109,13 +109,13 @@ class FedoraObjectHarvester
       if agg_key_array.any?
         # add any new aggregation keys which don't already exist
         agg_key_array.each do |key|
-          next if fedora_object.fedora_object_aggregation_keys.where(predicate_name:predicate_name, aggregation_key:key).present?
-          fedora_object.fedora_object_aggregation_keys.create!(predicate_name:predicate_name, aggregation_key: key)
+          next if fedora_object.fedora_object_aggregation_keys.where(predicate_name: predicate_name, aggregation_key: key).present?
+          fedora_object.fedora_object_aggregation_keys.create!(predicate_name: predicate_name, aggregation_key: key)
         end
       end
       # destroy any prior aggregation keys which no longer exist
-      fedora_object.fedora_object_aggregation_keys.where(predicate_name:predicate_name).each do |aggregation_key|
-        fedora_object.fedora_object_aggregation_keys.where(predicate_name:predicate_name).destroy unless agg_key_array.include? aggregation_key
+      fedora_object.fedora_object_aggregation_keys.where(predicate_name: predicate_name).each do |aggregation_key|
+        fedora_object.fedora_object_aggregation_keys.where(predicate_name: predicate_name).destroy unless agg_key_array.include? aggregation_key
       end
     end
 
@@ -171,9 +171,8 @@ class FedoraObjectHarvester
         else
           return 'Unknown' unless doc.datastreams.key?('RELS-EXT')
           parent_pid = parse_xml_relsext(doc.datastreams['RELS-EXT'].content, 'isPartOf')
-          parent_object = @repo.find "#{parent_pid}"
-          model= parent_object.profile['objModels'].select { |v| v.include?('afmodel') }
-          puts "Pid #{doc.pid}, parent_id:#{parent_pid}, type:#{model.inspect}"
+          parent_object = @repo.find parent_pid.to_s
+          model = parent_object.profile['objModels'].select { |v| v.include?('afmodel') }
           return 'Unknown' if model.empty?
           model.first.split(':')[2]
         end

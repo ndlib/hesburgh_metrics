@@ -5,7 +5,7 @@ RSpec.describe FedoraObjectHarvester do
     let(:harvester) { described_class.new }
     subject { harvester.harvest }
     around do |spec|
-      VCR.use_cassette("single_item_search") do
+      VCR.use_cassette('single_item_search') do
         spec.call
       end
     end
@@ -34,7 +34,7 @@ RSpec.describe FedoraObjectHarvester::SingleItem do
     # We need to stub out a "real" document from Rubydora, and this is our best
     # option (so says Jeremy).
     the_doc = nil
-    VCR.use_cassette("single_item_search") do
+    VCR.use_cassette('single_item_search') do
       the_doc = harvester.repo.search('pid~und:*').first
     end
     the_doc
@@ -54,9 +54,9 @@ RSpec.describe FedoraObjectHarvester::SingleItem do
     subject { single_item.send(:title) }
     context 'for non-GenericFile content' do
       let(:stream) { %(<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/title> "Collection with long description" .\n<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/description> "The most recent versions of V-Dem data" .\n<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/dateSubmitted> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .\n<info:fedora/und:00000001s4s> <http://purl.org/dc/terms/language> "English" .\n<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/modified> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .) }
-      let(:doc) { double('DigitalObject', datastreams: {'descMetadata' => double(content: stream) }, pid: 'und:mp48sb41h1s', profile: {}) }
+      let(:doc) { double('DigitalObject', datastreams: { 'descMetadata' => double(content: stream) }, pid: 'und:mp48sb41h1s', profile: {}) }
       before { allow(single_item).to receive(:af_model).and_return('Collection') }
-      it { is_expected.to eq("Collection with long description") }
+      it { is_expected.to eq('Collection with long description') }
     end
   end
 
@@ -71,7 +71,8 @@ RSpec.describe FedoraObjectHarvester::SingleItem do
   context '#parse_xml_relsext' do
     subject { single_item.send(:parse_xml_relsext, content, 'isPartOf') }
     context 'for parse_xml_relsext for parent pid' do
-      let (:content) { %(<?xml version='1.0' encoding='utf-8' ?>
+      let (:content) do
+        %(<?xml version='1.0' encoding='utf-8' ?>
       <rdf:RDF xmlns:ns0='http://projecthydra.org/ns/relations#' xmlns:ns1='info:fedora/fedora-system:def/model#' xmlns:ns2='info:fedora/fedora-system:def/relations-external#' xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
         <rdf:Description rdf:about='info:fedora/und:02870v85054'>
           <ns0:hasEditor rdf:resource='info:fedora/und:ks65h991r5x' />
@@ -80,7 +81,8 @@ RSpec.describe FedoraObjectHarvester::SingleItem do
           <ns1:hasModel rdf:resource='info:fedora/afmodel:GenericFile' />
           <ns2:isPartOf rdf:resource='info:fedora/und:zs25x636043' />
         </rdf:Description>
-      </rdf:RDF>) }
+      </rdf:RDF>)
+      end
       it { is_expected.to eq('und:zs25x636043') }
     end
   end
@@ -108,7 +110,7 @@ RSpec.describe FedoraObjectHarvester::SingleItem do
     end
   end
 
-  context "#parse_triples" do
+  context '#parse_triples' do
     context 'parse some data normally' do
       let (:content) { %(<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/title> "Collection with long description" .\n<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/description> "The most recent versions of V-Dem data" .\n<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/dateSubmitted> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .\n<info:fedora/und:00000001s4s> <http://purl.org/dc/terms/language> "English" .\n<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/modified> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .) }
       subject { single_item.send(:parse_triples, content, 'language') }

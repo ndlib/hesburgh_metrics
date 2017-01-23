@@ -7,13 +7,13 @@ Rails.application.load_tasks
 
 if defined?(RSpec)
   namespace :spec do
-    desc "Run all specs"
+    desc 'Run all specs'
     RSpec::Core::RakeTask.new(:all) do
       ENV['COVERAGE'] = 'true'
     end
 
     namespace :coverage do
-      desc "Run all non-feature specs"
+      desc 'Run all non-feature specs'
       RSpec::Core::RakeTask.new(:without_features) do |t|
         ENV['COVERAGE'] = 'true'
         t.exclude_pattern = './spec/features/**/*_spec.rb'
@@ -37,7 +37,7 @@ if defined?(RSpec)
 
     desc 'Run the Travis CI specs'
     task :travis do
-      ENV['SPEC_OPTS'] ||= "--profile 5"
+      ENV['SPEC_OPTS'] ||= '--profile 5'
       Rake::Task[:default].invoke
     end
   end
@@ -45,7 +45,7 @@ end
 
 # BEGIN `commitment:install` generator
 # This was added via commitment:install generator. You are free to change this.
-Rake::Task["default"].clear
+Rake::Task['default'].clear
 task(
   default: [
     'commitment:rubocop',
