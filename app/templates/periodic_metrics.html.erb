@@ -1,0 +1,32 @@
+<h2>CurateND Metrics Report</h2>
+
+<em> Time period: <%=@metrics.report_start_date%> through <%=@metrics.report_end_date%> </em>
+
+<p>
+  Object - entity in storage system
+  Item   - CurateND Intellectual object
+  File   - Content file downloadable from CurateND
+</p>
+
+<table class="table table-striped">
+  <caption class="table-heading">
+    <h4>Holdings (at end of period) </h4>
+  </caption>
+  <thead>
+  <tr>
+    <th>Storage</th>
+    <th>Objects</th>
+    <th>Size (Bytes)</th>
+    <th>Size (GB)</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr class=" storage_details">
+      <td class="attribute title"> <%= @fedora %> </td>
+      <td> <%= @metrics.fedora_count%> </td>
+      <td> <%= @metrics.fedora_size%> </td>
+      <td> <%= number_to_human_size(@metrics.fedora_size) %> </td>
+    </tr>
+  </tbody>
+</table>
+
