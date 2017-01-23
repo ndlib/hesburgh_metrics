@@ -4,7 +4,7 @@ module UpdateParentType
   def update_parent_type
     @exceptions = []
     @repo = Rubydora.connect url: Figaro.env.fedora_url!, user: Figaro.env.fedora_user!, password: Figaro.env.fedora_password!
-    FedoraObject.find_each do ||
+    FedoraObject.find_each do |obj|
       begin
         if obj.af_model == 'GenericFile'
           parent_object = FedoraObject.find_by(pid: obj.parent_pid)
@@ -13,13 +13,12 @@ module UpdateParentType
             obj.parent_type = parent_object.af_model
           else
             doc = @repo.find "und:#{obj.pid}"
-            return 'Unknown' unless doc.datastreams.key?('RELS-EXT')
+            obj.parent_type = 'Unknown' unless doc.datastreams.key?('RELS-EXT')
             parent_pid = parse_xml_relsext(doc.datastreams['RELS-EXT'].content, 'isPartOf')
             parent_object = @repo.find parent_pid.to_s
             model = parent_object.profile['objModels'].select { |v| v.include?('afmodel') }
             puts "Pid #{doc.pid}, parent_id:#{parent_pid}, type:#{model.inspect}"
-            return 'Unknown' if model.empty?
-            model.first.split(':')[2]
+            obj.parent_type =  model.empty? ? 'Unknown' :  model.first.split(':')[2]
           end
         else
           obj.parent_type = obj.af_model

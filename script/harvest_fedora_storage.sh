@@ -15,7 +15,9 @@ cat $INPUT |  while IFS=',' read -r namespace obj_count ds_count total_count obj
     echo "Namespace: $namespace"
     echo "Curate Namespace: $total_count"
     echo "Curate Size: $total_size"
-    echo "INSERT INTO curate_storage_details (storage_type, object_count,object_bytes, harvest_date, created_at, updated_at) VALUES ('Fedora', $total_count, $total_size, NOW(), NOW(), NOW());" | mysql -h $DBHOST -u $DBUSERNAME -p$DBPWD $DBNAME;
+    echo "Insert curate size and object count into metrics database"
+    mysql -h $DBHOST -u $DBUSER -p$DBPWD $DBNAME -e "INSERT INTO curate_storage_details (storage_type, object_count,object_bytes, harvest_date, created_at, updated_at) VALUES ('Fedora', $total_count, $total_size, NOW(), NOW(), NOW());";
+    echo "Completed database insert"
     echo "---------------------------------------"
   fi
 done
