@@ -11,8 +11,8 @@ end
 class FedoraObjectHarvester
   attr_reader :repo, :exceptions
 
-  def initialize
-    @repo = Rubydora.connect url: Figaro.env.fedora_url!, user: Figaro.env.fedora_user!, password: Figaro.env.fedora_password!
+  def initialize(repo = default_repository)
+    @repo = repo
     @exceptions = []
   end
 
@@ -30,6 +30,10 @@ class FedoraObjectHarvester
 
   private
 
+  def default_repository
+    Rubydora.connect url: Figaro.env.fedora_url!, user: Figaro.env.fedora_user!, password: Figaro.env.fedora_password!
+  end
+
   def report_any_exceptions
     return unless @exceptions.any?
     @exceptions.each do |error_message|
@@ -42,19 +46,19 @@ class FedoraObjectHarvester
 
   # ============================================================================
   def single_item_harvest(doc)
-    SingleItem.new(doc, self).harvest_item
+    SingleItem.new(doc, self, @repo).harvest_item
   end
 
   # Harvest metrics data for one fedora document
   class SingleItem
     attr_reader :pid, :doc, :doc_last_modified, :harvester, :predicate_names
 
-    def initialize(doc, harvester)
+    def initialize(doc, harvester, repo = default_repository)
       @pid = strip_pid(doc.pid)
       @doc = doc
       @harvester = harvester
       @doc_last_modified = doc.profile['objLastModDate']
-      @repo = Rubydora.connect url: Figaro.env.fedora_url!, user: Figaro.env.fedora_user!, password: Figaro.env.fedora_password!
+      @repo = repo
       @predicate_names = ['creator#administrative_unit', 'creator#affiliation']
     end
 
@@ -65,6 +69,10 @@ class FedoraObjectHarvester
     end
 
     private
+
+    def default_repository
+      Rubydora.connect url: Figaro.env.fedora_url!, user: Figaro.env.fedora_user!, password: Figaro.env.fedora_password!
+    end
 
     def strip_pid(work_pid)
       work_pid.sub('und:', '')
