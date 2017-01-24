@@ -165,7 +165,7 @@ class FedoraObjectHarvester
     def parent_pid
       if af_model == 'GenericFile'
         return pid unless doc.datastreams.key?('RELS-EXT')
-        strip_pid(parse_xml_relsext(doc.datastreams['RELS-EXT'].content, 'isPartOf'))
+        strip_pid(extract_parent_pid_from_doc)
       else
         pid
       end
@@ -178,8 +178,7 @@ class FedoraObjectHarvester
           parent_object.af_model
         else
           return 'Unknown' unless doc.datastreams.key?('RELS-EXT')
-          parent_pid = parse_xml_relsext(doc.datastreams['RELS-EXT'].content, 'isPartOf')
-          parent_object = @repo.find parent_pid.to_s
+          parent_object = @repo.find extract_parent_pid_from_doc.to_s
           model = parent_object.profile['objModels'].select { |v| v.include?('afmodel') }
           return 'Unknown' if model.empty?
           model.first.split(':')[2]
@@ -205,6 +204,10 @@ class FedoraObjectHarvester
     def access_rights
       return 'private' unless doc.datastreams.key?('rightsMetadata')
       parse_xml_rights(doc.datastreams['rightsMetadata'].content)
+    end
+
+    def extract_parent_pid_from_doc
+      parse_xml_relsext(doc.datastreams['RELS-EXT'].content, 'isPartOf')
     end
 
     ## ============================================================================

@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# This script parse the fedora-storage-details.csv file created in fedoraprod overnight and
+#update metrics-database with curate-fedora storage informatiopn
+# Modify input file and database details from secrets and manually deploy this script
+# Need to configure cron to run this script everyday after fedora-summary job completed in FedoraProd
+
 INPUT="/path/to/input/csv/file"
 DBHOST= "dbhost"
 DBUSERNAME= "dbusername"

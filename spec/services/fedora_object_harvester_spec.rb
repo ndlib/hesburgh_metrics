@@ -73,6 +73,22 @@ RSpec.describe FedoraObjectHarvester::SingleItem do
     end
   end
 
+  context '#parent_type' do
+    subject { single_item.send(:parent_type) }
+    context 'for non-GenericFile content' do
+      before { allow(single_item).to receive(:af_model).and_return('Book') }
+      it { is_expected.to eq('Book') }
+    end
+    context 'existing object in database' do
+      let(:fedora_object) { double(pid: 'zs25x636043', af_model: "Dataset") }
+      before { allow(single_item).to receive(:parent_pid).and_return('zs25x636043') }
+      it 'Gets af_model from database object' do
+        expect(FedoraObject).to receive(:find_by).and_return(fedora_object)
+        expect(subject).to eq(fedora_object.af_model)
+      end
+    end
+  end
+
   context '#title' do
     subject { single_item.send(:title) }
     context 'for non-GenericFile content' do
