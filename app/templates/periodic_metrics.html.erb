@@ -21,12 +21,16 @@
   </tr>
   </thead>
   <tbody>
-    <tr class=" storage_details">
-      <td class="attribute title"> <%= @fedora %> </td>
-      <td> <%= @metrics.fedora_count%> </td>
-      <td> <%= @metrics.fedora_size%> </td>
-      <td> <%= number_to_human_size(@metrics.fedora_size) %> </td>
-    </tr>
+  <% metrics.storage.each do |storage| %>
+    <% storage.each do |key, value| %>
+      <tr class=" storage_details">
+        <td class="attribute title"> <%= key %> </td>
+        <td> <%= value.fetch(:count)%> </td>
+        <td> <%= value.fetch(:size)%> </td>
+        <td> <%= ::ApplicationController.helpers.number_to_human_size(value.fetch(:size)) %> </td>
+      </tr>
+     <% end %>
+   <% end %>
   </tbody>
 </table>
 
