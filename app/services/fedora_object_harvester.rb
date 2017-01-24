@@ -17,8 +17,8 @@ class FedoraObjectHarvester
   end
 
   # query for objects and process one result at a time
-  def harvest
-    @repo.search 'pid~und:*' do |doc|
+  def harvest(query = 'pid~und:*')
+    @repo.search(query) do |doc|
       begin
         single_item_harvest(doc)
       rescue StandardError => e

@@ -1,11 +1,34 @@
 require 'rails_helper'
 
 RSpec.describe FedoraObjectHarvester do
+  VCR_CASSETTE_NAME = 'single_item_search'
+  context "rebuilding #{VCR_CASSETTE_NAME}" do
+    # The following steps to rebuild:
+    # 1) Get the Fedora production URL, User, and Password from the secrets, you will pass these as environment variables (see line 10)
+    # 2) Change the `xit` to `it` (when you are done, change it back)
+    # 3) Run the following command, replacing the <from-secrets> with the correct values
+    #  (note the ./spec/services/fedora_object_harvester_spec.rb:12 means to run the `it` block on line 11)
+    #     prod_fedora_user=<from-secrets> prod_fedora_password=<from-secrets> prod_fedora_url=<from-secrets> bundle exec rspec ./spec/services/fedora_object_harvester_spec.rb:12
+    xit 'can be done!' do
+      repository = Rubydora.connect(url: Figaro.env.prod_fedora_url!, user: Figaro.env.prod_fedora_user!, password: Figaro.env.prod_fedora_password!)
+      pid_from_cassette = 'und:02870v85054'
+      VCR.use_cassette(VCR_CASSETTE_NAME, record: :all) do
+        described_class.new(repository).harvest("pid~#{pid_from_cassette}")
+      end
+
+      path_to_cassette = File.join(VCR.configuration.cassette_library_dir, 'single_item_search.yml')
+      cassette_contents = File.read(path_to_cassette)
+      File.open(path_to_cassette, 'w+') do |file|
+        file.puts cassette_contents.gsub(Figaro.env.prod_fedora_url!, Figaro.env.fedora_url!)
+      end
+    end
+  end
+
   context '#harvest' do
     let(:harvester) { described_class.new }
     subject { harvester.harvest }
     around do |spec|
-      VCR.use_cassette('single_item_search') do
+      VCR.use_cassette(VCR_CASSETTE_NAME) do
         spec.call
       end
     end
@@ -34,7 +57,7 @@ RSpec.describe FedoraObjectHarvester::SingleItem do
     # We need to stub out a "real" document from Rubydora, and this is our best
     # option (so says Jeremy).
     the_doc = nil
-    VCR.use_cassette('single_item_search') do
+    VCR.use_cassette(VCR_CASSETTE_NAME) do
       the_doc = harvester.repo.search('pid~und:*').first
     end
     the_doc
