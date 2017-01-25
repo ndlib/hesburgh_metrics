@@ -8,7 +8,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - "*/*; q=0.5, application/xml"
+      - '*/*; q=0.5, application/xml'
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -36,7 +36,7 @@ http_interactions:
         xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/ http://www.fedora.info/definitions/1/0/fedoraRepository.xsd"><repositoryName>Fedora
         Repository</repositoryName><repositoryBaseURL>https://fedorapprd.library.nd.edu:8443/fedora</repositoryBaseURL><repositoryVersion>3.6.2</repositoryVersion><repositoryPID>    <PID-namespaceIdentifier>UND</PID-namespaceIdentifier>    <PID-delimiter>:</PID-delimiter>    <PID-sample>UND:100</PID-sample>    <retainPID>*</retainPID></repositoryPID><repositoryOAI-identifier>    <OAI-namespaceIdentifier>library.nd.edu</OAI-namespaceIdentifier>    <OAI-delimiter>:</OAI-delimiter>    <OAI-sample>oai:library.nd.edu:UND:100</OAI-sample></repositoryOAI-identifier><sampleSearch-URL>https://fedorapprd.library.nd.edu:8443/fedora/objects</sampleSearch-URL><sampleAccess-URL>https://fedorapprd.library.nd.edu:8443/fedora/objects/demo:5</sampleAccess-URL><sampleOAI-URL>https://fedorapprd.library.nd.edu:8443/fedora/oai?verb=Identify</sampleOAI-URL><adminEmail>suhovecky@nd.edu</adminEmail></fedoraRepository>
-    http_version:
+    http_version: 
   recorded_at: Thu, 19 May 2016 14:33:17 GMT
 - request:
     method: get
@@ -46,7 +46,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - "*/*; q=0.5, application/xml"
+      - '*/*; q=0.5, application/xml'
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -79,7 +79,7 @@ http_interactions:
           </objectFields>
           </resultList>
         </result>
-    http_version:
+    http_version: 
   recorded_at: Thu, 19 May 2016 14:33:17 GMT
 - request:
     method: get
@@ -89,7 +89,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - "*/*; q=0.5, application/xml"
+      - '*/*; q=0.5, application/xml'
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -117,7 +117,7 @@ http_interactions:
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
         http://www.fedora.info/definitions/1/0/objectProfile.xsd" pid="und:02870v85054"
         ><objLabel></objLabel><objOwnerId>fedoraAdmin</objOwnerId><objModels><model>info:fedora/afmodel:GenericFile</model><model>info:fedora/fedora-system:FedoraObject-3.0</model></objModels><objCreateDate>2015-01-20T19:57:57.115Z</objCreateDate><objLastModDate>2015-04-08T18:47:47.825Z</objLastModDate><objDissIndexViewURL>https://fedorapprd.library.nd.edu:8443/fedora/objects/und%3A02870v85054/methods/fedora-system%3A3/viewMethodIndex</objDissIndexViewURL><objItemIndexViewURL>https://fedorapprd.library.nd.edu:8443/fedora/objects/und%3A02870v85054/methods/fedora-system%3A3/viewItemIndex</objItemIndexViewURL><objState>A</objState></objectProfile>
-    http_version:
+    http_version: 
   recorded_at: Thu, 19 May 2016 14:33:17 GMT
 - request:
     method: get
@@ -127,7 +127,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - "*/*; q=0.5, application/xml"
+      - '*/*; q=0.5, application/xml'
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -164,7 +164,7 @@ http_interactions:
         pid="und:02870v85054" dsID="content" ><apim:dsLabel>el_salvador_1995_export_version.dta</apim:dsLabel><apim:dsVersionID>content.0</apim:dsVersionID><apim:dsCreateDate>2015-01-20T19:57:57.983Z</apim:dsCreateDate><apim:dsState>A</apim:dsState><apim:dsMIME>application/x-stata-dta</apim:dsMIME><apim:dsFormatURI></apim:dsFormatURI><apim:dsControlGroup>M</apim:dsControlGroup><apim:dsSize>322959</apim:dsSize><apim:dsVersionable>true</apim:dsVersionable><apim:dsInfoType></apim:dsInfoType><apim:dsLocation>und:02870v85054+content+content.0</apim:dsLocation><apim:dsLocationType>INTERNAL_ID</apim:dsLocationType><apim:dsChecksumType>MD5</apim:dsChecksumType><apim:dsChecksum>c56666553596042a89e4aa5cac214772</apim:dsChecksum></datastreamProfile><datastreamProfile
         pid="und:02870v85054" dsID="properties" ><apim:dsLabel></apim:dsLabel><apim:dsVersionID>properties.4</apim:dsVersionID><apim:dsCreateDate>2015-04-08T18:47:47.552Z</apim:dsCreateDate><apim:dsState>A</apim:dsState><apim:dsMIME>text/xml</apim:dsMIME><apim:dsFormatURI></apim:dsFormatURI><apim:dsControlGroup>M</apim:dsControlGroup><apim:dsSize>48</apim:dsSize><apim:dsVersionable>true</apim:dsVersionable><apim:dsInfoType></apim:dsInfoType><apim:dsLocation>und:02870v85054+properties+properties.4</apim:dsLocation><apim:dsLocationType>INTERNAL_ID</apim:dsLocationType><apim:dsChecksumType>MD5</apim:dsChecksumType><apim:dsChecksum>9e6f2d9bdac52ccf063e5e14e39b8883</apim:dsChecksum></datastreamProfile><datastreamProfile
         pid="und:02870v85054" dsID="characterization" ><apim:dsLabel></apim:dsLabel><apim:dsVersionID>characterization.2</apim:dsVersionID><apim:dsCreateDate>2015-01-22T14:23:16.558Z</apim:dsCreateDate><apim:dsState>A</apim:dsState><apim:dsMIME>text/xml</apim:dsMIME><apim:dsFormatURI></apim:dsFormatURI><apim:dsControlGroup>M</apim:dsControlGroup><apim:dsSize>1102</apim:dsSize><apim:dsVersionable>true</apim:dsVersionable><apim:dsInfoType></apim:dsInfoType><apim:dsLocation>und:02870v85054+characterization+characterization.2</apim:dsLocation><apim:dsLocationType>INTERNAL_ID</apim:dsLocationType><apim:dsChecksumType>MD5</apim:dsChecksumType><apim:dsChecksum>92980b2cec41afa3f3f3fd518b5069bd</apim:dsChecksum></datastreamProfile></objectDatastreams>
-    http_version:
+    http_version: 
   recorded_at: Thu, 19 May 2016 14:33:17 GMT
 - request:
     method: get
@@ -174,7 +174,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - "*/*; q=0.5, application/xml"
+      - '*/*; q=0.5, application/xml'
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -209,7 +209,7 @@ http_interactions:
         <info:fedora/und:02870v85054> <http://purl.org/dc/terms/type> "GenericFile" .
         <info:fedora/und:02870v85054> <http://purl.org/dc/terms/creator#administrative_unit> "University of Notre Dame::College of Science::Non-Departmental" .
         <info:fedora/und:02870v85054> <http://purl.org/dc/terms/creator#administrative_unit> "University of Notre Dame" .
-    http_version:
+    http_version: 
   recorded_at: Thu, 19 May 2016 14:33:17 GMT
 - request:
     method: get
@@ -219,7 +219,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - "*/*; q=0.5, application/xml"
+      - '*/*; q=0.5, application/xml'
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -256,7 +256,7 @@ http_interactions:
             <ns2:isPartOf rdf:resource='info:fedora/und:zs25x636043' />
           </rdf:Description>
         </rdf:RDF>
-    http_version:
+    http_version: 
   recorded_at: Thu, 19 May 2016 14:33:17 GMT
 - request:
     method: get
@@ -266,7 +266,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - "*/*; q=0.5, application/xml"
+      - '*/*; q=0.5, application/xml'
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -321,6 +321,681 @@ http_interactions:
             <machine/>
           </embargo>
         </rightsMetadata>
-    http_version:
+    http_version: 
   recorded_at: Thu, 19 May 2016 14:33:17 GMT
+- request:
+    method: get
+    uri: https://something.com/describe?xml=true
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+      Authorization:
+      - Basic ZmVkb3JhQWRtaW46M1dpYzR1WHk=
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Apache-Coyote/1.1
+      Set-Cookie:
+      - JSESSIONID=96C44CC7FB3A1FD24F834825DEEF1925; Path=/fedora; Secure
+      Content-Type:
+      - text/xml;charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Date:
+      - Tue, 24 Jan 2017 17:38:50 GMT
+    body:
+      encoding: UTF-8
+      string: <?xml version="1.0" encoding="UTF-8"?><fedoraRepository xmlns="http://www.fedora.info/definitions/1/0/access/"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/ http://www.fedora.info/definitions/1/0/fedoraRepository.xsd"><repositoryName>Fedora
+        Repository</repositoryName><repositoryBaseURL>https://something.com</repositoryBaseURL><repositoryVersion>3.6.2</repositoryVersion><repositoryPID>    <PID-namespaceIdentifier>UND</PID-namespaceIdentifier>    <PID-delimiter>:</PID-delimiter>    <PID-sample>UND:100</PID-sample>    <retainPID>*</retainPID></repositoryPID><repositoryOAI-identifier>    <OAI-namespaceIdentifier>library.nd.edu</OAI-namespaceIdentifier>    <OAI-delimiter>:</OAI-delimiter>    <OAI-sample>oai:library.nd.edu:UND:100</OAI-sample></repositoryOAI-identifier><sampleSearch-URL>https://something.com/objects</sampleSearch-URL><sampleAccess-URL>https://something.com/objects/demo:5</sampleAccess-URL><sampleOAI-URL>https://something.com/oai?verb=Identify</sampleOAI-URL><adminEmail>suhovecky@nd.edu</adminEmail></fedoraRepository>
+    http_version: 
+  recorded_at: Tue, 24 Jan 2017 17:38:50 GMT
+- request:
+    method: get
+    uri: https://something.com/objects/und:zs25x636043?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+      Authorization:
+      - Basic ZmVkb3JhQWRtaW46M1dpYzR1WHk=
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Apache-Coyote/1.1
+      Set-Cookie:
+      - JSESSIONID=0F2C042B5FA7727467D8A7ED24DEECF7; Path=/fedora; Secure
+      Date:
+      - Tue, 24 Jan 2017 17:58:05 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '996'
+    body:
+      encoding: UTF-8
+      string: <?xml version="1.0" encoding="UTF-8"?><objectProfile  xmlns="http://www.fedora.info/definitions/1/0/access/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        http://www.fedora.info/definitions/1/0/objectProfile.xsd" pid="und:zs25x636043"
+        ><objLabel></objLabel><objOwnerId>fedoraAdmin</objOwnerId><objModels><model>info:fedora/afmodel:Dataset</model><model>info:fedora/fedora-system:FedoraObject-3.0</model></objModels><objCreateDate>2015-01-20T19:57:53.352Z</objCreateDate><objLastModDate>2016-09-27T18:50:26.091Z</objLastModDate><objDissIndexViewURL>https://something.com/objects/und%3Azs25x636043/methods/fedora-system%3A3/viewMethodIndex</objDissIndexViewURL><objItemIndexViewURL>https://something.com/objects/und%3Azs25x636043/methods/fedora-system%3A3/viewItemIndex</objItemIndexViewURL><objState>A</objState></objectProfile>
+    http_version: 
+  recorded_at: Tue, 24 Jan 2017 17:58:05 GMT
+- request:
+    method: get
+    uri: https://something.com/objects?pid=true&query=pid~und:02870v85054&resultFormat=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+      Authorization:
+      - Basic ZmVkb3JhQWRtaW46M1dpYzR1WHk=
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Apache-Coyote/1.1
+      Set-Cookie:
+      - JSESSIONID=5B3DE556C582C6885DC3F8ACA7B32763; Path=/fedora; Secure
+      Date:
+      - Tue, 24 Jan 2017 17:58:19 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '461'
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <result xmlns="http://www.fedora.info/definitions/1/0/types/" xmlns:types="http://www.fedora.info/definitions/1/0/types/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/types/ https://something.com/schema/findObjects.xsd">
+          <resultList>
+          <objectFields>
+              <pid>und:02870v85054</pid>
+          </objectFields>
+          </resultList>
+        </result>
+    http_version: 
+  recorded_at: Tue, 24 Jan 2017 17:58:20 GMT
+- request:
+    method: get
+    uri: https://something.com/objects/und:02870v85054?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+      Authorization:
+      - Basic ZmVkb3JhQWRtaW46M1dpYzR1WHk=
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Apache-Coyote/1.1
+      Set-Cookie:
+      - JSESSIONID=ACEB8E616DCA775370E83EC8CB3618FD; Path=/fedora; Secure
+      Date:
+      - Tue, 24 Jan 2017 17:58:19 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '1000'
+    body:
+      encoding: UTF-8
+      string: <?xml version="1.0" encoding="UTF-8"?><objectProfile  xmlns="http://www.fedora.info/definitions/1/0/access/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        http://www.fedora.info/definitions/1/0/objectProfile.xsd" pid="und:02870v85054"
+        ><objLabel></objLabel><objOwnerId>fedoraAdmin</objOwnerId><objModels><model>info:fedora/afmodel:GenericFile</model><model>info:fedora/fedora-system:FedoraObject-3.0</model></objModels><objCreateDate>2015-01-20T19:57:57.115Z</objCreateDate><objLastModDate>2016-09-27T18:50:52.911Z</objLastModDate><objDissIndexViewURL>https://something.com/objects/und%3A02870v85054/methods/fedora-system%3A3/viewMethodIndex</objDissIndexViewURL><objItemIndexViewURL>https://something.com/objects/und%3A02870v85054/methods/fedora-system%3A3/viewItemIndex</objItemIndexViewURL><objState>A</objState></objectProfile>
+    http_version: 
+  recorded_at: Tue, 24 Jan 2017 17:58:20 GMT
+- request:
+    method: get
+    uri: https://something.com/objects/und:02870v85054/datastreams?format=xml&profiles=true
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+      Authorization:
+      - Basic ZmVkb3JhQWRtaW46M1dpYzR1WHk=
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Apache-Coyote/1.1
+      Set-Cookie:
+      - JSESSIONID=80D3A0FC7D57A52C1564F9E5AB0D29DD; Path=/fedora; Secure
+      Date:
+      - Tue, 24 Jan 2017 17:58:19 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '5675'
+    body:
+      encoding: UTF-8
+      string: <?xml version="1.0" encoding="UTF-8"?><objectDatastreams xmlns="http://www.fedora.info/definitions/1/0/access/"
+        xmlns:apim="http://www.fedora.info/definitions/1/0/management/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        https://something.com/schema/listDatastreams.xsd" pid="und:02870v85054"  baseURL="https://something.com/"
+        ><datastreamProfile pid="und:02870v85054" dsID="DC" ><apim:dsLabel>Dublin
+        Core Record for this object</apim:dsLabel><apim:dsVersionID>DC1.0</apim:dsVersionID><apim:dsCreateDate>2015-01-20T19:57:57.115Z</apim:dsCreateDate><apim:dsState>A</apim:dsState><apim:dsMIME>text/xml</apim:dsMIME><apim:dsFormatURI>http://www.openarchives.org/OAI/2.0/oai_dc/</apim:dsFormatURI><apim:dsControlGroup>X</apim:dsControlGroup><apim:dsSize>344</apim:dsSize><apim:dsVersionable>true</apim:dsVersionable><apim:dsInfoType></apim:dsInfoType><apim:dsLocation>und:02870v85054+DC+DC1.0</apim:dsLocation><apim:dsLocationType></apim:dsLocationType><apim:dsChecksumType>MD5</apim:dsChecksumType><apim:dsChecksum>08c75da4c76f08aac299db6b9739e54f</apim:dsChecksum></datastreamProfile><datastreamProfile
+        pid="und:02870v85054" dsID="RELS-EXT" ><apim:dsLabel></apim:dsLabel><apim:dsVersionID>RELS-EXT.6</apim:dsVersionID><apim:dsCreateDate>2015-04-08T18:47:47.413Z</apim:dsCreateDate><apim:dsState>A</apim:dsState><apim:dsMIME>application/rdf+xml</apim:dsMIME><apim:dsFormatURI></apim:dsFormatURI><apim:dsControlGroup>M</apim:dsControlGroup><apim:dsSize>696</apim:dsSize><apim:dsVersionable>true</apim:dsVersionable><apim:dsInfoType></apim:dsInfoType><apim:dsLocation>und:02870v85054+RELS-EXT+RELS-EXT.6</apim:dsLocation><apim:dsLocationType>INTERNAL_ID</apim:dsLocationType><apim:dsChecksumType>MD5</apim:dsChecksumType><apim:dsChecksum>ad63c72e33c110b2d9c12bc38b6eae0d</apim:dsChecksum></datastreamProfile><datastreamProfile
+        pid="und:02870v85054" dsID="rightsMetadata" ><apim:dsLabel></apim:dsLabel><apim:dsVersionID>rightsMetadata.10</apim:dsVersionID><apim:dsCreateDate>2016-09-27T18:50:52.911Z</apim:dsCreateDate><apim:dsState>A</apim:dsState><apim:dsMIME>text/xml</apim:dsMIME><apim:dsFormatURI></apim:dsFormatURI><apim:dsControlGroup>M</apim:dsControlGroup><apim:dsSize>633</apim:dsSize><apim:dsVersionable>true</apim:dsVersionable><apim:dsInfoType></apim:dsInfoType><apim:dsLocation>und:02870v85054+rightsMetadata+rightsMetadata.10</apim:dsLocation><apim:dsLocationType>INTERNAL_ID</apim:dsLocationType><apim:dsChecksumType>MD5</apim:dsChecksumType><apim:dsChecksum>d5d37e25cbcdb1cacf6ac56acf9fa359</apim:dsChecksum></datastreamProfile><datastreamProfile
+        pid="und:02870v85054" dsID="descMetadata" ><apim:dsLabel></apim:dsLabel><apim:dsVersionID>descMetadata.6</apim:dsVersionID><apim:dsCreateDate>2015-04-08T18:47:47.825Z</apim:dsCreateDate><apim:dsState>A</apim:dsState><apim:dsMIME>text/plain</apim:dsMIME><apim:dsFormatURI></apim:dsFormatURI><apim:dsControlGroup>M</apim:dsControlGroup><apim:dsSize>544</apim:dsSize><apim:dsVersionable>true</apim:dsVersionable><apim:dsInfoType></apim:dsInfoType><apim:dsLocation>und:02870v85054+descMetadata+descMetadata.6</apim:dsLocation><apim:dsLocationType>INTERNAL_ID</apim:dsLocationType><apim:dsChecksumType>MD5</apim:dsChecksumType><apim:dsChecksum>85942472d1c2283a4f402f731d61a963</apim:dsChecksum></datastreamProfile><datastreamProfile
+        pid="und:02870v85054" dsID="content" ><apim:dsLabel>el_salvador_1995_export_version.dta</apim:dsLabel><apim:dsVersionID>content.0</apim:dsVersionID><apim:dsCreateDate>2015-01-20T19:57:57.983Z</apim:dsCreateDate><apim:dsState>A</apim:dsState><apim:dsMIME>application/x-stata-dta</apim:dsMIME><apim:dsFormatURI></apim:dsFormatURI><apim:dsControlGroup>M</apim:dsControlGroup><apim:dsSize>322959</apim:dsSize><apim:dsVersionable>true</apim:dsVersionable><apim:dsInfoType></apim:dsInfoType><apim:dsLocation>und:02870v85054+content+content.0</apim:dsLocation><apim:dsLocationType>INTERNAL_ID</apim:dsLocationType><apim:dsChecksumType>MD5</apim:dsChecksumType><apim:dsChecksum>c56666553596042a89e4aa5cac214772</apim:dsChecksum></datastreamProfile><datastreamProfile
+        pid="und:02870v85054" dsID="properties" ><apim:dsLabel></apim:dsLabel><apim:dsVersionID>properties.4</apim:dsVersionID><apim:dsCreateDate>2015-04-08T18:47:47.552Z</apim:dsCreateDate><apim:dsState>A</apim:dsState><apim:dsMIME>text/xml</apim:dsMIME><apim:dsFormatURI></apim:dsFormatURI><apim:dsControlGroup>M</apim:dsControlGroup><apim:dsSize>48</apim:dsSize><apim:dsVersionable>true</apim:dsVersionable><apim:dsInfoType></apim:dsInfoType><apim:dsLocation>und:02870v85054+properties+properties.4</apim:dsLocation><apim:dsLocationType>INTERNAL_ID</apim:dsLocationType><apim:dsChecksumType>MD5</apim:dsChecksumType><apim:dsChecksum>9e6f2d9bdac52ccf063e5e14e39b8883</apim:dsChecksum></datastreamProfile><datastreamProfile
+        pid="und:02870v85054" dsID="characterization" ><apim:dsLabel></apim:dsLabel><apim:dsVersionID>characterization.2</apim:dsVersionID><apim:dsCreateDate>2015-01-22T14:23:16.558Z</apim:dsCreateDate><apim:dsState>A</apim:dsState><apim:dsMIME>text/xml</apim:dsMIME><apim:dsFormatURI></apim:dsFormatURI><apim:dsControlGroup>M</apim:dsControlGroup><apim:dsSize>1102</apim:dsSize><apim:dsVersionable>true</apim:dsVersionable><apim:dsInfoType></apim:dsInfoType><apim:dsLocation>und:02870v85054+characterization+characterization.2</apim:dsLocation><apim:dsLocationType>INTERNAL_ID</apim:dsLocationType><apim:dsChecksumType>MD5</apim:dsChecksumType><apim:dsChecksum>92980b2cec41afa3f3f3fd518b5069bd</apim:dsChecksum></datastreamProfile></objectDatastreams>
+    http_version: 
+  recorded_at: Tue, 24 Jan 2017 17:58:20 GMT
+- request:
+    method: get
+    uri: https://something.com/objects/und:02870v85054/datastreams/descMetadata/content
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+      Authorization:
+      - Basic ZmVkb3JhQWRtaW46M1dpYzR1WHk=
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Apache-Coyote/1.1
+      Set-Cookie:
+      - JSESSIONID=61A8EDD4E440465437801F7F3E6CCA42; Path=/fedora; Secure
+      Content-Disposition:
+      - inline; filename="descMetadata.txt"
+      Date:
+      - Tue, 24 Jan 2017 17:58:19 GMT
+      Content-Type:
+      - text/plain
+      Content-Length:
+      - '544'
+    body:
+      encoding: UTF-8
+      string: |
+        <info:fedora/und:02870v85054> <http://purl.org/dc/terms/creator> "David Dressing" .
+        <info:fedora/und:02870v85054> <http://purl.org/dc/terms/dateSubmitted> "2015-01-20T14:53:43-05:00" .
+        <info:fedora/und:02870v85054> <http://purl.org/dc/terms/modified> "2015-01-20Z" .
+        <info:fedora/und:02870v85054> <http://purl.org/dc/terms/modifier> "2015-01-20T14:53:43-05:00" .
+        <info:fedora/und:02870v85054> <http://purl.org/dc/terms/title> "el_salvador_1995_export_version.dta" .
+        <info:fedora/und:02870v85054> <http://purl.org/dc/terms/type> "GenericFile" .
+    http_version: 
+  recorded_at: Tue, 24 Jan 2017 17:58:20 GMT
+- request:
+    method: get
+    uri: https://something.com/objects/und:02870v85054/datastreams/RELS-EXT/content
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+      Authorization:
+      - Basic ZmVkb3JhQWRtaW46M1dpYzR1WHk=
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Apache-Coyote/1.1
+      Set-Cookie:
+      - JSESSIONID=03D8091B58CB96F52AA20F648B254162; Path=/fedora; Secure
+      Content-Disposition:
+      - inline; filename="RELS-EXT.rdf"
+      Date:
+      - Tue, 24 Jan 2017 17:58:20 GMT
+      Content-Type:
+      - application/rdf+xml
+      Content-Length:
+      - '696'
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version='1.0' encoding='utf-8' ?>
+        <rdf:RDF xmlns:ns0='http://projecthydra.org/ns/relations#' xmlns:ns1='info:fedora/fedora-system:def/model#' xmlns:ns2='info:fedora/fedora-system:def/relations-external#' xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+          <rdf:Description rdf:about='info:fedora/und:02870v85054'>
+            <ns0:hasEditor rdf:resource='info:fedora/und:ks65h991r5x' />
+            <ns0:hasEditorGroup rdf:resource='info:fedora/und:ms35t724s3j' />
+            <ns0:hasViewerGroup rdf:resource='info:fedora/und:7m01bk14722' />
+            <ns1:hasModel rdf:resource='info:fedora/afmodel:GenericFile' />
+            <ns2:isPartOf rdf:resource='info:fedora/und:zs25x636043' />
+          </rdf:Description>
+        </rdf:RDF>
+    http_version: 
+  recorded_at: Tue, 24 Jan 2017 17:58:20 GMT
+- request:
+    method: get
+    uri: https://something.com/objects/und:zs25x636043?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+      Authorization:
+      - Basic ZmVkb3JhQWRtaW46M1dpYzR1WHk=
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Apache-Coyote/1.1
+      Set-Cookie:
+      - JSESSIONID=626DD79B048FBC138DDB6811F29183EA; Path=/fedora; Secure
+      Date:
+      - Tue, 24 Jan 2017 17:58:20 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '996'
+    body:
+      encoding: UTF-8
+      string: <?xml version="1.0" encoding="UTF-8"?><objectProfile  xmlns="http://www.fedora.info/definitions/1/0/access/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        http://www.fedora.info/definitions/1/0/objectProfile.xsd" pid="und:zs25x636043"
+        ><objLabel></objLabel><objOwnerId>fedoraAdmin</objOwnerId><objModels><model>info:fedora/afmodel:Dataset</model><model>info:fedora/fedora-system:FedoraObject-3.0</model></objModels><objCreateDate>2015-01-20T19:57:53.352Z</objCreateDate><objLastModDate>2016-09-27T18:50:26.091Z</objLastModDate><objDissIndexViewURL>https://something.com/objects/und%3Azs25x636043/methods/fedora-system%3A3/viewMethodIndex</objDissIndexViewURL><objItemIndexViewURL>https://something.com/objects/und%3Azs25x636043/methods/fedora-system%3A3/viewItemIndex</objItemIndexViewURL><objState>A</objState></objectProfile>
+    http_version: 
+  recorded_at: Tue, 24 Jan 2017 17:58:20 GMT
+- request:
+    method: get
+    uri: https://something.com/objects/und:02870v85054/datastreams/rightsMetadata/content
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+      Authorization:
+      - Basic ZmVkb3JhQWRtaW46M1dpYzR1WHk=
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Apache-Coyote/1.1
+      Set-Cookie:
+      - JSESSIONID=E1C877C6A714B1C55D78C9F3FA58AE72; Path=/fedora; Secure
+      Content-Disposition:
+      - inline; filename="rightsMetadata.xml"
+      Date:
+      - Tue, 24 Jan 2017 17:58:20 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '633'
+    body:
+      encoding: UTF-8
+      string: "<rightsMetadata xmlns=\"http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1\"
+        version=\"0.1\">\n  <copyright>\n    <human type=\"title\"/>\n    <human type=\"description\"/>\n
+        \   <machine type=\"uri\"/>\n  </copyright>\n  <access type=\"discover\">\n
+        \   <human/>\n    <machine/>\n  </access>\n  <access type=\"read\">\n    <human/>\n
+        \   <machine>\n      <group>und:7m01bk14722</group>\n    <group>registered</group></machine>\n
+        \ </access>\n  <access type=\"edit\">\n    <human/>\n    <machine>\n      \n
+        \     \n    <person>ddressin</person><group>und:ms35t724s3j</group></machine>\n
+        \ </access>\n  <embargo>\n    <human/>\n    <machine/>\n  </embargo>\n</rightsMetadata>"
+    http_version: 
+  recorded_at: Tue, 24 Jan 2017 17:58:20 GMT
+- request:
+    method: get
+    uri: https://something.com/objects?pid=true&query=pid~und:02870v85054&resultFormat=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+      Authorization:
+      - Basic ZmVkb3JhQWRtaW46M1dpYzR1WHk=
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Apache-Coyote/1.1
+      Set-Cookie:
+      - JSESSIONID=858244BF0D7C8FB90DADCF535C1335FC; Path=/fedora; Secure
+      Date:
+      - Tue, 24 Jan 2017 18:00:26 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '461'
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <result xmlns="http://www.fedora.info/definitions/1/0/types/" xmlns:types="http://www.fedora.info/definitions/1/0/types/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/types/ https://something.com/schema/findObjects.xsd">
+          <resultList>
+          <objectFields>
+              <pid>und:02870v85054</pid>
+          </objectFields>
+          </resultList>
+        </result>
+    http_version: 
+  recorded_at: Tue, 24 Jan 2017 18:00:27 GMT
+- request:
+    method: get
+    uri: https://something.com/objects/und:02870v85054?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+      Authorization:
+      - Basic ZmVkb3JhQWRtaW46M1dpYzR1WHk=
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Apache-Coyote/1.1
+      Set-Cookie:
+      - JSESSIONID=734ACF0BE43EBFD848689DD3D2EDC5B6; Path=/fedora; Secure
+      Date:
+      - Tue, 24 Jan 2017 18:00:26 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '1000'
+    body:
+      encoding: UTF-8
+      string: <?xml version="1.0" encoding="UTF-8"?><objectProfile  xmlns="http://www.fedora.info/definitions/1/0/access/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        http://www.fedora.info/definitions/1/0/objectProfile.xsd" pid="und:02870v85054"
+        ><objLabel></objLabel><objOwnerId>fedoraAdmin</objOwnerId><objModels><model>info:fedora/afmodel:GenericFile</model><model>info:fedora/fedora-system:FedoraObject-3.0</model></objModels><objCreateDate>2015-01-20T19:57:57.115Z</objCreateDate><objLastModDate>2016-09-27T18:50:52.911Z</objLastModDate><objDissIndexViewURL>https://something.com/objects/und%3A02870v85054/methods/fedora-system%3A3/viewMethodIndex</objDissIndexViewURL><objItemIndexViewURL>https://something.com/objects/und%3A02870v85054/methods/fedora-system%3A3/viewItemIndex</objItemIndexViewURL><objState>A</objState></objectProfile>
+    http_version: 
+  recorded_at: Tue, 24 Jan 2017 18:00:27 GMT
+- request:
+    method: get
+    uri: https://something.com/objects/und:02870v85054/datastreams?format=xml&profiles=true
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+      Authorization:
+      - Basic ZmVkb3JhQWRtaW46M1dpYzR1WHk=
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Apache-Coyote/1.1
+      Set-Cookie:
+      - JSESSIONID=D8A5084BAE0836C0B00ACBFD6D9035FB; Path=/fedora; Secure
+      Date:
+      - Tue, 24 Jan 2017 18:00:26 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '5675'
+    body:
+      encoding: UTF-8
+      string: <?xml version="1.0" encoding="UTF-8"?><objectDatastreams xmlns="http://www.fedora.info/definitions/1/0/access/"
+        xmlns:apim="http://www.fedora.info/definitions/1/0/management/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        https://something.com/schema/listDatastreams.xsd"
+        pid="und:02870v85054"  baseURL="https://something.com/"
+        ><datastreamProfile pid="und:02870v85054" dsID="DC" ><apim:dsLabel>Dublin
+        Core Record for this object</apim:dsLabel><apim:dsVersionID>DC1.0</apim:dsVersionID><apim:dsCreateDate>2015-01-20T19:57:57.115Z</apim:dsCreateDate><apim:dsState>A</apim:dsState><apim:dsMIME>text/xml</apim:dsMIME><apim:dsFormatURI>http://www.openarchives.org/OAI/2.0/oai_dc/</apim:dsFormatURI><apim:dsControlGroup>X</apim:dsControlGroup><apim:dsSize>344</apim:dsSize><apim:dsVersionable>true</apim:dsVersionable><apim:dsInfoType></apim:dsInfoType><apim:dsLocation>und:02870v85054+DC+DC1.0</apim:dsLocation><apim:dsLocationType></apim:dsLocationType><apim:dsChecksumType>MD5</apim:dsChecksumType><apim:dsChecksum>08c75da4c76f08aac299db6b9739e54f</apim:dsChecksum></datastreamProfile><datastreamProfile
+        pid="und:02870v85054" dsID="RELS-EXT" ><apim:dsLabel></apim:dsLabel><apim:dsVersionID>RELS-EXT.6</apim:dsVersionID><apim:dsCreateDate>2015-04-08T18:47:47.413Z</apim:dsCreateDate><apim:dsState>A</apim:dsState><apim:dsMIME>application/rdf+xml</apim:dsMIME><apim:dsFormatURI></apim:dsFormatURI><apim:dsControlGroup>M</apim:dsControlGroup><apim:dsSize>696</apim:dsSize><apim:dsVersionable>true</apim:dsVersionable><apim:dsInfoType></apim:dsInfoType><apim:dsLocation>und:02870v85054+RELS-EXT+RELS-EXT.6</apim:dsLocation><apim:dsLocationType>INTERNAL_ID</apim:dsLocationType><apim:dsChecksumType>MD5</apim:dsChecksumType><apim:dsChecksum>ad63c72e33c110b2d9c12bc38b6eae0d</apim:dsChecksum></datastreamProfile><datastreamProfile
+        pid="und:02870v85054" dsID="rightsMetadata" ><apim:dsLabel></apim:dsLabel><apim:dsVersionID>rightsMetadata.10</apim:dsVersionID><apim:dsCreateDate>2016-09-27T18:50:52.911Z</apim:dsCreateDate><apim:dsState>A</apim:dsState><apim:dsMIME>text/xml</apim:dsMIME><apim:dsFormatURI></apim:dsFormatURI><apim:dsControlGroup>M</apim:dsControlGroup><apim:dsSize>633</apim:dsSize><apim:dsVersionable>true</apim:dsVersionable><apim:dsInfoType></apim:dsInfoType><apim:dsLocation>und:02870v85054+rightsMetadata+rightsMetadata.10</apim:dsLocation><apim:dsLocationType>INTERNAL_ID</apim:dsLocationType><apim:dsChecksumType>MD5</apim:dsChecksumType><apim:dsChecksum>d5d37e25cbcdb1cacf6ac56acf9fa359</apim:dsChecksum></datastreamProfile><datastreamProfile
+        pid="und:02870v85054" dsID="descMetadata" ><apim:dsLabel></apim:dsLabel><apim:dsVersionID>descMetadata.6</apim:dsVersionID><apim:dsCreateDate>2015-04-08T18:47:47.825Z</apim:dsCreateDate><apim:dsState>A</apim:dsState><apim:dsMIME>text/plain</apim:dsMIME><apim:dsFormatURI></apim:dsFormatURI><apim:dsControlGroup>M</apim:dsControlGroup><apim:dsSize>544</apim:dsSize><apim:dsVersionable>true</apim:dsVersionable><apim:dsInfoType></apim:dsInfoType><apim:dsLocation>und:02870v85054+descMetadata+descMetadata.6</apim:dsLocation><apim:dsLocationType>INTERNAL_ID</apim:dsLocationType><apim:dsChecksumType>MD5</apim:dsChecksumType><apim:dsChecksum>85942472d1c2283a4f402f731d61a963</apim:dsChecksum></datastreamProfile><datastreamProfile
+        pid="und:02870v85054" dsID="content" ><apim:dsLabel>el_salvador_1995_export_version.dta</apim:dsLabel><apim:dsVersionID>content.0</apim:dsVersionID><apim:dsCreateDate>2015-01-20T19:57:57.983Z</apim:dsCreateDate><apim:dsState>A</apim:dsState><apim:dsMIME>application/x-stata-dta</apim:dsMIME><apim:dsFormatURI></apim:dsFormatURI><apim:dsControlGroup>M</apim:dsControlGroup><apim:dsSize>322959</apim:dsSize><apim:dsVersionable>true</apim:dsVersionable><apim:dsInfoType></apim:dsInfoType><apim:dsLocation>und:02870v85054+content+content.0</apim:dsLocation><apim:dsLocationType>INTERNAL_ID</apim:dsLocationType><apim:dsChecksumType>MD5</apim:dsChecksumType><apim:dsChecksum>c56666553596042a89e4aa5cac214772</apim:dsChecksum></datastreamProfile><datastreamProfile
+        pid="und:02870v85054" dsID="properties" ><apim:dsLabel></apim:dsLabel><apim:dsVersionID>properties.4</apim:dsVersionID><apim:dsCreateDate>2015-04-08T18:47:47.552Z</apim:dsCreateDate><apim:dsState>A</apim:dsState><apim:dsMIME>text/xml</apim:dsMIME><apim:dsFormatURI></apim:dsFormatURI><apim:dsControlGroup>M</apim:dsControlGroup><apim:dsSize>48</apim:dsSize><apim:dsVersionable>true</apim:dsVersionable><apim:dsInfoType></apim:dsInfoType><apim:dsLocation>und:02870v85054+properties+properties.4</apim:dsLocation><apim:dsLocationType>INTERNAL_ID</apim:dsLocationType><apim:dsChecksumType>MD5</apim:dsChecksumType><apim:dsChecksum>9e6f2d9bdac52ccf063e5e14e39b8883</apim:dsChecksum></datastreamProfile><datastreamProfile
+        pid="und:02870v85054" dsID="characterization" ><apim:dsLabel></apim:dsLabel><apim:dsVersionID>characterization.2</apim:dsVersionID><apim:dsCreateDate>2015-01-22T14:23:16.558Z</apim:dsCreateDate><apim:dsState>A</apim:dsState><apim:dsMIME>text/xml</apim:dsMIME><apim:dsFormatURI></apim:dsFormatURI><apim:dsControlGroup>M</apim:dsControlGroup><apim:dsSize>1102</apim:dsSize><apim:dsVersionable>true</apim:dsVersionable><apim:dsInfoType></apim:dsInfoType><apim:dsLocation>und:02870v85054+characterization+characterization.2</apim:dsLocation><apim:dsLocationType>INTERNAL_ID</apim:dsLocationType><apim:dsChecksumType>MD5</apim:dsChecksumType><apim:dsChecksum>92980b2cec41afa3f3f3fd518b5069bd</apim:dsChecksum></datastreamProfile></objectDatastreams>
+    http_version: 
+  recorded_at: Tue, 24 Jan 2017 18:00:27 GMT
+- request:
+    method: get
+    uri: https://something.com/objects/und:02870v85054/datastreams/descMetadata/content
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+      Authorization:
+      - Basic ZmVkb3JhQWRtaW46M1dpYzR1WHk=
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Apache-Coyote/1.1
+      Set-Cookie:
+      - JSESSIONID=50EA2691CCF730EA27BC3A0B37A21D56; Path=/fedora; Secure
+      Content-Disposition:
+      - inline; filename="descMetadata.txt"
+      Date:
+      - Tue, 24 Jan 2017 18:00:26 GMT
+      Content-Type:
+      - text/plain
+      Content-Length:
+      - '544'
+    body:
+      encoding: UTF-8
+      string: |
+        <info:fedora/und:02870v85054> <http://purl.org/dc/terms/creator> "David Dressing" .
+        <info:fedora/und:02870v85054> <http://purl.org/dc/terms/dateSubmitted> "2015-01-20T14:53:43-05:00" .
+        <info:fedora/und:02870v85054> <http://purl.org/dc/terms/modified> "2015-01-20Z" .
+        <info:fedora/und:02870v85054> <http://purl.org/dc/terms/modifier> "2015-01-20T14:53:43-05:00" .
+        <info:fedora/und:02870v85054> <http://purl.org/dc/terms/title> "el_salvador_1995_export_version.dta" .
+        <info:fedora/und:02870v85054> <http://purl.org/dc/terms/type> "GenericFile" .
+    http_version: 
+  recorded_at: Tue, 24 Jan 2017 18:00:27 GMT
+- request:
+    method: get
+    uri: https://something.com/objects/und:02870v85054/datastreams/RELS-EXT/content
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+      Authorization:
+      - Basic ZmVkb3JhQWRtaW46M1dpYzR1WHk=
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Apache-Coyote/1.1
+      Set-Cookie:
+      - JSESSIONID=922D96FD18768CEC1935A4BF547DAA54; Path=/fedora; Secure
+      Content-Disposition:
+      - inline; filename="RELS-EXT.rdf"
+      Date:
+      - Tue, 24 Jan 2017 18:00:26 GMT
+      Content-Type:
+      - application/rdf+xml
+      Content-Length:
+      - '696'
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version='1.0' encoding='utf-8' ?>
+        <rdf:RDF xmlns:ns0='http://projecthydra.org/ns/relations#' xmlns:ns1='info:fedora/fedora-system:def/model#' xmlns:ns2='info:fedora/fedora-system:def/relations-external#' xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+          <rdf:Description rdf:about='info:fedora/und:02870v85054'>
+            <ns0:hasEditor rdf:resource='info:fedora/und:ks65h991r5x' />
+            <ns0:hasEditorGroup rdf:resource='info:fedora/und:ms35t724s3j' />
+            <ns0:hasViewerGroup rdf:resource='info:fedora/und:7m01bk14722' />
+            <ns1:hasModel rdf:resource='info:fedora/afmodel:GenericFile' />
+            <ns2:isPartOf rdf:resource='info:fedora/und:zs25x636043' />
+          </rdf:Description>
+        </rdf:RDF>
+    http_version: 
+  recorded_at: Tue, 24 Jan 2017 18:00:27 GMT
+- request:
+    method: get
+    uri: https://something.com/objects/und:zs25x636043?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+      Authorization:
+      - Basic ZmVkb3JhQWRtaW46M1dpYzR1WHk=
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Apache-Coyote/1.1
+      Set-Cookie:
+      - JSESSIONID=0B5DBA8766E046F71439C944106C4962; Path=/fedora; Secure
+      Date:
+      - Tue, 24 Jan 2017 18:00:26 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '996'
+    body:
+      encoding: UTF-8
+      string: <?xml version="1.0" encoding="UTF-8"?><objectProfile  xmlns="http://www.fedora.info/definitions/1/0/access/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        http://www.fedora.info/definitions/1/0/objectProfile.xsd" pid="und:zs25x636043"
+        ><objLabel></objLabel><objOwnerId>fedoraAdmin</objOwnerId><objModels><model>info:fedora/afmodel:Dataset</model><model>info:fedora/fedora-system:FedoraObject-3.0</model></objModels><objCreateDate>2015-01-20T19:57:53.352Z</objCreateDate><objLastModDate>2016-09-27T18:50:26.091Z</objLastModDate><objDissIndexViewURL>https://something.com/objects/und%3Azs25x636043/methods/fedora-system%3A3/viewMethodIndex</objDissIndexViewURL><objItemIndexViewURL>https://something.com/objects/und%3Azs25x636043/methods/fedora-system%3A3/viewItemIndex</objItemIndexViewURL><objState>A</objState></objectProfile>
+    http_version: 
+  recorded_at: Tue, 24 Jan 2017 18:00:27 GMT
+- request:
+    method: get
+    uri: https://something.com/objects/und:02870v85054/datastreams/rightsMetadata/content
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+      Authorization:
+      - Basic ZmVkb3JhQWRtaW46M1dpYzR1WHk=
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Apache-Coyote/1.1
+      Set-Cookie:
+      - JSESSIONID=62F73B220E4988394E8D0A1E0C65F2E5; Path=/fedora; Secure
+      Content-Disposition:
+      - inline; filename="rightsMetadata.xml"
+      Date:
+      - Tue, 24 Jan 2017 18:00:26 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '633'
+    body:
+      encoding: UTF-8
+      string: "<rightsMetadata xmlns=\"http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1\"
+        version=\"0.1\">\n  <copyright>\n    <human type=\"title\"/>\n    <human type=\"description\"/>\n
+        \   <machine type=\"uri\"/>\n  </copyright>\n  <access type=\"discover\">\n
+        \   <human/>\n    <machine/>\n  </access>\n  <access type=\"read\">\n    <human/>\n
+        \   <machine>\n      <group>und:7m01bk14722</group>\n    <group>registered</group></machine>\n
+        \ </access>\n  <access type=\"edit\">\n    <human/>\n    <machine>\n      \n
+        \     \n    <person>ddressin</person><group>und:ms35t724s3j</group></machine>\n
+        \ </access>\n  <embargo>\n    <human/>\n    <machine/>\n  </embargo>\n</rightsMetadata>"
+    http_version: 
+  recorded_at: Tue, 24 Jan 2017 18:00:27 GMT
 recorded_with: VCR 3.0.1

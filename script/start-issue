@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby -wU
 
-#*******************************************************************************
+# *******************************************************************************
 #
 # INTENT
 #
@@ -25,13 +25,13 @@
 # a feature is much less precise and I believe is equal parts "Estimated Effort"
 # and "Estimated Complexity".
 #
-#*******************************************************************************
+# *******************************************************************************
 
-#*******************************************************************************
+# *******************************************************************************
 #
 # CONFIGURATION OPTIONS
 #
-#*******************************************************************************
+# *******************************************************************************
 
 CONFIG_KEYS = [:REMOTE, :FROM_BRANCH, :REPOSITORY_PATH, :ISSUE_TITLE, :STARTED_ISSUES_FILE].freeze
 
@@ -41,43 +41,43 @@ FROM_BRANCH = ENV.fetch('FROM_BRANCH', 'master')
 
 STARTED_ISSUES_FILE = ENV.fetch('STARTED_ISSUES_FILE', '.started-issues')
 
-#*******************************************************************************
+# *******************************************************************************
 #
 # HELP OPTIONS
 #
-#*******************************************************************************
+# *******************************************************************************
 
 if ARGV.grep(/-h/i).size == 1
-  $stdout.puts ""
+  $stdout.puts ''
   $stdout.puts "$ ./#{File.basename(__FILE__)} 123"
-  $stdout.puts ""
-  $stdout.puts "This script will create an issue branch and update the remote repository."
-  $stdout.puts ""
-  $stdout.puts "* Create a new branch for the given issue number"
-  $stdout.puts "* Touch and append the issue number to a tracking file"
-  $stdout.puts "* Write a rudimentary commit message"
-  $stdout.puts ""
-  $stdout.puts "Note: There are steps to insure you have a clean working directory."
-  $stdout.puts "Note: If you have spaces in your configuration all bets are off!"
-  $stdout.puts ""
-  $stdout.puts "Current Configuration:"
+  $stdout.puts ''
+  $stdout.puts 'This script will create an issue branch and update the remote repository.'
+  $stdout.puts ''
+  $stdout.puts '* Create a new branch for the given issue number'
+  $stdout.puts '* Touch and append the issue number to a tracking file'
+  $stdout.puts '* Write a rudimentary commit message'
+  $stdout.puts ''
+  $stdout.puts 'Note: There are steps to insure you have a clean working directory.'
+  $stdout.puts 'Note: If you have spaces in your configuration all bets are off!'
+  $stdout.puts ''
+  $stdout.puts 'Current Configuration:'
   CONFIG_KEYS.each do |key|
     $stdout.puts "\t#{key}='#{Object.const_get(key)}'"
   end
-  $stdout.puts ""
-  $stdout.puts "You can override the configuration option by adding the corresponding"
-  $stdout.puts "ENV variable."
-  $stdout.puts ""
-  $stdout.puts "Example:"
+  $stdout.puts ''
+  $stdout.puts 'You can override the configuration option by adding the corresponding'
+  $stdout.puts 'ENV variable.'
+  $stdout.puts ''
+  $stdout.puts 'Example:'
   $stdout.puts "$ REMOTE=origin ./scripts/#{File.basename(__FILE__)}"
   exit(0)
 end
 
-#*******************************************************************************
+# *******************************************************************************
 #
 # GUARD
 #
-#*******************************************************************************
+# *******************************************************************************
 
 # Guard that I have an issue number
 
@@ -95,16 +95,16 @@ else
   exit!(1)
 end
 
-unless system("which jira")
+unless system('which jira')
   $stderr.puts "Expected to find `jira' in your path."
-  $stderr.puts "Run the following:"
+  $stderr.puts 'Run the following:'
   $stderr.puts "\tbrew tap ndlib/dlt\n\tbrew install go-jira\n\n"
   exit!(9)
 end
 
 unless File.exist?(File.join(ENV['HOME'], '.jira.d/config.yml'))
-  $stderr.puts "Expected ~/.jira.d/config.yml to exist"
-  $stderr.puts "Run the following:"
+  $stderr.puts 'Expected ~/.jira.d/config.yml to exist'
+  $stderr.puts 'Run the following:'
   $stderr.puts "\tmkdir ~/.jira.d\n\techo 'endpoint: https://jira.library.nd.edu' > ~/.jira.d/config.yml"
   exit!(10)
 end
@@ -139,8 +139,8 @@ if ISSUE_TITLE.nil?
                     # sometimes there is garbage before the "issue:" line.
                     document.sub!(/\A[^i]*/, '')
                     issue = YAML.load(document)
-                    title = issue["summary"]
-                    if title == "<no value>"
+                    title = issue['summary']
+                    if title == '<no value>'
                       $stdout.puts "Problem finding issue #{ISSUE_NUMBER}"
                       exit!(5)
                     end
@@ -160,31 +160,30 @@ issue_title = issue_title[0..30]
 # Guard that directories exist
 [:REPOSITORY_PATH].each do |key|
   repository_path = Object.const_get(key)
-  unless File.directory?(repository_path)
-    $stderr.puts "Expected directory for #{key} @ #{repository_path} to exist.\n\n"
-    $stderr.puts "See help for details on specifying #{key}.\n\n"
-    $stderr.puts "$ ./#{File.basename(__FILE__)} -h"
-    exit!(2)
-  end
+  next if File.directory?(repository_path)
+  $stderr.puts "Expected directory for #{key} @ #{repository_path} to exist.\n\n"
+  $stderr.puts "See help for details on specifying #{key}.\n\n"
+  $stderr.puts "$ ./#{File.basename(__FILE__)} -h"
+  exit!(2)
 end
 
 # Guard that we have a clean working directory
-if `cd #{REPOSITORY_PATH} && git status --porcelain`.strip.size > 0
+unless `cd #{REPOSITORY_PATH} && git status --porcelain`.strip.empty?
   $stderr.puts "Repository @ #{REPOSITORY_PATH} did not have a clean working directory"
   exit!(3)
 end
 
-#*******************************************************************************
+# *******************************************************************************
 #
 # DO STUFF
 #
-#*******************************************************************************
+# *******************************************************************************
 
 `cd #{REPOSITORY_PATH} && git checkout #{FROM_BRANCH}`
 `cd #{REPOSITORY_PATH} && git pull --rebase`
 
-TO_BRANCH = "#{ISSUE_NUMBER}-#{issue_title.gsub(/\W+/, '-')}"
-if `cd #{REPOSITORY_PATH} && git branch -l | grep '#{TO_BRANCH}$'`.strip.size > 0
+TO_BRANCH = "#{ISSUE_NUMBER}-#{issue_title.gsub(/\W+/, '-')}".freeze
+unless `cd #{REPOSITORY_PATH} && git branch -l | grep '#{TO_BRANCH}$'`.strip.empty?
   $stderr.puts "ERROR: Branch #{TO_BRANCH} already exists"
   exit!(4)
 end
@@ -195,32 +194,34 @@ path_to_commit_message = File.expand_path(File.join(REPOSITORY_PATH, '../COMMIT.
 begin
   File.open(path_to_commit_message, 'w+') do |file|
     file.puts "Claiming issue #{ISSUE_NUMBER}"
-    file.puts ""
+    file.puts ''
     if issue_source == :github
       file.puts "relates to ##{ISSUE_NUMBER}"
-      file.puts ""
+      file.puts ''
     end
 
     message = "$ ./script/#{File.basename(__FILE__)} #{ISSUE_NUMBER}"
     CONFIG_KEYS.each_with_object(message) do |key, mem|
-      if ENV.key?(key.to_s)
-        mem = "#{key}=\"#{ENV[key.to_s].to_s}\" #{mem}"
-      end
+      mem = "#{key}=\"#{ENV[key.to_s]}\" #{mem}" if ENV.key?(key.to_s)
       mem
     end
     file.puts message
-    file.puts ""
-    file.puts "[skip ci]"
+    file.puts ''
+    file.puts '[skip ci]'
   end
   $stdout.puts `cd #{REPOSITORY_PATH} && git commit -F #{path_to_commit_message}`
 ensure
-  File.unlink(path_to_commit_message) rescue true
+  begin
+    File.unlink(path_to_commit_message)
+  rescue
+    true
+  end
 end
 
 # If the commit was successful, assign the issue to us and move into "In Progress"
 if issue_source == :jira
   system("jira take #{ISSUE_NUMBER}")
-  exit!(5) unless $?.success?
+  exit!(5) unless $CHILD_STATUS.success?
   system("jira --noedit transition \"In Progress\" #{ISSUE_NUMBER}")
-  exit!(5) unless $?.success?
+  exit!(5) unless $CHILD_STATUS.success?
 end

@@ -4,7 +4,7 @@
 if ENV['COV'] || ENV['COVERAGE'] || ENV['TRAVIS']
   if ENV['TRAVIS']
     require 'simplecov'
-    require "codeclimate-test-reporter"
+    require 'codeclimate-test-reporter'
     SimpleCov.start do
       formatter SimpleCov::Formatter::MultiFormatter[
         SimpleCov::Formatter::HTMLFormatter,

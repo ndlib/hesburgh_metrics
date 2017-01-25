@@ -1,6 +1,5 @@
 source 'https://rubygems.org'
 
-
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'debug_inspector', '0.0.2'
 gem 'mysql2'
@@ -33,8 +32,8 @@ gem 'jbuilder', '~> 2.0'
 # gem 'capistrano-rails', group: :development
 
 # for fedora harvester
-gem 'rubydora','~> 1.7.4'
-gem 'rdf','~> 1.1.2'
+gem 'rubydora', '~> 1.7.4'
+gem 'rdf', '~> 1.1.2'
 gem 'rdf-rdfxml'
 gem 'figaro'
 gem 'deprecation', '~> 0.2.2'

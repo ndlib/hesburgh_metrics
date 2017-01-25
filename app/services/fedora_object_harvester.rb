@@ -11,14 +11,14 @@ end
 class FedoraObjectHarvester
   attr_reader :repo, :exceptions
 
-  def initialize
-    @repo = Rubydora.connect url: Figaro.env.fedora_url!, user: Figaro.env.fedora_user!, password: Figaro.env.fedora_password!
+  def initialize(repo = default_repository)
+    @repo = repo
     @exceptions = []
   end
 
   # query for objects and process one result at a time
-  def harvest
-    @repo.search 'pid~und:*' do |doc|
+  def harvest(query = 'pid~und:*')
+    @repo.search(query) do |doc|
       begin
         single_item_harvest(doc)
       rescue StandardError => e
@@ -29,6 +29,10 @@ class FedoraObjectHarvester
   end
 
   private
+
+  def default_repository
+    Rubydora.connect url: Figaro.env.fedora_url!, user: Figaro.env.fedora_user!, password: Figaro.env.fedora_password!
+  end
 
   def report_any_exceptions
     return unless @exceptions.any?
@@ -42,18 +46,20 @@ class FedoraObjectHarvester
 
   # ============================================================================
   def single_item_harvest(doc)
-    SingleItem.new(doc, self).harvest_item
+    SingleItem.new(doc, self, @repo).harvest_item
   end
 
   # Harvest metrics data for one fedora document
   class SingleItem
-    attr_reader :pid, :doc, :doc_last_modified, :harvester
+    attr_reader :pid, :doc, :doc_last_modified, :harvester, :predicate_names
 
-    def initialize(doc, harvester)
+    def initialize(doc, harvester, repo = default_repository)
       @pid = strip_pid(doc.pid)
       @doc = doc
       @harvester = harvester
       @doc_last_modified = doc.profile['objLastModDate']
+      @repo = repo
+      @predicate_names = ['creator#administrative_unit', 'creator#affiliation']
     end
 
     # add new, update changed, or omit unchanged document
@@ -63,6 +69,10 @@ class FedoraObjectHarvester
     end
 
     private
+
+    def default_repository
+      Rubydora.connect url: Figaro.env.fedora_url!, user: Figaro.env.fedora_user!, password: Figaro.env.fedora_password!
+    end
 
     def strip_pid(work_pid)
       work_pid.sub('und:', '')
@@ -82,35 +92,38 @@ class FedoraObjectHarvester
         mimetype: mimetype,
         bytes: bytes,
         parent_pid: parent_pid,
+        parent_type: parent_type,
         obj_ingest_date: doc.profile['objCreateDate'],
         obj_modified_date: doc_last_modified,
         access_rights: access_rights,
         title: title.slice(0, 254)
       )
-      get_and_add_or_delete_aggregation_keys(fedora_object)
+      predicate_names.each do |predicate_name|
+        get_and_add_or_delete_aggregation_keys(fedora_object, predicate_name)
+      end
     end
 
     # parse from triples: creator#administrative_unit
     # <info:fedora/und:7h149p31207>
     # <http://purl.org/dc/terms/creator#administrative_unit>
     # "University of Notre Dame::College of Science::Non-Departmental" .
-    def get_and_add_or_delete_aggregation_keys(fedora_object)
+    def get_and_add_or_delete_aggregation_keys(fedora_object, predicate_name)
       agg_key_array = []
       if doc.datastreams.key?('descMetadata')
         # load new aggregation_key agg_key_array
-        agg_key_array = parse_triples(doc.datastreams['descMetadata'].content, 'creator#administrative_unit')
+        agg_key_array = parse_triples(doc.datastreams['descMetadata'].content, predicate_name)
       end
       # if there are any aggregation keys now, add or update what is currently stored
       if agg_key_array.any?
         # add any new aggregation keys which don't already exist
-        agg_key_array.each do |aggregation_key|
-          next if fedora_object.fedora_object_aggregation_keys.include?(aggregation_key)
-          fedora_object.fedora_object_aggregation_keys.create!(aggregation_key: aggregation_key)
+        agg_key_array.each do |key|
+          next if fedora_object.fedora_object_aggregation_keys.where(predicate_name: predicate_name, aggregation_key: key).present?
+          fedora_object.fedora_object_aggregation_keys.create!(predicate_name: predicate_name, aggregation_key: key)
         end
       end
       # destroy any prior aggregation keys which no longer exist
-      fedora_object.fedora_object_aggregation_keys.each do |aggregation_key|
-        fedora_object.fedora_object_aggregation_keys.destroy unless agg_key_array.include? aggregation_key
+      fedora_object.fedora_object_aggregation_keys.where(predicate_name: predicate_name).each do |aggregation_key|
+        fedora_object.fedora_object_aggregation_keys.where(predicate_name: predicate_name).destroy unless agg_key_array.include? aggregation_key
       end
     end
 
@@ -152,9 +165,26 @@ class FedoraObjectHarvester
     def parent_pid
       if af_model == 'GenericFile'
         return pid unless doc.datastreams.key?('RELS-EXT')
-        strip_pid(parse_xml_relsext(doc.datastreams['RELS-EXT'].content, 'isPartOf'))
+        strip_pid(extract_parent_pid_from_doc)
       else
         pid
+      end
+    end
+
+    def parent_type
+      if af_model == 'GenericFile'
+        parent_object = FedoraObject.find_by(pid: parent_pid)
+        if parent_object.present?
+          parent_object.af_model
+        else
+          return 'Unknown' unless doc.datastreams.key?('RELS-EXT')
+          parent_object = @repo.find extract_parent_pid_from_doc.to_s
+          model = parent_object.profile['objModels'].select { |v| v.include?('afmodel') }
+          return 'Unknown' if model.empty?
+          model.first.split(':')[2]
+        end
+      else
+        af_model
       end
     end
 
@@ -174,6 +204,10 @@ class FedoraObjectHarvester
     def access_rights
       return 'private' unless doc.datastreams.key?('rightsMetadata')
       parse_xml_rights(doc.datastreams['rightsMetadata'].content)
+    end
+
+    def extract_parent_pid_from_doc
+      parse_xml_relsext(doc.datastreams['RELS-EXT'].content, 'isPartOf')
     end
 
     ## ============================================================================
