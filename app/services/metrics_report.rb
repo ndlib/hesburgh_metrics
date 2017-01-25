@@ -1,5 +1,8 @@
 require 'erb'
+
+# Create Metrics Report for given dates
 class MetricsReport
+  # Helper class to store report details
   class MetricsDetail
     attr_accessor :report_start_date, :report_end_date, :fedora_count, :fedora_size, :storage
     def initialize(report_start_date, report_end_date)
