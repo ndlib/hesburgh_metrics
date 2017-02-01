@@ -2,15 +2,18 @@ require 'erb'
 
 # Create Metrics Report for given dates
 class MetricsReport
+
   # Helper class to store report details
   class MetricsDetail
-    attr_accessor :report_start_date, :report_end_date, :fedora_count, :fedora_size, :storage
+    attr_reader :report_start_date, :report_end_date, :fedora_count, :fedora_size, :storage
     def initialize(report_start_date, report_end_date)
       @report_start_date = report_start_date
       @report_end_date = report_end_date
-      @storage = []
+      @storage = {}
     end
   end
+
+  STORAGE_TYPES = ['Fedora', 'Bendo'].freeze
 
   attr_reader :metrics, :exceptions, :filename
 
@@ -18,19 +21,18 @@ class MetricsReport
     @exceptions = []
     @metrics = MetricsDetail.new(report_start_date, report_end_date)
     @filename = "CurateND-report-#{report_start_date}-through-#{report_end_date}.html"
-    @template = File.read(File.join(Rails.root, 'app', 'templates', 'periodic_metrics.html.erb'))
+    @template = Rails.root.join('app', 'templates', 'periodic_metrics.html.erb').read
   end
 
   def generate_report
     # Storage Information
-    @metrics.storage = []
     begin
-      %w(Fedora Bendo).each do |type|
-        storage_information_for(type)
+      STORAGE_TYPES.each do |storage_type|
+        storage_information_for(storage_type)
       end
       save!
     rescue StandardError => e
-      @exceptions << e.inspect.to_s
+      @exceptions << e.inspect
     end
     report_any_exceptions
   end
@@ -48,15 +50,12 @@ class MetricsReport
   end
 
   def storage_information_for(storage_type)
-    h = {}
-    storage = CurateStorageDetail.where(harvest_date: metrics.report_end_date, storage_type: storage_type).last
-    h[storage_type] = { count: storage.object_count, size: storage.object_bytes } if storage.present?
-    @metrics.storage << h if h.present?
+    storage = CurateStorageDetail.where(storage_type: storage_type).where('harvest_date <= :as_of', as_of:metrics.report_end_date).last
+    metrics.storage[storage_type] = ReportingStorageDetail.new(count: storage.object_count, size: storage.object_bytes) if storage.present?
   end
 
   def render
-    html = ERB.new(@template, nil, '-').result(binding)
-    html
+    ERB.new(@template, nil, '-').result(binding)
   end
 
   def save!

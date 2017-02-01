@@ -1,5 +1,5 @@
 <h2>CurateND Metrics Report</h2>
-<em> Time period: <%=@metrics.report_start_date%> through <%=@metrics.report_end_date%> </em>
+<em> Time period: <%=metrics.report_start_date%> through <%=metrics.report_end_date%> </em>
 <dl>
   <dt>Object</dt> <dd>entity in storage system </dd>
   <dt>Item</dt> <dd>CurateND Intellectual object</dd>
@@ -19,16 +19,14 @@
     </tr>
     </thead>
     <tbody>
-    <% metrics.storage.each do |storage| -%>
-      <% storage.each do |key, value| -%>
+      <% metrics.storage.each do |storage_type, storage_details| -%>
         <tr>
-          <td> <%= key %> </td>
-          <td> <%= value.fetch(:count)%> </td>
-          <td> <%= value.fetch(:size)%> </td>
-          <td> <%= ::ApplicationController.helpers.number_to_human_size(value.fetch(:size)) %> </td>
+          <td> <%= storage_type %> </td>
+          <td> <%= storage_details.count%> </td>
+          <td> <%= storage_details.size%> </td>
+          <td> <%= ::ApplicationController.helpers.number_to_human_size(storage_details.size) %> </td>
         </tr>
-       <% end -%>
-     <% end -%>
+      <% end -%>
     </tbody>
   </table>
 <% end -%>
