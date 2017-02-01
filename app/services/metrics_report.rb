@@ -5,11 +5,13 @@ class MetricsReport
   # Helper class to store report details
   class MetricsDetail
     attr_reader :report_start_date, :report_end_date, :fedora_count,
-                :fedora_size, :storage
+                :fedora_size, :storage, :count_by_mime_type, :bytes_by_mime_type
     def initialize(report_start_date, report_end_date)
       @report_start_date = report_start_date
       @report_end_date = report_end_date
       @storage = {}
+      @count_by_mime_type={}
+      @bytes_by_mime_type={}
     end
   end
 
@@ -53,6 +55,13 @@ class MetricsReport
     storage = CurateStorageDetail.where(storage_type: storage_type)
                                  .where('harvest_date <= :as_of', as_of: metrics.report_end_date).last
     metrics.storage[storage_type] = ReportingStorageDetail.new(count: storage.object_count, size: storage.object_bytes) if storage.present?
+  end
+
+  def gf_by_mime_type
+    gf_by_mime_type = FedoraObject.generic_files(as_of: metrics.report_end_date, group: 'mime_type')
+    gf_by_mime_type.each { |m, records|  @metrics.bytes_by_mime_type[m] = records.map(&:bytes).sum}
+    gf_by_mime_type.each { |m, records|  @metrics.count_by_mime_type[m] = records.count}
+
   end
 
   def render
