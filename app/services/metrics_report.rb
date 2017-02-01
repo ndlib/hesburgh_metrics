@@ -8,6 +8,7 @@ class MetricsReport
     def initialize(report_start_date, report_end_date)
       @report_start_date = report_start_date
       @report_end_date = report_end_date
+      @storage = []
     end
   end
 
@@ -24,8 +25,8 @@ class MetricsReport
     # Storage Information
     @metrics.storage = []
     begin
-      %w(Fedora Bendo).map do |type|
-        @metrics.storage << storage_information_for(type)
+      %w(Fedora Bendo).each do |type|
+        storage_information_for(type)
       end
       save!
     rescue StandardError => e
@@ -50,11 +51,12 @@ class MetricsReport
     h = {}
     storage = CurateStorageDetail.where(harvest_date: metrics.report_end_date, storage_type: storage_type).last
     h[storage_type] = { count: storage.object_count, size: storage.object_bytes } if storage.present?
-    h
+    @metrics.storage << h if h.present?
   end
 
   def render
-    ERB.new(@template).result(binding)
+    html = ERB.new(@template, nil, '-').result(binding)
+    html
   end
 
   def save!
