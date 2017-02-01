@@ -2,10 +2,10 @@ require 'erb'
 
 # Create Metrics Report for given dates
 class MetricsReport
-
   # Helper class to store report details
   class MetricsDetail
-    attr_reader :report_start_date, :report_end_date, :fedora_count, :fedora_size, :storage
+    attr_reader :report_start_date, :report_end_date, :fedora_count,
+                :fedora_size, :storage
     def initialize(report_start_date, report_end_date)
       @report_start_date = report_start_date
       @report_end_date = report_end_date
@@ -13,7 +13,7 @@ class MetricsReport
     end
   end
 
-  STORAGE_TYPES = ['Fedora', 'Bendo'].freeze
+  STORAGE_TYPES = %w(Fedora Bendo).freeze
 
   attr_reader :metrics, :exceptions, :filename
 
@@ -50,7 +50,8 @@ class MetricsReport
   end
 
   def storage_information_for(storage_type)
-    storage = CurateStorageDetail.where(storage_type: storage_type).where('harvest_date <= :as_of', as_of:metrics.report_end_date).last
+    storage = CurateStorageDetail.where(storage_type: storage_type)
+                                 .where('harvest_date <= :as_of', as_of: metrics.report_end_date).last
     metrics.storage[storage_type] = ReportingStorageDetail.new(count: storage.object_count, size: storage.object_bytes) if storage.present?
   end
 

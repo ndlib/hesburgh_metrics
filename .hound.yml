@@ -35,6 +35,7 @@ LineLength:
   Enabled: true
   Exclude:
    - spec/services/fedora_object_harvester_spec.rb
+   - app/services/fedora_object_harvester.rb
 
 Style/StringLiterals:
   Description: 'Checks if uses of quotes match the configured preference.'
@@ -54,6 +55,11 @@ Metrics/MethodLength:
   Max: 10
   Exclude:
    - app/services/fedora_object_harvester.rb
+
+Metrics/LineLength:
+  Description: 'Limit lines to 150 characters.'
+  Max: 150
+  Enabled: false
 
 Metrics/AbcSize:
   Enabled: true
