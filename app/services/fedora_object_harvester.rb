@@ -223,14 +223,18 @@ class FedoraObjectHarvester
       rights_array = []
 
       machine_group_rights = this_access.elements['machine'].elements['group']
-      machine_group_rights.each do |value|
-        rights_array << value
-      end unless machine_group_rights.nil?
+      unless machine_group_rights.nil?
+        machine_group_rights.each do |value|
+          rights_array << value
+        end
+      end
 
       machine_person_rights = this_access.elements['machine'].elements['person']
-      machine_person_rights.each do |value|
-        rights_array << value
-      end unless machine_person_rights.nil?
+      unless machine_person_rights.nil?
+        machine_person_rights.each do |value|
+          rights_array << value
+        end
+      end
 
       if rights_array.include? 'public'
         'public'

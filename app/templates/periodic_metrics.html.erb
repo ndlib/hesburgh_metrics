@@ -1,0 +1,34 @@
+<h2>CurateND Metrics Report</h2>
+<em> Time period: <%=metrics.report_start_date%> through <%=metrics.report_end_date%> </em>
+<dl>
+  <dt>Object</dt> <dd>entity in storage system </dd>
+  <dt>Item</dt> <dd>CurateND Intellectual object</dd>
+  <dt>File</dt> <dd>Content file downloadable from CurateND</dd>
+</dl>
+<% unless metrics.storage.empty? -%>
+  <table class="table table-striped">
+    <caption class="table-heading">
+      <h4>Holdings (at end of period) </h4>
+    </caption>
+    <thead>
+    <tr>
+      <th>Storage</th>
+      <th>Objects</th>
+      <th>Size (Bytes)</th>
+      <th>Size (GB)</th>
+    </tr>
+    </thead>
+    <tbody>
+      <% metrics.storage.each do |storage_type, storage_details| -%>
+        <tr>
+          <td> <%= storage_type %> </td>
+          <td> <%= storage_details.count%> </td>
+          <td> <%= storage_details.size%> </td>
+          <td> <%= ::ApplicationController.helpers.number_to_human_size(storage_details.size) %> </td>
+        </tr>
+      <% end -%>
+    </tbody>
+  </table>
+<% end -%>
+
+
