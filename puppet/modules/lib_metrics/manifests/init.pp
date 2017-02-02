@@ -35,6 +35,14 @@ class lib_metrics( $env = "staging" ) {
 		hour => 2,
 		minute => 15,
 	}
+
+        # bendo_metrics insertion
+	cron { 'bendo_metrics insertion': 
+		command => '/home/app/metrics/current/script/insert_bendo_metrics',
+		user => 'app',
+		hour => 1,
+		minute => 15,
+	}
 } 
 
 

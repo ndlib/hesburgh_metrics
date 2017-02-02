@@ -1,0 +1,29 @@
+#!/bin/bash
+# Extract Object count and size from Bendo DB, Insert into METRICS DB
+
+METRICS_HOME=$HOME/metrics/current
+
+date
+
+#Get config info from yaml file
+eval 'export $($METRICS_HOME/script/parse_yaml $METRICS_HOME/config/database.yml)'
+
+#get object count and size
+object_count=$(mysql -sN -h ${staging_bendo_host} --password=${staging_bendo_password} -u ${staging_bendo_username} -e 'select count(*) from items' ${staging_bendo_database})
+object_size=$(mysql -sN -h ${staging_bendo_host} --password=${staging_bendo_password} -u ${staging_bendo_username} -e 'select sum(size) from items' ${staging_bendo_database})
+
+if [[ ${object_count} -eq 1 ]] || [[ ${object_size} -eq 1 ]] 
+then
+	echo "ERROR: one or more MySql Queries to Bendo DB failed"
+	exit 1
+fi
+
+mysql -sN -h ${staging_host} --password=${staging_password} -u ${staging_username} -e "insert into curate_storage_details(storage_type, object_count, object_bytes, harvest_date, created_at) VALUES ('Bendo', $object_count, $object_size, now(), now())" ${staging_database}
+
+if [ $? -ne 0 ]
+then
+	echo "ERROR: MySql Insert into Metrics DB failed"
+	exit 1
+fi
+
+echo "MySql Insertion into Metrics DB Succeeded"
