@@ -1,5 +1,12 @@
 Figaro.require_keys(
   'fedora_url',
   'fedora_user',
-  'fedora_password'
+  'fedora_password',
+  'bendo_username',
+  'bendo_password',
+  'bendo_host',
+  'bendo_adapter',
+  'bendo_encoding',
+  'bendo_pool',
+  'bendo_timeout'
 )

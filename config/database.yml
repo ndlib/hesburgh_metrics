@@ -23,3 +23,13 @@ test:
 production:
   <<: *default
   database: db/production.sqlite3
+
+bendo:
+  database: <%= Figaro.env.bendo_database %>
+  username: <%= Figaro.env.bendo_username %>
+  password: <%= Figaro.env.bendo_password %>
+  host:     <%= Figaro.env.bendo_host %>
+  adapter:  <%= Figaro.env.bendo_adapter %>
+  encoding: <%= Figaro.env.bendo_encoding %>
+  pool:     <%= Figaro.env.bendo_pool %>
+  timeout:  <%= Figaro.env.bendo_timeout %>
