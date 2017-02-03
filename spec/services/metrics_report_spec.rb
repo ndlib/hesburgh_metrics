@@ -8,9 +8,9 @@ RSpec.describe MetricsReport do
     subject { report.generate_report }
 
     before do
-      CurateStorageDetail.create(id: 1, harvest_date: end_date, storage_type: 'Fedora',
+      CurateStorageDetail.create(harvest_date: end_date, storage_type: 'Fedora',
                                  object_count: 100, object_bytes: 123456)
-      CurateStorageDetail.create(id: 2, harvest_date: end_date, storage_type: 'Bendo',
+      CurateStorageDetail.create(harvest_date: end_date, storage_type: 'Bendo',
                                  object_count: 10, object_bytes: 1234)
     end
 
