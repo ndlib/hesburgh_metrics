@@ -16,8 +16,7 @@ class HarvestWeblogs
       @status = fields[8]
       @method = fields[5].sub('"', '')
       @path = fields[6]
-      raw_time = (fields[3]+fields[4]).sub('[', '').sub(']', '')
-      @event_time = DateTime.strptime(raw_time, '%d/%b/%Y:%H:%M:%S%z')
+      @event_time = parse_time(fields[3] + fields[4])
       @pid = nil
       @agent = line.split('"')[5]
     end
@@ -35,6 +34,13 @@ class HarvestWeblogs
 
     def ip_format(ip)
       IPAddr.new(ip).mask(24).to_s.split('/')[0]
+    end
+
+    private
+
+    def parse_time(s)
+      s = s.sub('[', '').sub(']', '')
+      DateTime.strptime(s, '%d/%b/%Y:%H:%M:%S%z')
     end
   end
 
