@@ -10,6 +10,15 @@
 #   stripe_api_key: sk_live_EeHnL644i6zo4Iyq4v1KdV9H
 #   stripe_publishable_key: pk_live_9lcthxpSIHbGwmdO941O1XVU
 
+bendo_database: tmp/bendo.sql
+bendo_username: username
+bendo_password: password
+bendo_host: localhost
+bendo_adapter: sqlite3
+bendo_encoding: utf8
+bendo_pool: 5
+bendo_timeout: 5000
+
 development:
   fedora_user: fedora
   fedora_password: password
