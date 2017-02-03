@@ -23,7 +23,7 @@ RSpec.describe HarvestWeblogs do
       expect(File.exist?(ingestfile)).to be false
       expect do
         HarvestWeblogs.harvest_directory(harvest_config)
-      end.to change { FedoraAccessEvent.count }.by(962)
+      end.to change { FedoraAccessEvent.count }.by(968)
 
       # ingested history should be created
       expect(File.exist?(ingestfile)).to be true

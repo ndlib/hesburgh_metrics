@@ -19,22 +19,18 @@ class HarvestWeblogs
       raw_time = fields[3].sub('[', '')
       @event_time = DateTime.strptime(raw_time, '%d/%b/%Y:%H:%M:%S')
       @pid = nil
-      @agent = line
+      @agent = line.split('"')[5]
     end
 
     # save the record using the active record framework
     def save
       this_event = FedoraAccessEvent.new
       this_event.pid = pid
-      this_event.agent = agent_format(agent)
+      this_event.agent = agent.truncate(254)
       this_event.event = event
       this_event.location = ip_format(ip)
       this_event.event_time = event_time
       this_event.save
-    end
-
-    def agent_format(agent)
-      agent.split('"')[5].truncate(254)
     end
 
     def ip_format(ip)
