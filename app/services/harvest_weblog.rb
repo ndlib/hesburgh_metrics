@@ -13,32 +13,34 @@ class HarvestWeblogs
       fields = line.split(' ')
       @ip = fields[0]
       @event = nil
-      @status = fields[9]
-      @method = fields[6].sub('"', '')
-      @path = fields[7]
-      raw_time = fields[3].sub('[', '')
-      @event_time = DateTime.strptime(raw_time, '%d/%b/%Y:%H:%M:%S')
+      @status = fields[8]
+      @method = fields[5].sub('"', '')
+      @path = fields[6]
+      @event_time = parse_time(fields[3] + fields[4])
       @pid = nil
-      @agent = line
+      @agent = line.split('"')[5]
     end
 
     # save the record using the active record framework
     def save
       this_event = FedoraAccessEvent.new
       this_event.pid = pid
-      this_event.agent = agent_format(agent)
+      this_event.agent = agent.truncate(254)
       this_event.event = event
       this_event.location = ip_format(ip)
       this_event.event_time = event_time
       this_event.save
     end
 
-    def agent_format(agent)
-      agent.split('"')[5].truncate(254)
-    end
-
     def ip_format(ip)
       IPAddr.new(ip).mask(24).to_s.split('/')[0]
+    end
+
+    private
+
+    def parse_time(s)
+      s = s.sub('[', '').sub(']', '')
+      DateTime.strptime(s, '%d/%b/%Y:%H:%M:%S%z')
     end
   end
 
