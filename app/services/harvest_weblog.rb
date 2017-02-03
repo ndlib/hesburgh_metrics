@@ -13,9 +13,9 @@ class HarvestWeblogs
       fields = line.split(' ')
       @ip = fields[0]
       @event = nil
-      @status = fields[9]
-      @method = fields[6].sub('"', '')
-      @path = fields[7]
+      @status = fields[8]
+      @method = fields[5].sub('"', '')
+      @path = fields[6]
       raw_time = fields[3].sub('[', '')
       @event_time = DateTime.strptime(raw_time, '%d/%b/%Y:%H:%M:%S')
       @pid = nil
