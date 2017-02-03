@@ -16,8 +16,8 @@ class HarvestWeblogs
       @status = fields[8]
       @method = fields[5].sub('"', '')
       @path = fields[6]
-      raw_time = fields[3].sub('[', '')
-      @event_time = DateTime.strptime(raw_time, '%d/%b/%Y:%H:%M:%S')
+      raw_time = (fields[3]+fields[4]).sub('[', '').sub(']', '')
+      @event_time = DateTime.strptime(raw_time, '%d/%b/%Y:%H:%M:%S%z')
       @pid = nil
       @agent = line.split('"')[5]
     end
