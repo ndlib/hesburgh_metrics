@@ -6,7 +6,7 @@ class HarvestBendoItems
     curate_storage_detail.object_count = BendoItem.count(:all)
     curate_storage_detail.object_bytes = BendoItem.sum(:size)
     curate_storage_detail.storage_type = 'Bendo'
-    curate_storage_detail.harvest_date = Time.now
+    curate_storage_detail.harvest_date = Time.zone.now
     curate_storage_detail.save
   end
 end
