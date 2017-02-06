@@ -28,6 +28,14 @@ class lib_metrics( $env = "staging" ) {
 		minute => 0,
 	}
 
+        # bendo item count and size
+	cron { 'harvest_bendo': 
+		command => '/home/app/metrics/current/script/harvest_bendo.sh',
+		user => 'app',
+		hour => 2,
+		minute => 10,
+	}
+
         # fedora
 	cron { 'harvest_fedora': 
 		command => '/home/app/metrics/current/script/harvest_fedora.sh',

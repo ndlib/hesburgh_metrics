@@ -1,12 +1,12 @@
 # Harvest Bendo Item Count and Size, save to mysql
-#
+# using Activerecord magic
 class HarvestBendoItems
   def self.harvest
-    bendo_item = BendoItem.new
     curate_storage_detail = CurateStorageDetail.new
-    curate_storage_detail.object_count = bendo_item.count(:all)
-    curate_storage_detail.object_bytes = bendo_item.sum(:size)
+    curate_storage_detail.object_count = BendoItem.count(:all)
+    curate_storage_detail.object_bytes = BendoItem.sum(:size)
     curate_storage_detail.storage_type = 'Bendo'
+    curate_storage_detail.harvest_date = Time.now
     curate_storage_detail.save
   end
 end
