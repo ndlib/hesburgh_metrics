@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'harvest_bendo'
+require 'harvest_bendo_items'
 
 # rspec test fro DLPT-818
 RSpec.describe HarvestBendoItems do

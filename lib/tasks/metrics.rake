@@ -24,7 +24,7 @@ namespace :metrics do
 
   desc 'Harvest Bendo Item Count and Size.'
   task harvest_bendo: :environment do
-    require 'harvest_bendo'
+    require 'harvest_bendo_items'
     HarvestBendoItems.harvest
   end
 end
