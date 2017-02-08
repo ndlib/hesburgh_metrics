@@ -4,30 +4,14 @@
 #   Ensure the SQLite 3 gem is defined in your Gemfile
 #   gem 'sqlite3'
 #
-
-mysql_settings: &mysql_settings
-  adapter:   mysql2
-  encoding:  utf8
-  reconnect: false
-  pool:      5
-
-local_user: &local_user
-  <<: *mysql_settings
-  username: root
-  password:
-
 default: &default
   adapter: sqlite3
   pool: 5
   timeout: 5000
 
-development: &development
-  <<: *local_user
-  host: localhost
-  database: metrics_dev
-  port: 13306
-  timeout: 5000
-  socket: /opt/boxen/data/mysql/socket
+development:
+  <<: *default
+  database: db/development.sqlite3
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".

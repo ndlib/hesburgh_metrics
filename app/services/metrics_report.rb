@@ -7,16 +7,16 @@ class MetricsReport
     attr_reader :report_start_date, :report_end_date, :fedora_count,
                 :fedora_size, :storage, :gf_by_holding_type, :obj_by_curate_nd_type
 
-    attr_accessor :items_added_count, :items_modified_count
+    attr_accessor :items_added_count, :items_modified_count,
+                  :obj_by_administrative_unit, :obj_by_academic_status, :administrative_units_count
 
     def initialize(report_start_date, report_end_date)
       @report_start_date = report_start_date
       @report_end_date = report_end_date
       @storage = {}
-      @gf_by_holding_type=[]
-      @obj_by_curate_nd_type=[]
-      #@items_added_count = 0
-      #@items_modified_count = 0
+      @gf_by_holding_type = []
+      @obj_by_curate_nd_type = []
+      @administrative_units_count = 0
     end
   end
 
@@ -41,16 +41,42 @@ class MetricsReport
         storage_information_for(storage_type)
       end
       # Holding Information
-      get_object_counts
+      holding_object_counts
       HOLDING_TYPES.each do |holding_type|
         gf_info_for(holding_type)
       end
       objects_by_model_access_rights
+      administrative_unit_count
+      objects_by_academic_status
       save!
     rescue StandardError => e
       @exceptions << e.inspect
     end
     report_any_exceptions
+  end
+
+  def administrative_unit_presenter(_unit = metrics.obj_by_administrative_unit, html = "")
+    obj_by_administrative_unit.each do |unit_name, count_by_administrative_unit|
+      total_by_dept = 0
+      if count_by_administrative_unit.is_a?(Hash)
+        count_by_department = count_by_administrative_unit.values
+        if count_by_department.all? { |i| i.is_a?(Integer) }
+          total_by_dept = count_by_department.sum
+          html << "<tr class=department> \n"
+          html << "<td> #{unit_name} </td> \n"
+          html << "<td> #{total_by_dept} </td>\n"
+          html << "</tr> \n"
+        end
+        metrics.administrative_units_count = metrics.administrative_units_count + total_by_dept
+        administrative_unit_presenter(count_by_administrative_unit, html = html)
+      else
+        html << "<tr> \n"
+        html <<  "<td> #{unit_name} </td>\n"
+        html <<  "<td> #{count_by_administrative_unit} </td> "
+        html << "</tr> \n"
+      end
+    end
+    html.html_safe
   end
 
   private
@@ -71,7 +97,7 @@ class MetricsReport
     metrics.storage[storage_type] = ReportingStorageDetail.new(count: storage.object_count, size: storage.object_bytes) if storage.present?
   end
 
-  def get_object_counts
+  def holding_object_counts
     metrics.items_added_count = FedoraObject.where('obj_ingest_date <= :end_date AND  obj_ingest_date >= :start_date',
                                                    start_date: metrics.report_start_date, end_date: metrics.report_end_date).count
 
@@ -89,12 +115,28 @@ class MetricsReport
   end
 
   def objects_by_model_access_rights
-    holding_by_nd_access_rights = FedoraObject.where('obj_modified_date <= :as_of', as_of: Date.today)
+    holding_by_nd_access_rights = FedoraObject.where('obj_modified_date <= :as_of', as_of: metrics.report_end_date)
                                               .where('af_model in (:af_model_array)', af_model_array: REPORTING_AF_MODELS)
                                               .group(:af_model).group(:access_rights).count
-    holding_by_nd_access_rights.each do |access_rights_array, count|
-      metrics.obj_by_curate_nd_type << access_rights_array.reverse.inject(count) { |count, type| { type.to_sym => count } }
+    holding_by_nd_access_rights.each do |access_rights_array, object_count|
+      metrics.obj_by_curate_nd_type << access_rights_array.reverse.inject(object_count) { |count, type| { type.to_sym => count } }
     end
+  end
+
+  def objects_by_academic_status
+    metrics.obj_by_academic_status = FedoraObjectAggregationKey.aggregation_by(as_of: metrics.report_end_date,
+                                                                               predicate: 'creator#affiliation')
+  end
+
+  def administrative_unit_count
+    administrative_unit_array = []
+    administrative_units = FedoraObjectAggregationKey.aggregation_by(as_of: metrics.report_end_date,
+                                                                     predicate: 'creator#administrative_unit')
+    administrative_units.each do |administrative_unit|
+      aggregation_keys = administrative_unit.fetch('aggregation_key').split('::')
+      administrative_unit_array << aggregation_keys.reverse.inject(administrative_unit.fetch('object_count')) { |object_count, unit_name| { unit_name => object_count } }
+    end
+    metrics.obj_by_administrative_unit = administrative_unit_array.reduce(&:deep_merge)
   end
 
   def render

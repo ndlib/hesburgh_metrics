@@ -117,6 +117,49 @@
   </table>
 <% end -%>
 
+<% unless metrics.obj_by_administrative_unit.empty? -%>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>By Administrative Unit</th>
+        <th>Count</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= administrative_unit_presenter -%>
+      <tr>
+        <td> Total </td>
+        <td> <%= metrics.administrative_units_count %> </td>
+      </tr>
+    </tbody>
+  </table>
+  <em>(total may not match sum since some items may be associated with more than one department)</em>
+<% end -%>
+
+<% unless metrics.obj_by_academic_status.empty? -%>
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>By Academic Staus</th>
+      <th>Count</th>
+    </tr>
+    </thead>
+    <tbody>
+      <% metrics.obj_by_academic_status.each do |status| -%>
+        <tr>
+          <td> <%= status.fetch("aggregation_key") %> </td>
+          <td> <%= status.fetch("object_count") %> </td>
+        </tr>
+      <% end -%>
+      <tr>
+        <td> Total </td>
+        <td> <%= metrics.obj_by_academic_status.map{|t|t.fetch("object_count")}.sum %> </td>
+      </tr>
+    </tbody>
+  </table>
+  <em>(total may not match sum since some items may be associated with more than one author status)</em>
+<% end -%>
+
 
 
 
