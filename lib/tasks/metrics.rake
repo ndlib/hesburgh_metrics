@@ -21,4 +21,10 @@ namespace :metrics do
     require 'fedora_object_harvester'
     FedoraObjectHarvester.new.harvest
   end
+
+  desc 'Harvest Bendo Item Count and Size.'
+  task harvest_bendo: :environment do
+    require 'harvest_bendo_items'
+    HarvestBendoItems.harvest
+  end
 end
