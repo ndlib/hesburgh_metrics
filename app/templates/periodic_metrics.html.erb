@@ -92,9 +92,9 @@
     </tr>
     </thead>
     <tbody>
-    <% access_type_hash = metrics.obj_by_curate_nd_type.reduce(&:deep_merge).values -%>
+    <% access_type_hash = metrics.obj_by_curate_nd_type.values -%>
     <% total_objects = 0 -%>
-    <% metrics.obj_by_curate_nd_type.reduce(&:deep_merge).each do |af_model, access_count| -%>
+    <% metrics.obj_by_curate_nd_type.each do |af_model, access_count| -%>
       <% total_objects = total_objects + access_count.values.inject(0){|sum, count| sum + count } -%>
       <tr>
           <td> <%= af_model %> </td>
