@@ -65,7 +65,7 @@ Metrics/LineLength:
 
 Metrics/AbcSize:
   Enabled: true
-  Max: 16
+  Max: 20
   Exclude:
    - app/services/fedora_object_harvester.rb
 

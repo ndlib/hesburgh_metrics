@@ -93,9 +93,11 @@
     </thead>
     <tbody>
     <% access_type_hash = metrics.obj_by_curate_nd_type.values -%>
+
     <% total_objects = 0 -%>
     <% metrics.obj_by_curate_nd_type.each do |af_model, access_count| -%>
-      <% total_objects = total_objects + access_count.values.inject(0){|sum, count| sum + count } -%>
+      <%#  access_rights.each do |af_model, access_count| -%>
+        <% total_objects = total_objects + access_count.values.inject(0){|sum, count| sum + count } -%>
       <tr>
           <td> <%= af_model %> </td>
           <td> <%= access_count.fetch(:public, 0)%> </td>

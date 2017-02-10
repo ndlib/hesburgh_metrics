@@ -14,72 +14,71 @@
 ActiveRecord::Schema.define(version: 20170112165749) do
 
   create_table "curate_storage_details", force: :cascade do |t|
-    t.string   "storage_type", limit: 255, null: false
-    t.integer  "object_count", limit: 4,   null: false
-    t.integer  "object_bytes", limit: 8,   null: false
-    t.date     "harvest_date",             null: false
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
-  end
-
-  add_index "curate_storage_details", ["harvest_date"], name: "index_curate_storage_details_on_harvest_date", using: :btree
-  add_index "curate_storage_details", ["object_count"], name: "index_curate_storage_details_on_object_count", using: :btree
-  add_index "curate_storage_details", ["storage_type"], name: "index_curate_storage_details_on_storage_type", using: :btree
-
-  create_table "fedora_access_events", force: :cascade do |t|
-    t.string   "event",      limit: 255, null: false
-    t.string   "pid",        limit: 255, null: false
-    t.string   "location",   limit: 255, null: false
-    t.datetime "event_time",             null: false
-    t.string   "agent",      limit: 255, null: false
+    t.string   "storage_type",           null: false
+    t.integer  "object_count",           null: false
+    t.integer  "object_bytes", limit: 8, null: false
+    t.date     "harvest_date",           null: false
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
   end
 
-  add_index "fedora_access_events", ["agent"], name: "index_fedora_access_events_on_agent", using: :btree
-  add_index "fedora_access_events", ["event"], name: "index_fedora_access_events_on_event", using: :btree
-  add_index "fedora_access_events", ["event_time"], name: "index_fedora_access_events_on_event_time", using: :btree
-  add_index "fedora_access_events", ["location"], name: "index_fedora_access_events_on_location", using: :btree
-  add_index "fedora_access_events", ["pid"], name: "index_fedora_access_events_on_pid", using: :btree
+  add_index "curate_storage_details", ["harvest_date"], name: "index_curate_storage_details_on_harvest_date"
+  add_index "curate_storage_details", ["object_count"], name: "index_curate_storage_details_on_object_count"
+  add_index "curate_storage_details", ["storage_type"], name: "index_curate_storage_details_on_storage_type"
+
+  create_table "fedora_access_events", force: :cascade do |t|
+    t.string   "event",      null: false
+    t.string   "pid",        null: false
+    t.string   "location",   null: false
+    t.datetime "event_time", null: false
+    t.string   "agent",      null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "fedora_access_events", ["agent"], name: "index_fedora_access_events_on_agent"
+  add_index "fedora_access_events", ["event"], name: "index_fedora_access_events_on_event"
+  add_index "fedora_access_events", ["event_time"], name: "index_fedora_access_events_on_event_time"
+  add_index "fedora_access_events", ["location"], name: "index_fedora_access_events_on_location"
+  add_index "fedora_access_events", ["pid"], name: "index_fedora_access_events_on_pid"
 
   create_table "fedora_object_aggregation_keys", force: :cascade do |t|
-    t.integer  "fedora_object_id", limit: 4,   null: false
-    t.string   "aggregation_key",  limit: 255, null: false
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
-    t.string   "predicate_name",   limit: 255, null: false
+    t.integer  "fedora_object_id",              null: false
+    t.string   "aggregation_key",               null: false
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+    t.string   "predicate_name",   default: ""
   end
 
-  add_index "fedora_object_aggregation_keys", ["aggregation_key"], name: "index_fedora_object_aggregation_keys_on_aggregation_key", using: :btree
-  add_index "fedora_object_aggregation_keys", ["fedora_object_id"], name: "index_fedora_object_aggregation_keys_on_fedora_object_id", using: :btree
-  add_index "fedora_object_aggregation_keys", ["predicate_name"], name: "index_fedora_object_aggregation_keys_on_predicate_name", using: :btree
+  add_index "fedora_object_aggregation_keys", ["aggregation_key"], name: "index_fedora_object_aggregation_keys_on_aggregation_key"
+  add_index "fedora_object_aggregation_keys", ["fedora_object_id"], name: "index_fedora_object_aggregation_keys_on_fedora_object_id"
+  add_index "fedora_object_aggregation_keys", ["predicate_name"], name: "index_fedora_object_aggregation_keys_on_predicate_name"
 
   create_table "fedora_objects", force: :cascade do |t|
-    t.string   "pid",               limit: 255,              null: false
-    t.string   "af_model",          limit: 255,              null: false
-    t.string   "resource_type",     limit: 255,              null: false
-    t.string   "mimetype",          limit: 255,              null: false
-    t.integer  "bytes",             limit: 8,                null: false
-    t.string   "parent_pid",        limit: 255,              null: false
-    t.datetime "obj_ingest_date",                            null: false
-    t.datetime "obj_modified_date",                          null: false
-    t.string   "access_rights",     limit: 255,              null: false
-    t.datetime "created_at",                                 null: false
-    t.datetime "updated_at",                                 null: false
-    t.string   "title",             limit: 255, default: ""
-    t.string   "parent_type",       limit: 255, default: ""
+    t.string   "pid",                                      null: false
+    t.string   "af_model",                                 null: false
+    t.string   "resource_type",                            null: false
+    t.string   "mimetype",                                 null: false
+    t.integer  "bytes",             limit: 8,              null: false
+    t.string   "parent_pid",                               null: false
+    t.datetime "obj_ingest_date",                          null: false
+    t.datetime "obj_modified_date",                        null: false
+    t.string   "access_rights",                            null: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+    t.string   "title",                       default: ""
+    t.string   "parent_type",                 default: ""
   end
 
-  add_index "fedora_objects", ["access_rights"], name: "index_fedora_objects_on_access_rights", using: :btree
-  add_index "fedora_objects", ["af_model"], name: "index_fedora_objects_on_af_model", using: :btree
-  add_index "fedora_objects", ["mimetype"], name: "index_fedora_objects_on_mimetype", using: :btree
-  add_index "fedora_objects", ["obj_ingest_date"], name: "index_fedora_objects_on_obj_ingest_date", using: :btree
-  add_index "fedora_objects", ["obj_modified_date"], name: "index_fedora_objects_on_obj_modified_date", using: :btree
-  add_index "fedora_objects", ["parent_pid"], name: "index_fedora_objects_on_parent_pid", using: :btree
-  add_index "fedora_objects", ["parent_type"], name: "index_fedora_objects_on_parent_type", using: :btree
-  add_index "fedora_objects", ["pid"], name: "index_fedora_objects_on_pid", using: :btree
-  add_index "fedora_objects", ["resource_type"], name: "index_fedora_objects_on_resource_type", using: :btree
-  add_index "fedora_objects", ["title"], name: "index_fedora_objects_on_title", using: :btree
+  add_index "fedora_objects", ["access_rights"], name: "index_fedora_objects_on_access_rights"
+  add_index "fedora_objects", ["af_model"], name: "index_fedora_objects_on_af_model"
+  add_index "fedora_objects", ["mimetype"], name: "index_fedora_objects_on_mimetype"
+  add_index "fedora_objects", ["obj_ingest_date"], name: "index_fedora_objects_on_obj_ingest_date"
+  add_index "fedora_objects", ["obj_modified_date"], name: "index_fedora_objects_on_obj_modified_date"
+  add_index "fedora_objects", ["parent_pid"], name: "index_fedora_objects_on_parent_pid"
+  add_index "fedora_objects", ["parent_type"], name: "index_fedora_objects_on_parent_type"
+  add_index "fedora_objects", ["pid"], name: "index_fedora_objects_on_pid"
+  add_index "fedora_objects", ["resource_type"], name: "index_fedora_objects_on_resource_type"
+  add_index "fedora_objects", ["title"], name: "index_fedora_objects_on_title"
 
-  add_foreign_key "fedora_object_aggregation_keys", "fedora_objects"
 end

@@ -17,14 +17,15 @@ class MetricsReport
       @storage = {}
       @gf_by_holding_type = []
       @administrative_units_count = 0
+      @obj_by_curate_nd_type = {}
+      @obj_by_administrative_unit = []
     end
   end
 
   STORAGE_TYPES = %w(Fedora Bendo).freeze
   HOLDING_TYPES = %w(mimetype access_rights).freeze
   ACCESS_RIGHTS = %w(public local embargo private).freeze
-  REPORTING_AF_MODELS = %w(Article Audio Dataset Document Etd
-                           FindingAid, GenericFile, Image, OsfArchive, SeniorThesis).freeze
+  REPORTING_AF_MODELS = %w(Article Audio Dataset Document Etd FindingAid GenericFile Image OsfArchive SeniorThesis).freeze
 
   attr_reader :metrics, :exceptions, :filename
 
@@ -60,8 +61,11 @@ class MetricsReport
   # with department wide count and total count
   def administrative_unit_presenter(unit = metrics.obj_by_administrative_unit, html = "")
     unit.each do |unit_name, count_by_administrative_unit|
+      # if given administrative_unit_hash is department hash, add department name and total count
       if count_by_administrative_unit.is_a?(Hash)
-        html << get_department_name_with_count(count_by_administrative_unit, unit_name)
+        count_by_department = count_by_administrative_unit.values
+        metrics.administrative_units_count = metrics.administrative_units_count + count_by_department.sum
+        html << "<tr class=department> \n <td> #{unit_name} </td> \n <td> #{count_by_department.sum} </td>\n </tr> \n"
         administrative_unit_presenter(count_by_administrative_unit, html = html)
       else
         html << "<tr> \n <td> #{unit_name} </td>\n <td> #{count_by_administrative_unit} </td> </tr> \n"
@@ -69,8 +73,6 @@ class MetricsReport
     end
     ApplicationController.helpers.safe_join([html.html_safe])
   end
-
-  private
 
   def report_any_exceptions
     return unless @exceptions.any?
@@ -106,15 +108,21 @@ class MetricsReport
   end
 
   def objects_by_model_access_rights
-    af_model_right_array = []
     holding_by_nd_access_rights = FedoraObject.where('obj_modified_date <= :as_of', as_of: metrics.report_end_date)
                                               .where('af_model in (:af_model_array)', af_model_array: REPORTING_AF_MODELS)
                                               .group(:af_model).group(:access_rights).count
-    # create recursive array of hashes with af_model and rights with count hash
+    metrics.obj_by_curate_nd_type = collect_access_rights(holding_by_nd_access_rights)
+  end
+
+  # Create nested hash of access_rights with af_model
+  def collect_access_rights(holding_by_nd_access_rights)
+    accumulator = {}
     holding_by_nd_access_rights.each do |access_rights_array, object_count|
-      af_model_right_array << access_rights_array.reverse.inject(object_count) { |_count, _type| { _type.to_sym => _count } }
+      accumulator[access_rights_array.first.to_sym] ||= {}
+      accumulator[access_rights_array.first.to_sym][access_rights_array.last.to_sym] ||= 0
+      accumulator[access_rights_array.first.to_sym][access_rights_array.last.to_sym] += object_count
     end
-    metrics.obj_by_curate_nd_type = af_model_right_array.reduce(&:deep_merge)
+    accumulator
   end
 
   def objects_by_academic_status
@@ -127,24 +135,25 @@ class MetricsReport
     administrative_unit_array = []
     administrative_units = FedoraObjectAggregationKey.aggregation_by(as_of: metrics.report_end_date,
                                                                      predicate: 'creator#administrative_unit')
-    # create array of recursive hash with administrative unit hierarchy with count
     administrative_units.each do |administrative_unit|
       aggregation_keys = administrative_unit.fetch('aggregation_key').split('::')
-      administrative_unit_array << aggregation_keys.reverse.inject(administrative_unit.fetch('object_count')) { |object_count, unit_name| { unit_name => object_count } }
+      # remove header (University of NotreDame)
+      aggregation_keys.shift
+      administrative_unit_array << convert_administrative_unit_to_hash(aggregation_keys, administrative_unit.fetch('object_count'))
     end
     metrics.obj_by_administrative_unit = administrative_unit_array.reduce(&:deep_merge)
   end
 
-  # if given administrative_unit_hash is department, return department name and total count
-  def get_department_name_with_count(count_by_administrative_unit, unit_name)
-    html = " "
-    count_by_department = count_by_administrative_unit.values
-    if count_by_department.all? { |i| i.is_a?(Integer) }
-      total_by_dept = count_by_department.sum
-      metrics.administrative_units_count = metrics.administrative_units_count + total_by_dept
-      html << "<tr class=department> \n <td> #{unit_name} </td> \n <td> #{total_by_dept} </td>\n </tr> \n"
+  def convert_administrative_unit_to_hash(administrative_units, count)
+    accumulator = {}
+    key = administrative_units.shift
+    accumulator[key] ||= {}
+    if administrative_units.present?
+      accumulator[key][administrative_units.shift] = count
+    else
+      accumulator[key] = count
     end
-    html
+    accumulator
   end
 
   def render
