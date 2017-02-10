@@ -112,7 +112,7 @@ class MetricsReport
                                               .group(:af_model).group(:access_rights).count
     # create recursive array of hashes with af_model and rights with count hash
     holding_by_nd_access_rights.each do |access_rights_array, object_count|
-      af_model_right_array << access_rights_array.reverse.inject(object_count) { |count, type| { type.to_sym => count } }
+      af_model_right_array << access_rights_array.reverse.inject(object_count) { |_count, _type| { _type.to_sym => _count } }
     end
     metrics.obj_by_curate_nd_type = af_model_right_array.reduce(&:deep_merge)
   end
