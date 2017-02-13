@@ -21,7 +21,7 @@
       <% total_size = 0 %>
       <% metrics.storage.each do |storage_type, storage_details| -%>
         <tr>
-          <% total_count = total_count + storage_details.count -%>
+          <% total_count += storage_details.count -%>
           <% total_size = total_size +  storage_details.size -%>
           <td> <%= storage_type %> </td>
           <td> <%= storage_details.count%> </td>
@@ -54,8 +54,8 @@
       <% total_size = 0 -%>
       <% holding_type.each do |mime_type, generic_files| -%>
         <tr>
-          <% total_count = total_count + generic_files.count -%>
-          <% total_size = total_size +  generic_files.size -%>
+          <% total_count += generic_files.count -%>
+          <% total_size += generic_files.size -%>
           <td> <%= mime_type %> </td>
           <td> <%= generic_files.count%> </td>
           <td> <%= generic_files.size%> </td>
@@ -97,7 +97,7 @@
     <% total_objects = 0 -%>
     <% metrics.obj_by_curate_nd_type.each do |af_model, access_count| -%>
       <%#  access_rights.each do |af_model, access_count| -%>
-        <% total_objects = total_objects + access_count.values.inject(0){|sum, count| sum + count } -%>
+        <% total_objects += access_count.values.inject(0){|sum, count| sum + count } -%>
       <tr>
           <td> <%= af_model %> </td>
           <td> <%= access_count.fetch(:public, 0)%> </td>
@@ -128,7 +128,7 @@
       </tr>
     </thead>
     <tbody>
-      <%= administrative_unit_presenter -%>
+      <%= report_administrative_unit_as_html -%>
       <tr>
         <td> Total </td>
         <td> <%= metrics.administrative_units_count %> </td>
@@ -147,7 +147,9 @@
     </tr>
     </thead>
     <tbody>
+      <% total_count = 0 -%>
       <% metrics.obj_by_academic_status.each do |status| -%>
+        <% total_count += status.fetch("object_count") -%>
         <tr>
           <td> <%= status.fetch("aggregation_key") %> </td>
           <td> <%= status.fetch("object_count") %> </td>
@@ -155,7 +157,7 @@
       <% end -%>
       <tr>
         <td> Total </td>
-        <td> <%= metrics.obj_by_academic_status.map{|t|t.fetch("object_count")}.sum %> </td>
+        <td> <%= total_count %> </td>
       </tr>
     </tbody>
   </table>

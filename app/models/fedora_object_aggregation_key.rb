@@ -8,6 +8,8 @@ class FedoraObjectAggregationKey < ActiveRecord::Base
             where b.predicate_name= ?
             and a.obj_modified_date <= ?
             group by aggregation_key"
-    FedoraObjectAggregationKey.find_by_sql([sql, options.fetch(:predicate), options.fetch(:as_of)]).map(&:attributes)
+    predicate_name = options.fetch(:predicate)
+    modified_date = options.fetch(:as_of)
+    FedoraObjectAggregationKey.find_by_sql([sql, predicate_name, modified_date]).map(&:attributes)
   end
 end

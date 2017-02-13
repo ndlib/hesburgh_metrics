@@ -6,7 +6,7 @@ class MetricsReport
   # Helper class to store report details
   class MetricsDetail
     attr_reader :report_start_date, :report_end_date, :fedora_count,
-                :fedora_size, :storage, :gf_by_holding_type
+                :fedora_size, :storage, :generic_files_by_holding
 
     attr_accessor :items_added_count, :items_modified_count, :obj_by_curate_nd_type,
                   :obj_by_administrative_unit, :obj_by_academic_status, :administrative_units_count
@@ -15,7 +15,7 @@ class MetricsReport
       @report_start_date = report_start_date
       @report_end_date = report_end_date
       @storage = {}
-      @gf_by_holding_type = []
+      @generic_files_by_holding = []
       @administrative_units_count = 0
       @obj_by_curate_nd_type = {}
       @obj_by_administrative_unit = []
@@ -45,7 +45,7 @@ class MetricsReport
       # Holding Information
       holding_object_counts
       HOLDING_TYPES.each do |holding_type|
-        gf_info_for(holding_type)
+        generic_files_for(holding_type)
       end
       objects_by_model_access_rights
       administrative_unit_count
@@ -59,14 +59,14 @@ class MetricsReport
 
   # get all the count for administrative unit and present them hierarchical order
   # with department wide count and total count
-  def administrative_unit_presenter(unit = metrics.obj_by_administrative_unit, html = "")
+  def report_administrative_unit_as_html(unit = metrics.obj_by_administrative_unit, html = "")
     unit.each do |unit_name, count_by_administrative_unit|
       # if given administrative_unit_hash is department hash, add department name and total count
       if count_by_administrative_unit.is_a?(Hash)
         count_by_department = count_by_administrative_unit.values
         metrics.administrative_units_count = metrics.administrative_units_count + count_by_department.sum
         html << "<tr class=department> \n <td> #{unit_name} </td> \n <td> #{count_by_department.sum} </td>\n </tr> \n"
-        administrative_unit_presenter(count_by_administrative_unit, html = html)
+        report_administrative_unit_as_html(count_by_administrative_unit, html = html)
       else
         html << "<tr> \n <td> #{unit_name} </td>\n <td> #{count_by_administrative_unit} </td> </tr> \n"
       end
@@ -98,13 +98,13 @@ class MetricsReport
                                                       start_date: metrics.report_start_date, end_date: metrics.report_end_date).count
   end
 
-  def gf_info_for(holding_type)
+  def generic_files_for(holding_type)
     gf_by_type = FedoraObject.generic_files(as_of: metrics.report_end_date, group: holding_type)
     holding_type_objects = {}
     gf_by_type.each do |type, objects|
       holding_type_objects[type] = ReportingStorageDetail.new(count: objects.count, size: objects.map(&:bytes).sum)
     end
-    metrics.gf_by_holding_type << holding_type_objects
+    metrics.generic_files_by_holding << holding_type_objects
   end
 
   def objects_by_model_access_rights
