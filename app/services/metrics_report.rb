@@ -48,11 +48,11 @@ class MetricsReport
         generic_files_for(holding_type)
       end
       objects_by_model_access_rights
-      administrative_unit_count
+      build_nested_administrative_units
       objects_by_academic_status
       save!
     rescue StandardError => e
-      @exceptions << e.inspect
+      @exceptions << e
     end
     report_any_exceptions
   end
@@ -65,10 +65,10 @@ class MetricsReport
       if count_by_administrative_unit.is_a?(Hash)
         count_by_department = count_by_administrative_unit.values
         metrics.administrative_units_count = metrics.administrative_units_count + count_by_department.sum
-        html << "<tr class=department> \n <td> #{unit_name} </td> \n <td> #{count_by_department.sum} </td>\n </tr> \n"
+        html << "<tr class=department>  <td>#{unit_name}</td>  <td>#{count_by_department.sum}</td> </tr> "
         report_administrative_unit_as_html(count_by_administrative_unit, html = html)
       else
-        html << "<tr> \n <td> #{unit_name} </td>\n <td> #{count_by_administrative_unit} </td> </tr> \n"
+        html << "<tr>  <td>#{unit_name}</td> <td>#{count_by_administrative_unit}</td> </tr> "
       end
     end
     ApplicationController.helpers.safe_join([html.html_safe])
@@ -76,13 +76,15 @@ class MetricsReport
 
   def report_any_exceptions
     return unless @exceptions.any?
-    @exceptions.each do |error_message|
+    @exceptions.each do |error|
       Airbrake.notify_sync(
-        'MetricsReportError',
-        errors: error_message
+        'MetricsReportError: ' + error.class.to_s,
+        errors: error
       )
     end
   end
+
+  private
 
   def storage_information_for(storage_type)
     storage = CurateStorageDetail.where(storage_type: storage_type)
@@ -99,18 +101,16 @@ class MetricsReport
   end
 
   def generic_files_for(holding_type)
-    gf_by_type = FedoraObject.generic_files(as_of: metrics.report_end_date, group: holding_type)
+    generic_files_by_type = FedoraObject.generic_files(as_of: metrics.report_end_date, group: holding_type)
     holding_type_objects = {}
-    gf_by_type.each do |type, objects|
+    generic_files_by_type.each do |type, objects|
       holding_type_objects[type] = ReportingStorageDetail.new(count: objects.count, size: objects.map(&:bytes).sum)
     end
     metrics.generic_files_by_holding << holding_type_objects
   end
 
   def objects_by_model_access_rights
-    holding_by_nd_access_rights = FedoraObject.where('obj_modified_date <= :as_of', as_of: metrics.report_end_date)
-                                              .where('af_model in (:af_model_array)', af_model_array: REPORTING_AF_MODELS)
-                                              .group(:af_model).group(:access_rights).count
+    holding_by_nd_access_rights = FedoraObject.group_by_af_model_and_access_rights(as_of: metrics.report_end_date, reporting_models: REPORTING_AF_MODELS)
     metrics.obj_by_curate_nd_type = collect_access_rights(holding_by_nd_access_rights)
   end
 
@@ -130,30 +130,29 @@ class MetricsReport
                                                                                predicate: 'creator#affiliation')
   end
 
-  # Get administrative count as a recursive hierarchical hash
-  def administrative_unit_count
+  # Get administrative count as a nested hierarchical hash
+  def build_nested_administrative_units
     administrative_unit_array = []
+    accumulator = {}
     administrative_units = FedoraObjectAggregationKey.aggregation_by(as_of: metrics.report_end_date,
                                                                      predicate: 'creator#administrative_unit')
     administrative_units.each do |administrative_unit|
-      aggregation_keys = administrative_unit.fetch('aggregation_key').split('::')
+      aggregation_keys = administrative_unit.fetch(:aggregation_key).split('::')
       # remove header (University of NotreDame)
       aggregation_keys.shift
-      administrative_unit_array << convert_administrative_unit_to_hash(aggregation_keys, administrative_unit.fetch('object_count'))
+      # create nested hash of department with colleges and count
+      department_name = aggregation_keys.shift
+      count = administrative_unit.fetch(:object_count)
+      accumulator[department_name] ||= {}
+      # Check if it is department or college level
+      if aggregation_keys.present?
+        accumulator[department_name][aggregation_keys.shift] = count
+      else
+        accumulator[department_name] = count
+      end
+      administrative_unit_array << accumulator
     end
     metrics.obj_by_administrative_unit = administrative_unit_array.reduce(&:deep_merge)
-  end
-
-  def convert_administrative_unit_to_hash(administrative_units, count)
-    accumulator = {}
-    key = administrative_units.shift
-    accumulator[key] ||= {}
-    if administrative_units.present?
-      accumulator[key][administrative_units.shift] = count
-    else
-      accumulator[key] = count
-    end
-    accumulator
   end
 
   def render

@@ -2,6 +2,7 @@ require 'coverage_helper'
 
 require 'webmock/rspec'
 require 'vcr'
+require 'rspec-html-matchers'
 
 GEM_ROOT = File.expand_path('../../', __FILE__)
 $LOAD_PATH.unshift File.join(GEM_ROOT, 'lib')
