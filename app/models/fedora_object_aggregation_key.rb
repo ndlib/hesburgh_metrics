@@ -10,6 +10,6 @@ class FedoraObjectAggregationKey < ActiveRecord::Base
             group by aggregation_key"
     predicate_name = options.fetch(:predicate)
     modified_date = options.fetch(:as_of)
-    FedoraObjectAggregationKey.find_by_sql([sql, predicate_name, modified_date]).map(&:attributes)
+    FedoraObjectAggregationKey.find_by_sql([sql, predicate_name, modified_date]).map { |aggregation| aggregation.attributes.symbolize_keys }
   end
 end

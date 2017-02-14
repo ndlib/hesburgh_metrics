@@ -6,7 +6,7 @@
   <dt>File</dt> <dd>Content file downloadable from CurateND</dd>
 </dl>
 <h4>Holdings (at end of period) </h4>
-<% unless metrics.storage.empty? -%>
+<% unless metrics.storage.blank? -%>
   <table class="table table-striped">
     <thead>
     <tr>
@@ -38,8 +38,8 @@
     </tbody>
   </table>
 <% end -%>
-<% unless metrics.gf_by_holding_type.empty? -%>
-  <% metrics.gf_by_holding_type.each do |holding_type| -%>
+<% unless metrics.generic_files_by_holding.blank? -%>
+  <% metrics.generic_files_by_holding.each do |holding_type| -%>
     <table class="table table-striped">
       <thead>
       <tr>
@@ -79,7 +79,7 @@
 
 </dl>
 
-<% unless metrics.obj_by_curate_nd_type.empty? -%>
+<% unless metrics.obj_by_curate_nd_type.blank? -%>
   <table class="table table-striped">
     <thead>
     <tr>
@@ -119,7 +119,7 @@
   </table>
 <% end -%>
 
-<% unless metrics.obj_by_administrative_unit.empty? -%>
+<% unless metrics.obj_by_administrative_unit.blank? -%>
   <table class="table table-striped">
     <thead>
       <tr>
@@ -138,7 +138,7 @@
   <em>(total may not match sum since some items may be associated with more than one department)</em>
 <% end -%>
 
-<% unless metrics.obj_by_academic_status.empty? -%>
+<% unless metrics.obj_by_academic_status.blank? -%>
   <table class="table table-striped">
     <thead>
     <tr>
@@ -149,10 +149,10 @@
     <tbody>
       <% total_count = 0 -%>
       <% metrics.obj_by_academic_status.each do |status| -%>
-        <% total_count += status.fetch("object_count") -%>
+        <% total_count += status.fetch(:object_count) -%>
         <tr>
-          <td> <%= status.fetch("aggregation_key") %> </td>
-          <td> <%= status.fetch("object_count") %> </td>
+          <td> <%= status.fetch(:aggregation_key) %> </td>
+          <td> <%= status.fetch(:object_count) %> </td>
         </tr>
       <% end -%>
       <tr>

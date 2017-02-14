@@ -68,6 +68,7 @@ Metrics/AbcSize:
   Max: 20
   Exclude:
    - app/services/fedora_object_harvester.rb
+   - app/services/metrics_report.rb
 
 Lint/ParenthesesAsGroupedExpression:
   Enabled: true
