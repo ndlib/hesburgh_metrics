@@ -27,4 +27,10 @@ namespace :metrics do
     require 'harvest_bendo_items'
     HarvestBendoItems.harvest
   end
+
+  desc 'Create Periodic Metrics Report for given date Range'
+  task generate_report: :environment do
+    require 'metrics_report'
+    MetricsReport.new( ENV['START_DATE'],  ENV['END_DATE']).generate_report
+  end
 end
