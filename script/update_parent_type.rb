@@ -1,3 +1,12 @@
+# Responsible for updating parent type for all fedora object
+#
+# This script should be run within the context of the Rails environment via the
+# `rails runner` command.
+#
+# ```console
+# $ cd <CURRENT_WORKING_DIRECTORY>
+# $ bundle exec rails runner -e <RAILS_ENV> <__FILE__>
+# ```
 module UpdateParentType
   module_function
 
@@ -9,9 +18,10 @@ module UpdateParentType
         if obj.af_model == 'GenericFile'
           parent_object = FedoraObject.find_by(pid: obj.parent_pid)
           if parent_object.present?
-            puts 'Get Parent Type from database'
+            puts "Get Parent Type from database for #{obj.pid}"
             obj.parent_type = parent_object.af_model
           else
+            puts "########### Get Parent Type from Fedora for #{obj.pid} ###############"
             doc = @repo.find "und:#{obj.pid}"
             obj.parent_type = 'Unknown' unless doc.datastreams.key?('RELS-EXT')
             parent_pid = parse_xml_relsext(doc.datastreams['RELS-EXT'].content, 'isPartOf')
@@ -25,12 +35,12 @@ module UpdateParentType
         end
         obj.save!
       rescue Exception => e
-        @exceptions << e.to_s
+        puts "Error: error getting parent type for #{obj.pid}.  Error was #{e}"
+        @exceptions <<  "Error: error getting parent type for #{obj.pid}.  Error: #{e}"
       end
     end
     unless @exceptions.empty?
       $stderr.puts(@exceptions.join("\n"))
-      logger.error(@exceptions.join("\n"))
     end
   end
 
@@ -48,6 +58,10 @@ module UpdateParentType
     end
     xml_hash[search_key]
   end
+end
+
+def logger
+  Rails.logger
 end
 
 UpdateParentType.update_parent_type
