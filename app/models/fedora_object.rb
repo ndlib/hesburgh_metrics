@@ -3,9 +3,11 @@ class FedoraObject < ActiveRecord::Base
   has_many :fedora_object_aggregation_keys, dependent: :destroy
 
   def self.generic_files(options = {})
-    group_by = options.fetch(:group).to_sym
+    sql = "SELECT pid, bytes, mimetype, access_rights FROM #{quoted_table_name}
+           where af_model= 'GenericFile' and date(obj_modified_date) <= ?"
+    group = options.fetch(:group)
     modified_date = options.fetch(:as_of)
-    where(af_model: 'GenericFile').where('obj_modified_date <= :as_of', as_of: modified_date).group_by(&group_by)
+    FedoraObject.find_by_sql([sql, modified_date]).group_by(&group.to_sym)
   end
 
   def self.group_by_af_model_and_access_rights(options = {})

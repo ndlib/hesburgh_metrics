@@ -39,7 +39,8 @@
   </table>
 <% end -%>
 <% unless metrics.generic_files_by_holding.blank? -%>
-  <% metrics.generic_files_by_holding.each do |holding_type| -%>
+  <% metrics.generic_files_by_holding.each do |holding_type, holding_details| -%>
+    <h4> Holding By <%= holding_type.titleize %></h4>
     <table class="table table-striped">
       <thead>
       <tr>
@@ -52,14 +53,14 @@
       <tbody>
       <% total_count = 0 -%>
       <% total_size = 0 -%>
-      <% holding_type.each do |mime_type, generic_files| -%>
+      <% holding_details.each do |holding_key, reporting_detail| -%>
         <tr>
-          <% total_count += generic_files.count -%>
-          <% total_size += generic_files.size -%>
-          <td> <%= mime_type %> </td>
-          <td> <%= generic_files.count%> </td>
-          <td> <%= generic_files.size%> </td>
-          <td> <%= ::ApplicationController.helpers.number_to_human_size(generic_files.size) %> </td>
+          <% total_count += reporting_detail.count -%>
+          <% total_size += reporting_detail.size -%>
+          <td> <%= holding_key %> </td>
+          <td> <%= reporting_detail.count%> </td>
+          <td> <%= reporting_detail.size%> </td>
+          <td> <%= ::ApplicationController.helpers.number_to_human_size(reporting_detail.size) %> </td>
         </tr>
       <% end %>
       <tr>
@@ -96,7 +97,6 @@
 
     <% total_objects = 0 -%>
     <% metrics.obj_by_curate_nd_type.each do |af_model, access_count| -%>
-      <%#  access_rights.each do |af_model, access_count| -%>
         <% total_objects += access_count.values.inject(0){|sum, count| sum + count } -%>
       <tr>
           <td> <%= af_model %> </td>

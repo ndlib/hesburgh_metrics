@@ -15,7 +15,7 @@ class MetricsReport
       @report_start_date = report_start_date
       @report_end_date = report_end_date
       @storage = {}
-      @generic_files_by_holding = []
+      @generic_files_by_holding = {}
       @administrative_units_count = 0
       @obj_by_curate_nd_type = {}
       @obj_by_administrative_unit = []
@@ -106,7 +106,7 @@ class MetricsReport
     generic_files_by_type.each do |type, objects|
       holding_type_objects[type] = ReportingStorageDetail.new(count: objects.count, size: objects.map(&:bytes).sum)
     end
-    metrics.generic_files_by_holding << holding_type_objects
+    metrics.generic_files_by_holding[holding_type] = holding_type_objects
   end
 
   def objects_by_model_access_rights
