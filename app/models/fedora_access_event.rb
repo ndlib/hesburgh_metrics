@@ -5,41 +5,41 @@ class FedoraAccessEvent < ActiveRecord::Base
   def self.all_on_campus_usage(options = {})
     sql = " select event, count(pid) as event_count
             from fedora_access_events
-            where location REGEXP '#{REGEXP_FOR_CAMPUS_IP}' and event_time >= ? and event_time <= ?
+            where location REGEXP ? and event_time >= ? and event_time <= ?
             group by event"
     start_date = options.fetch(:start_date)
     end_date = options.fetch(:end_date)
-    FedoraAccessEvent.find_by_sql([sql, start_date, end_date])
+    FedoraAccessEvent.find_by_sql([sql, REGEXP_FOR_CAMPUS_IP, start_date, end_date])
   end
 
   def self.distinct_on_campus_usage(options = {})
     sql = " select event, count(distinct pid) as event_count
             from fedora_access_events
-            where location REGEXP '#{REGEXP_FOR_CAMPUS_IP}' and event_time >= ? and event_time <= ?
+            where location REGEXP ? and event_time >= ? and event_time <= ?
             group by event"
     start_date = options.fetch(:start_date)
     end_date = options.fetch(:end_date)
-    FedoraAccessEvent.find_by_sql([sql, start_date, end_date])
+    FedoraAccessEvent.find_by_sql([sql, REGEXP_FOR_CAMPUS_IP, start_date, end_date])
   end
 
   def self.all_off_campus_usage(options = {})
     sql = " select event, count(pid) as event_count
             from fedora_access_events
-            where location not REGEXP '#{REGEXP_FOR_CAMPUS_IP}' and event_time >= ? and event_time <= ?
+            where location not REGEXP ? and event_time >= ? and event_time <= ?
             group by event"
     start_date = options.fetch(:start_date)
     end_date = options.fetch(:end_date)
-    FedoraAccessEvent.find_by_sql([sql, start_date, end_date])
+    FedoraAccessEvent.find_by_sql([sql, REGEXP_FOR_CAMPUS_IP, start_date, end_date])
   end
 
   def self.distinct_off_campus_usage(options = {})
     sql = " select event, count(distinct pid) as event_count
             from fedora_access_events
-            where location not REGEXP '#{REGEXP_FOR_CAMPUS_IP}' and event_time >= ? and event_time <= ?
+            where location not REGEXP ? and event_time >= ? and event_time <= ?
             group by event"
     start_date = options.fetch(:start_date)
     end_date = options.fetch(:end_date)
-    FedoraAccessEvent.find_by_sql([sql, start_date, end_date])
+    FedoraAccessEvent.find_by_sql([sql, REGEXP_FOR_CAMPUS_IP, start_date, end_date])
   end
 
   def self.item_usage_by_type(options = {})
