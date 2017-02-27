@@ -46,9 +46,7 @@ class MetricsReport
       end
       # Holding Information
       holding_object_counts
-      HOLDING_TYPES.each do |holding_type|
-        generic_files_for(holding_type)
-      end
+      generic_files
       objects_by_model_access_rights
       build_nested_administrative_units
       objects_by_academic_status
@@ -91,8 +89,6 @@ class MetricsReport
     end
   end
 
-  private
-
   def storage_information_for(storage_type)
     storage = CurateStorageDetail.where(storage_type: storage_type)
                                  .where('harvest_date <= :as_of', as_of: metrics.report_end_date).last
@@ -107,13 +103,20 @@ class MetricsReport
                                                       start_date: metrics.report_start_date, end_date: metrics.report_end_date).count
   end
 
-  def generic_files_for(holding_type)
-    generic_files_by_type = FedoraObject.generic_files(as_of: metrics.report_end_date, group: holding_type, reporting_models: REPORTING_AF_MODELS)
-    holding_type_objects = {}
-    generic_files_by_type.each do |type, objects|
-      holding_type_objects[type] = ReportingStorageDetail.new(count: objects.count, size: objects.map(&:bytes).sum)
+  def generic_files
+    HOLDING_TYPES.each do |holding_type|
+      method_name = "generic_files_by_#{holding_type}".to_sym
+      if FedoraObject.respond_to?(method_name, true)
+        generic_files_by_type = FedoraObject.send(method_name, as_of: metrics.report_end_date, reporting_models: REPORTING_AF_MODELS)
+        holding_type_objects = {}
+        generic_files_by_type.each do |fedora_object|
+          holding_type_objects[fedora_object.type] = ReportingStorageDetail.new(count: fedora_object.pid_count, size: fedora_object.total_bytes)
+        end
+        metrics.generic_files_by_holding[holding_type] = holding_type_objects
+      else
+        "FedoraObject: Undefine Methods #{method_name}"
+      end
     end
-    metrics.generic_files_by_holding[holding_type] = holding_type_objects
   end
 
   def objects_by_model_access_rights

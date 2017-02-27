@@ -42,29 +42,32 @@ RSpec.describe MetricsReport do
     end
   end
 
-  context '#generic_files_for' do
+  context '#generic_files' do
     let(:mock_group_by_access_rights) do
-      { "public"=> [double(pid: "some pid", mimetype: "application/pdf", bytes: 14, access_rights: "public")],
-        "local"=> [double(pid: "some pid", mimetype: "application/pdf", bytes: 14, access_rights: "local")]
-      }
+      [
+        double(pid_count: "6", total_bytes: 14, type: "public"),
+        double(pid_count: "6",  total_bytes: 14, type: "local")
+      ]
     end
     let(:mock_group_by_mime_type) do
-      {  "mimetype1"=> [double(pid: "some pid", mimetype: "mimetype1", bytes: 14, access_rights: "local")],
-         "mimetype2"=> [double(pid: "some pid", mimetype: "mimetype2", bytes: 14, access_rights: "public")]
-      }
+      [
+        double(pid_count: "5", type: "mimetype1", total_bytes: 14),
+        double(pid_count: "10", type: "mimetype2", total_bytes: 14)
+      ]
     end
     it 'get count and size for generic_files by mime_type', functional: true do
-      FedoraObject.stub(:generic_files).with({as_of: report_end_date, group: 'mimetype',
+      FedoraObject.stub(:generic_files_by_mimetype).with({as_of: report_end_date,
                                               reporting_models: ["Article", "Audio", "Dataset", "Document", "Etd", "FindingAid", "GenericFile", "Image", "OsfArchive", "SeniorThesis"]}) do |arg|
         mock_group_by_mime_type
       end
-      FedoraObject.stub(:generic_files).with({as_of: report_end_date, group: 'access_rights',
+      FedoraObject.stub(:generic_files_by_access_rights).with({as_of: report_end_date,
                                               reporting_models:["Article", "Audio", "Dataset", "Document", "Etd", "FindingAid", "GenericFile", "Image", "OsfArchive", "SeniorThesis"]}) do |arg|
         mock_group_by_access_rights
       end
       expect do
         subject
       end.to change { report.metrics.generic_files_by_holding.count }.by(2)
+      puts "#{report.metrics.generic_files_by_holding.inspect}"
       expect(report.metrics.generic_files_by_holding.fetch("mimetype").keys).to eq(['mimetype1','mimetype2'])
       expect(report.metrics.generic_files_by_holding.fetch("access_rights").keys).to eq(['public', 'local'])
     end
