@@ -54,10 +54,12 @@ RSpec.describe MetricsReport do
       }
     end
     it 'get count and size for generic_files by mime_type', functional: true do
-      FedoraObject.stub(:generic_files).with({as_of: report_end_date, group: 'mimetype'}) do |arg|
+      FedoraObject.stub(:generic_files).with({as_of: report_end_date, group: 'mimetype',
+                                              reporting_models: ["Article", "Audio", "Dataset", "Document", "Etd", "FindingAid", "GenericFile", "Image", "OsfArchive", "SeniorThesis"]}) do |arg|
         mock_group_by_mime_type
       end
-      FedoraObject.stub(:generic_files).with({as_of: report_end_date, group: 'access_rights'}) do |arg|
+      FedoraObject.stub(:generic_files).with({as_of: report_end_date, group: 'access_rights',
+                                              reporting_models:["Article", "Audio", "Dataset", "Document", "Etd", "FindingAid", "GenericFile", "Image", "OsfArchive", "SeniorThesis"]}) do |arg|
         mock_group_by_access_rights
       end
       expect do
@@ -97,7 +99,7 @@ RSpec.describe MetricsReport do
       {
         "College of Arts and Letters"=>{"Art, Art History, and Design"=>2, "Music"=>1},
         "College of Science"=>{"Applied and Computational Mathematics and Statistics"=>4},
-        "School of Architecture"=>4
+        "School of Architecture"=>{"non-departmental" =>4}
       }
     end
     it 'get access rights count for all af_model' do
@@ -144,7 +146,101 @@ RSpec.describe MetricsReport do
         with_tag('td', text: '4')
       end
     end
+  end
 
+  context '#build_usage_by_resource' do
+    let(:mock_usage_by_resource) do
+      [ double(event: "view", item_type:"Article", object_count:2022),
+        double(event: "view", item_type:"Audio", object_count:16),
+        double(event: "view", item_type:"Collection", object_count:4),
+        double(event: "download", item_type:"Dataset", object_count:464),
+        double(event: "view", item_type:"Dataset", object_count:2383),
+        double(event: "download", item_type:"Document", object_count:470),
+        double(event: "view", item_type:"Document", object_count:1753)
+      ]
+    end
+    it 'get event and count by resource type', functional: true do
+      FedoraAccessEvent.stub(:item_usage_by_type)
+      .with({start_date: report_start_date, end_date: report_end_date}) do |arg|
+        mock_usage_by_resource
+      end
+      subject
+      expect(report.metrics.item_usage_by_resource_type_events.count).to eq(5)
+      expect(report.metrics.item_usage_by_resource_type_events.keys).to eq([:Article, :Audio, :Collection, :Dataset, :Document])
+    end
+  end
+
+  context '#build_usage_location' do
+    let(:resulted_usage_by_location) do
+      { "all"=>[ {:on_campus=>{ view: 16, download:123}},
+                 {:off_campus=>{view:163, download:10}}],
+        "distinct"=>[ {:on_campus=>{view:3, download: 20}},
+                      {:off_campus=>{view:16, download:2671}}]
+      }
+    end
+    let(:mock_usage_all_on_campus) do
+      [ double(event: "view", event_count:16),
+        double(event: "download",  event_count:123)
+      ]
+    end
+    let(:mock_usage_all_off_campus) do
+      [ double(event: "view",  event_count:163),
+        double(event: "download", event_count:10),
+      ]
+    end
+    let(:mock_usage_distinct_on_campus) do
+      [ double(event: "view", event_count:3),
+        double(event: "download",  event_count:20)
+      ]
+    end
+    let(:mock_usage_distinct_off_campus) do
+      [ double(event: "view",  event_count:16),
+        double(event: "download", event_count:2671),
+      ]
+    end
+    it 'get event and count by location (on-campus and off-campus access)', functional: true do
+      FedoraAccessEvent.stub(:all_on_campus_usage)
+      .with({start_date: report_start_date, end_date: report_end_date}) do |arg|
+        mock_usage_all_on_campus
+      end
+      FedoraAccessEvent.stub(:all_off_campus_usage)
+      .with({start_date: report_start_date, end_date: report_end_date}) do |arg|
+        mock_usage_all_off_campus
+      end
+      FedoraAccessEvent.stub(:distinct_on_campus_usage)
+      .with({start_date: report_start_date, end_date: report_end_date}) do |arg|
+        mock_usage_distinct_on_campus
+      end
+      FedoraAccessEvent.stub(:distinct_off_campus_usage)
+      .with({start_date: report_start_date, end_date: report_end_date}) do |arg|
+        mock_usage_distinct_off_campus
+      end
+      subject
+      expect(report.metrics.location_usage.keys).to eq(["all", "distinct"])
+      expect(report.metrics.location_usage).to eq(resulted_usage_by_location)
+    end
+  end
+
+  context '#build_usage_by_resource' do
+    let(:mock_usage_by_model_event) do
+      [ double(event: "view", item_type:"Article", object_count:2022),
+        double(event: "view", item_type:"Audio", object_count:16),
+        double(event: "view", item_type:"Collection", object_count:4),
+        double(event: "download", item_type:"Dataset", object_count:464),
+        double(event: "view", item_type:"Dataset", object_count:2383),
+        double(event: "download", item_type:"Document", object_count:470),
+        double(event: "view", item_type:"Document", object_count:1753)
+      ]
+    end
+    it 'get event and count by resource type', functional: true do
+      FedoraAccessEvent.stub(:item_usage_by_type)
+      .with({start_date: report_start_date, end_date: report_end_date}) do |arg|
+        mock_usage_by_model_event
+      end
+      subject
+      expect(report.metrics.item_usage_by_resource_type_events.count).to eq(5)
+      expect(report.metrics.item_usage_by_resource_type_events.keys).to eq([:Article, :Audio, :Collection, :Dataset, :Document])
+    end
   end
 
 end

@@ -5,6 +5,19 @@ require File.expand_path('../config/application', __FILE__)
 
 Rails.application.load_tasks
 
+namespace :db do
+  task prepare: :environment do
+    abort("Run this only in test or development") unless Rails.env.test? || Rails.env.development?
+    begin
+      Rake::Task["db:drop"].invoke
+    rescue
+      $stdout.puts "Unable to drop database, moving on."
+    end
+    Rake::Task["db:create"].invoke
+    Rake::Task['db:schema:load'].invoke
+  end
+end
+
 if defined?(RSpec)
   namespace :spec do
     desc 'Run all specs'
@@ -48,6 +61,7 @@ end
 Rake::Task['default'].clear
 task(
   default: [
+    'db:prepare',
     'commitment:rubocop',
     'commitment:configure_test_for_code_coverage',
     'spec',
