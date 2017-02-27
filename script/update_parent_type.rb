@@ -18,16 +18,16 @@ module UpdateParentType
         if obj.af_model == 'GenericFile'
           parent_object = FedoraObject.find_by(pid: obj.parent_pid)
           if parent_object.present?
-            puts "Get Parent Type from database for #{obj.pid}"
+            logger.info "Get Parent Type from database for #{obj.pid}"
             obj.parent_type = parent_object.af_model
           else
-            puts "########### Get Parent Type from Fedora for #{obj.pid} ###############"
+            logger.info "########### Get Parent Type from Fedora for #{obj.pid} ###############"
             doc = @repo.find "und:#{obj.pid}"
             obj.parent_type = 'Unknown' unless doc.datastreams.key?('RELS-EXT')
             parent_pid = parse_xml_relsext(doc.datastreams['RELS-EXT'].content, 'isPartOf')
             parent_object = @repo.find parent_pid.to_s
             model = parent_object.profile['objModels'].select { |v| v.include?('afmodel') }
-            puts "Pid #{doc.pid}, parent_id:#{parent_pid}, type:#{model.inspect}"
+            logger.info "Pid #{doc.pid}, parent_id:#{parent_pid}, type:#{model.inspect}"
             obj.parent_type =  model.empty? ? 'Unknown' :  model.first.split(':')[2]
           end
         else
@@ -35,11 +35,12 @@ module UpdateParentType
         end
         obj.save!
       rescue Exception => e
-        puts "Error: error getting parent type for #{obj.pid}.  Error was #{e}"
+        logger.error "Error: error getting parent type for #{obj.pid}.  Error was #{e}"
         @exceptions <<  "Error: error getting parent type for #{obj.pid}.  Error: #{e}"
       end
     end
     unless @exceptions.empty?
+      logger.error(@exceptions.join("\n"))
       $stderr.puts(@exceptions.join("\n"))
     end
   end
