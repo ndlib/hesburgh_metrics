@@ -1,9 +1,9 @@
 <h2>CurateND Metrics Report</h2>
 <em> Time period: <%=metrics.report_start_date%> through <%=metrics.report_end_date%> </em>
 <dl>
-  <dt>Object</dt> <dd>entity in storage system </dd>
-  <dt>Item</dt> <dd>CurateND Intellectual object</dd>
-  <dt>File</dt> <dd>Content file downloadable from CurateND</dd>
+  <dt style ="font-weight: bold; float: left;">Object</dt> <dd style ="padding-left: 2em">Entity in storage system </dd>
+  <dt style ="font-weight: bold; float: left;">Item</dt> <dd style ="padding-left: 2em">CurateND Intellectual object</dd>
+  <dt style ="font-weight: bold; float: left;">File</dt> <dd style ="padding-left: 2em">Content file downloadable from CurateND</dd>
 </dl>
 <h3>Holdings (at end of period) </h3>
 <% unless metrics.storage.blank? -%>
@@ -26,14 +26,14 @@
           <td> <%= storage_type %> </td>
           <td> <%= storage_details.count%> </td>
           <td> <%= storage_details.size%> </td>
-          <td> <%= ::ApplicationController.helpers.number_to_human_size(storage_details.size) %> </td>
+          <td align="right"> <%= bytesToGb(storage_details.size) %> </td>
         </tr>
       <% end -%>
       <tr>
         <td> Total </td>
         <td> <%= total_count%> </td>
         <td> <%= total_size%> </td>
-        <td> <%= ::ApplicationController.helpers.number_to_human_size(total_size) %> </td>
+        <td> <%= bytesToGb(total_size) %> </td>
       </tr>
     </tbody>
   </table>
@@ -58,16 +58,16 @@
           <% total_count += reporting_detail.count -%>
           <% total_size += reporting_detail.size -%>
           <td> <%= holding_key %> </td>
-          <td> <%= reporting_detail.count%> </td>
-          <td> <%= reporting_detail.size%> </td>
-          <td> <%= ::ApplicationController.helpers.number_to_human_size(reporting_detail.size) %> </td>
+          <td align="right"> <%= reporting_detail.count%> </td>
+          <td align="right"> <%= reporting_detail.size%> </td>
+          <td align="right"> <%= bytesToGb(reporting_detail.size) %> </td>
         </tr>
       <% end %>
       <tr>
         <td> Total </td>
-        <td> <%= total_count%> </td>
-        <td> <%= total_size%> </td>
-        <td> <%= ::ApplicationController.helpers.number_to_human_size(total_size) %> </td>
+        <td align="right"> <%= total_count%> </td>
+        <td align="right"> <%= total_size%> </td>
+        <td align="right"> <%= bytesToGb(total_size) %> </td>
       </tr>
       </tbody>
     </table>
@@ -75,12 +75,12 @@
 <% end -%>
 <h4> Items </h4>
 <dl>
-  <dt>Items Added</dt> <dd> <%=metrics.items_added_count %> </dd>
-  <dt>Items Modified</dt> <dd><%= metrics.items_modified_count %></dd>
-
+  <dt style ="font-weight: bold; float: left;">Items Added</dt> <dd style ="padding-left: 2em"> &nbsp &nbsp <%=metrics.items_added_count %> </dd>
+  <dt style ="font-weight: bold; float: left;">Items Modified</dt> <dd style ="padding-left: 2em"> &nbsp &nbsp <%= metrics.items_modified_count %></dd>
 </dl>
 
 <% unless metrics.obj_by_curate_nd_type.blank? -%>
+  <h4> Holding By Resource Type</h4>
   <table class="table table-striped">
     <thead>
     <tr>
@@ -100,26 +100,27 @@
         <% total_objects += access_count.values.inject(0){|sum, count| sum + count } -%>
       <tr>
           <td> <%= af_model %> </td>
-          <td> <%= access_count.fetch(:public, 0)%> </td>
-          <td> <%= access_count.fetch(:local, 0)%> </td>
-          <td> <%= access_count.fetch(:embargo, 0)%> </td>
-          <td> <%= access_count.fetch(:private, 0)%> </td>
-          <td> <%= access_count.values.inject(0){|sum, count| sum + count }%> </td>
+          <td align="right"> <%= access_count.fetch(:public, 0)%> </td>
+          <td align="right"> <%= access_count.fetch(:local, 0)%> </td>
+          <td align="right"> <%= access_count.fetch(:embargo, 0)%> </td>
+          <td align="right"> <%= access_count.fetch(:private, 0)%> </td>
+          <td align="right"> <%= access_count.values.inject(0){|sum, count| sum + count }%> </td>
       </tr>
     <% end %>
     <tr>
       <td> Total </td>
-      <td> <%= access_type_hash.map { |h| h.fetch(:public,0)}.sum %> </td>
-      <td> <%= access_type_hash.map { |h| h.fetch(:local,0)}.sum %> </td>
-      <td> <%= access_type_hash.map { |h| h.fetch(:embargo,0)}.sum %> </td>
-      <td> <%= access_type_hash.map { |h| h.fetch(:private,0)}.sum %> </td>
-      <td> <%= total_objects %> </td>
+      <td align="right"> <%= access_type_hash.map { |h| h.fetch(:public,0)}.sum %> </td>
+      <td align="right"> <%= access_type_hash.map { |h| h.fetch(:local,0)}.sum %> </td>
+      <td align="right"> <%= access_type_hash.map { |h| h.fetch(:embargo,0)}.sum %> </td>
+      <td align="right"> <%= access_type_hash.map { |h| h.fetch(:private,0)}.sum %> </td>
+      <td align="right"> <%= total_objects %> </td>
     </tr>
     </tbody>
   </table>
 <% end -%>
 
 <% unless metrics.obj_by_administrative_unit.blank? -%>
+  <h4> Holding By Administrative Unit</h4>
   <table class="table table-striped">
     <thead>
       <tr>
@@ -139,6 +140,7 @@
 <% end -%>
 
 <% unless metrics.obj_by_academic_status.blank? -%>
+  <h4> Holding By Academic Status</h4>
   <table class="table table-striped">
     <thead>
     <tr>
@@ -150,14 +152,14 @@
       <% total_count = 0 -%>
       <% metrics.obj_by_academic_status.each do |status| -%>
         <% total_count += status.fetch(:object_count) -%>
-        <tr>
+        <tr style ="padding-left: 1em">
           <td> <%= status.fetch(:aggregation_key) %> </td>
-          <td> <%= status.fetch(:object_count) %> </td>
+          <td align="right"> <%= status.fetch(:object_count) %> </td>
         </tr>
       <% end -%>
       <tr>
         <td> Total </td>
-        <td> <%= total_count %> </td>
+        <td align="right"> <%= total_count %> </td>
       </tr>
     </tbody>
   </table>
@@ -185,15 +187,15 @@
             <% total_download_count += events_with_count.fetch(:download, 0) -%>
             <tr>
               <td> <%= usage_type.to_s.titleize %> </td>
-              <td> <%= events_with_count.fetch(:view, 0)%> </td>
-              <td> <%= events_with_count.fetch(:download, 0)%> </td>
+              <td align="right"> <%= events_with_count.fetch(:view, 0)%> </td>
+              <td align="right"> <%= events_with_count.fetch(:download, 0)%> </td>
             </tr>
           <% end %>
         <% end -%>
         <tr>
           <td> Total </td>
-          <td> <%= total_view_count %> </td>
-          <td> <%= total_download_count %> </td>
+          <td align="right"> <%= total_view_count %> </td>
+          <td align="right"> <%= total_download_count %> </td>
         </tr>
       </tbody>
     </table>
@@ -217,14 +219,14 @@
       <% total_download_count += events_with_count.fetch(:download, 0) -%>
       <tr>
         <td> <%= af_model %> </td>
-        <td> <%= events_with_count.fetch(:view, 0)%> </td>
-        <td> <%= events_with_count.fetch(:download, 0)%> </td>
+        <td align="right"> <%= events_with_count.fetch(:view, 0)%> </td>
+        <td align="right"> <%= events_with_count.fetch(:download, 0)%> </td>
       </tr>
     <% end %>
     <tr>
       <td> Total </td>
-      <td> <%= total_view_count %> </td>
-      <td> <%= total_download_count %> </td>
+      <td align="right"> <%= total_view_count %> </td>
+      <td align="right"> <%= total_download_count %> </td>
     </tr>
     </tbody>
   </table>
@@ -245,7 +247,7 @@
     <% metrics.top_viewed_items.each do |item| -%>
       <tr>
         <td> <%= item.pid %> </td>
-        <td> <%= item.count %> </td>
+        <td align="right"> <%= item.count %> </td>
         <td> <%= item.item_type %> </td>
         <td> <%= item.title %> </td>
       </tr>
@@ -269,7 +271,7 @@
     <% metrics.top_download_items.each do |item| -%>
       <tr>
         <td> <%= item.pid %> </td>
-        <td> <%= item.count %> </td>
+        <td align="right"> <%= item.count %> </td>
         <td> <%= item.parent_type %> </td>
         <td> <%= item.parent_title %> </td>
       </tr>

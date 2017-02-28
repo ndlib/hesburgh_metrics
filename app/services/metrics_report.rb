@@ -62,21 +62,33 @@ class MetricsReport
     report_any_exceptions
   end
 
-  # get all the count for administrative unit and present them hierarchical order
-  # with department wide count and total count
+  #get all the count for administrative unit and present them hierarchical order
+  #with department wide count and total count
   def report_administrative_unit_as_html(unit = metrics.obj_by_administrative_unit, html = "")
     unit.each do |unit_name, count_by_administrative_unit|
       # if given administrative_unit_hash is department hash, add department name and total count
       if count_by_administrative_unit.is_a?(Hash)
         count_by_department = count_by_administrative_unit.values
         metrics.administrative_units_count = metrics.administrative_units_count + count_by_department.sum
-        html << "<tr class=department>  <td>#{unit_name}</td>  <td>#{count_by_department.sum}</td> </tr> "
+        html << "<tr class=department>  <td>#{unit_name}</td>  <td align=\"right\">#{count_by_department.sum}</td> </tr> "
         report_administrative_unit_as_html(count_by_administrative_unit, html = html)
       else
-        html << "<tr>  <td>#{unit_name}</td> <td>#{count_by_administrative_unit}</td> </tr> "
+        html << "<tr>  <td>&nbsp &nbsp &nbsp #{unit_name}</td> <td align=\"right\">#{count_by_administrative_unit}</td> </tr> "
       end
     end
     ApplicationController.helpers.safe_join([html.html_safe])
+  end
+
+  GIGABYTE = 10.0**9
+  def bytesToGb bytes
+    if bytes == 0
+      "0"
+    elsif bytes < 500000
+    "< 0.001 GB"
+    else
+      size = (bytes /  GIGABYTE).round(3)
+      "#{size} GB"
+    end
   end
 
   def report_any_exceptions
