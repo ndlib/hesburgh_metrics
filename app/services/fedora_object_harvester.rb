@@ -68,8 +68,6 @@ class FedoraObjectHarvester
       fedora_update(fedora_object) if fedora_object.new_record? || fedora_changed?(fedora_object)
     end
 
-    private
-
     def default_repository
       Rubydora.connect url: Figaro.env.fedora_url!, user: Figaro.env.fedora_user!, password: Figaro.env.fedora_password!
     end
@@ -289,7 +287,7 @@ class FedoraObjectHarvester
           harvester.exceptions << "PID: #{pid} -- #{e.inspect}"
         end
       end
-      data_array
+      data_array.reject(&:empty?)
     end
   end
 end
