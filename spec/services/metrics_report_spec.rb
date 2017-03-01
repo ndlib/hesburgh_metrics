@@ -40,6 +40,22 @@ RSpec.describe MetricsReport do
       expect(Airbrake).to receive(:notify_sync).and_call_original
       subject
     end
+
+    it "sends an email" do
+      expect { subject }.to change { ActionMailer::Base.deliveries.count }.by(1)
+    end
+  end
+
+  context "#bytes_to_gb" do
+    it 'will return 0 for 0 Bytes' do
+      expect(report.bytes_to_gb(0)).to eq("0")
+    end
+    it 'will return <0.001 GB when it is less than 5MB' do
+      expect(report.bytes_to_gb(399956)).to eq('< 0.001 GB')
+    end
+    it 'will convert to GB for given bytes' do
+      expect(report.bytes_to_gb(12354578789)).to eq("12.355 GB")
+    end
   end
 
   context '#generic_files' do
@@ -67,9 +83,15 @@ RSpec.describe MetricsReport do
       expect do
         subject
       end.to change { report.metrics.generic_files_by_holding.count }.by(2)
-      puts "#{report.metrics.generic_files_by_holding.inspect}"
       expect(report.metrics.generic_files_by_holding.fetch("mimetype").keys).to eq(['mimetype1','mimetype2'])
       expect(report.metrics.generic_files_by_holding.fetch("access_rights").keys).to eq(['public', 'local'])
+    end
+    it "Log exception when not able to collect generic_files for given holding type  " do
+      stub_const("MetricsReport::HOLDING_TYPES", %w(bogus))
+      MetricsReport::HOLDING_TYPES.should eq(["bogus"])
+      expect do
+        subject
+      end.to change { report.metrics.generic_files_by_holding.count }.by(0)
     end
   end
 

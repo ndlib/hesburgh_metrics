@@ -47,7 +47,7 @@ PercentLiteralDelimiters:
   Enabled: false
 
 Metrics/ClassLength:
-  Max: 160
+  Max: 170
   Exclude:
      - app/services/fedora_object_harvester.rb
 
