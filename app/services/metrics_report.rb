@@ -225,7 +225,6 @@ class MetricsReport
       content: render
     )
     send_report(report.id)
-    filename = "CurateND-report-#{metrics.report_start_date}-through-#{metrics.report_end_date}.html"
     File.open(filename, 'w+') do |f|
       f.write(render)
     end

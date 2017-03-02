@@ -13,7 +13,7 @@ RSpec.describe ReportMailer do
     ActionMailer::Base.deliveries.clear
   end
 
-  let(:report) { PeriodicMetricReport.new(id: '123', start_date: Date.today-7, end_date:Date.today, filename: 'a filename', content:'bogus content') }
+  let(:report) { PeriodicMetricReport.new(id: '123', start_date: Date.today-7, end_date:Date.today, content:'bogus content') }
   let(:mail) { ReportMailer.email(report) }
 
   it 'renders the subject' do
