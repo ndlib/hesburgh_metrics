@@ -42,15 +42,15 @@ module HesburghMetrics
                        request_specs: false
     end
 
-    config.action_mailer.delivery_method = SMTP_CONFIG['smtp_delivery_method'].to_sym
+    config.action_mailer.delivery_method = :sendmail
     config.action_mailer.smtp_settings = {
-        address:              SMTP_CONFIG['smtp_host'],
-        port:                 SMTP_CONFIG['smtp_port'],
-        domain:               SMTP_CONFIG['smtp_domain'],
-        user_name:            SMTP_CONFIG['smtp_user_name'],
-        password:             SMTP_CONFIG['smtp_password'],
-        authentication:       SMTP_CONFIG['smtp_authentication_type'],
-        enable_starttls_auto: SMTP_CONFIG['smtp_enable_starttls_auto']
+        address:              Figaro.env.smtp_host!,
+        port:                 Figaro.env.smtp_port!.to_i,
+        domain:               Figaro.env.smtp_domain!,
+        user_name:            Figaro.env.smtp_user_name!,
+        password:             Figaro.env.smtp_password,
+        authentication:       Figaro.env.smtp_authentication_type!,
+        enable_starttls_auto: true
     }
   end
 end

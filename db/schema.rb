@@ -89,5 +89,8 @@ ActiveRecord::Schema.define(version: 20170227211456) do
     t.datetime "updated_at",                    null: false
   end
 
+  add_index "periodic_metric_reports", ["end_date"], name: "index_periodic_metric_reports_on_end_date", using: :btree
+  add_index "periodic_metric_reports", ["start_date"], name: "index_periodic_metric_reports_on_start_date", using: :btree
+
   add_foreign_key "fedora_object_aggregation_keys", "fedora_objects"
 end

@@ -56,7 +56,7 @@ class MetricsReport
     # Save report to database and send email
     save!
   rescue StandardError => e
-    @exceptions << "Error: generate_report.  Error: #{e.backtrace.join("\n")}"
+    @exceptions << "Error: generate_report,#{e.message} \n  Error: #{e.backtrace.join("\n")}"
     report_any_exceptions
   end
 
@@ -221,7 +221,6 @@ class MetricsReport
     report = PeriodicMetricReport.find_or_initialize_by(start_date: metrics.report_start_date,
                                                         end_date: metrics.report_end_date)
     report.update!(
-      filename: filename,
       content: render
     )
     send_report(report.id)
