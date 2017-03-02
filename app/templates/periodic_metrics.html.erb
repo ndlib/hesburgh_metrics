@@ -26,14 +26,14 @@
           <td> <%= storage_type %> </td>
           <td> <%= storage_details.count%> </td>
           <td> <%= storage_details.size%> </td>
-          <td align="right"> <%= bytesToGb(storage_details.size) %> </td>
+          <td align="right"> <%= bytes_to_gb(storage_details.size) %> </td>
         </tr>
       <% end -%>
       <tr>
         <td> Total </td>
         <td> <%= total_count%> </td>
         <td> <%= total_size%> </td>
-        <td> <%= bytesToGb(total_size) %> </td>
+        <td> <%= bytes_to_gb(total_size) %> </td>
       </tr>
     </tbody>
   </table>
@@ -60,14 +60,14 @@
           <td> <%= holding_key %> </td>
           <td align="right"> <%= reporting_detail.count%> </td>
           <td align="right"> <%= reporting_detail.size%> </td>
-          <td align="right"> <%= bytesToGb(reporting_detail.size) %> </td>
+          <td align="right"> <%= bytes_to_gb(reporting_detail.size) %> </td>
         </tr>
       <% end %>
       <tr>
         <td> Total </td>
         <td align="right"> <%= total_count%> </td>
         <td align="right"> <%= total_size%> </td>
-        <td align="right"> <%= bytesToGb(total_size) %> </td>
+        <td align="right"> <%= bytes_to_gb(total_size) %> </td>
       </tr>
       </tbody>
     </table>

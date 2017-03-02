@@ -29,43 +29,39 @@ class MetricsReport
   ACCESS_RIGHTS = %w(public local embargo private).freeze
   REPORTING_AF_MODELS = %w(Article Audio Dataset Document Etd FindingAid GenericFile Image OsfArchive SeniorThesis).freeze
 
-  attr_reader :metrics, :exceptions, :filename
+  attr_reader :metrics, :exceptions
 
   def initialize(report_start_date, report_end_date)
     @exceptions = []
     @metrics = MetricsDetail.new(report_start_date, report_end_date)
-    @filename = "CurateND-report-#{report_start_date}-through-#{report_end_date}.html"
     @template = Rails.root.join('app', 'templates', 'periodic_metrics.html.erb').read
   end
 
   def generate_report
-    begin
-      # Storage Information
-      STORAGE_TYPES.each do |storage_type|
-        storage_information_for(storage_type)
-      end
-      # Holding Information
-      holding_object_counts
-      generic_files
-      objects_by_model_access_rights
-      build_nested_administrative_units
-      objects_by_academic_status
-      # Usage Information
-      build_usage_by_resource
-      build_usage_by_location
-      metrics.top_viewed_items = FedoraAccessEvent.top_viewed_objects
-      metrics.top_download_items = FedoraAccessEvent.top_downloaded_objects
-      # Save report to database and send email
-      save!
-    rescue StandardError => e
-      @exceptions << "Error: generate_report.  Error: #{e}"
-      raise e
+    # Storage Information
+    STORAGE_TYPES.each do |storage_type|
+      storage_information_for(storage_type)
     end
-    #report_any_exceptions
+    # Holding Information
+    holding_object_counts
+    generic_files
+    objects_by_model_access_rights
+    build_nested_administrative_units
+    objects_by_academic_status
+    # Usage Information
+    build_usage_by_resource
+    build_usage_by_location
+    metrics.top_viewed_items = FedoraAccessEvent.top_viewed_objects
+    metrics.top_download_items = FedoraAccessEvent.top_downloaded_objects
+    # Save report to database and send email
+    save!
+  rescue StandardError => e
+    @exceptions << "Error: generate_report.  Error: #{e.backtrace.join("\n")}"
+    report_any_exceptions
   end
 
-  #get all the count for administrative unit and present them hierarchical order
-  #with department wide count and total count
+  # get all the count for administrative unit and present them hierarchical order
+  # with department wide count and total count
   def report_administrative_unit_as_html(unit = metrics.obj_by_administrative_unit, html = "")
     unit.each do |unit_name, count_by_administrative_unit|
       # if given administrative_unit_hash is department hash, add department name and total count
@@ -82,13 +78,13 @@ class MetricsReport
   end
 
   GIGABYTE = 10.0**9
-  def bytesToGb bytes
-    if bytes == 0
+  def bytes_to_gb(bytes)
+    if bytes.zero?
       "0"
-    elsif bytes < 500000
-    "< 0.001 GB"
+    elsif bytes < 500_000
+      "< 0.001 GB"
     else
-      size = (bytes /  GIGABYTE).round(3)
+      size = (bytes / GIGABYTE).round(3)
       "#{size} GB"
     end
   end
@@ -122,7 +118,7 @@ class MetricsReport
   def generic_files
     HOLDING_TYPES.each do |holding_type|
       method_name = "generic_files_by_#{holding_type}".to_sym
-      if FedoraObject.respond_to?(method_name, true)
+      if FedoraObject.respond_to?(method_name)
         generic_files_by_type = FedoraObject.send(method_name, as_of: metrics.report_end_date, reporting_models: REPORTING_AF_MODELS)
         holding_type_objects = {}
         generic_files_by_type.each do |fedora_object|
@@ -130,7 +126,7 @@ class MetricsReport
         end
         metrics.generic_files_by_holding[holding_type] = holding_type_objects
       else
-        "FedoraObject: Undefine Methods #{method_name}"
+        @exceptions << "Error: FedoraObject Undefine Methods #{method_name} to get generic_files"
       end
     end
   end
@@ -222,14 +218,14 @@ class MetricsReport
   end
 
   def save!
-    report = PeriodicMetricReport.find_or_initialize_by( start_date: metrics.report_start_date,
-                                                         end_date: metrics.report_end_date)
+    report = PeriodicMetricReport.find_or_initialize_by(start_date: metrics.report_start_date,
+                                                        end_date: metrics.report_end_date)
     report.update!(
       filename: filename,
-      content: render)
-
+      content: render
+    )
     send_report(report.id)
-
+    filename = "CurateND-report-#{metrics.report_start_date}-through-#{metrics.report_end_date}.html"
     File.open(filename, 'w+') do |f|
       f.write(render)
     end
@@ -237,6 +233,6 @@ class MetricsReport
 
   def send_report(report_id)
     report = PeriodicMetricReport.find(report_id)
-    ReportMailer.notify(report).deliver
+    ReportMailer.email(report).deliver_now
   end
 end

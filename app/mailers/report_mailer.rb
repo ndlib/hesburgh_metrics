@@ -1,7 +1,6 @@
 # This class is responsible for creating/delivering email
 class ReportMailer < ActionMailer::Base
-
-  def notify(report)
+  def email(report)
     mail from: sender_email,
          to: recipients_list,
          subject: subject(report),
@@ -11,13 +10,13 @@ class ReportMailer < ActionMailer::Base
 
   private
 
-  def subject( report )
+  def subject(report)
     "CurateND Metrics Report: #{report.start_date} Through #{report.end_date} - [#{Rails.env}]"
   end
 
   def recipients_list
     @list ||= Array.wrap(ENV.fetch('METRICS_REPORT_RECIPIENT'))
-    return @list
+    @list
   end
 
   def sender_email
@@ -25,7 +24,7 @@ class ReportMailer < ActionMailer::Base
   end
 
   def default_sender
-    @sender ||= YAML.load(File.open(File.join(Rails.root, "config/smtp_config.yml")))
-    return @sender[Rails.env]["smtp_user_name"]
+    @sender ||= YAML.load_file(Rails.root.join('config', 'smtp_config.yml'))
+    @sender[Rails.env]["smtp_user_name"]
   end
 end

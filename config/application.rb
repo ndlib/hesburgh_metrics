@@ -24,7 +24,7 @@ module HesburghMetrics
     config.active_record.raise_in_transactional_callbacks = true
 
     [
-      'services'
+      'mailers', 'services'
     ].each do |concept|
       config.autoload_paths << Rails.root.join("app/#{concept}")
     end

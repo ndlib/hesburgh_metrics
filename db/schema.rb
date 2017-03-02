@@ -82,12 +82,11 @@ ActiveRecord::Schema.define(version: 20170227211456) do
   add_index "fedora_objects", ["title"], name: "index_fedora_objects_on_title", using: :btree
 
   create_table "periodic_metric_reports", force: :cascade do |t|
-    t.string   "filename",   limit: 255,   default: ""
-    t.date     "start_date",                            null: false
-    t.date     "end_date",                              null: false
-    t.text     "content",    limit: 65535
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
+    t.date     "start_date",                    null: false
+    t.date     "end_date",                      null: false
+    t.text     "content",    limit: 4294967295
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
   end
 
   add_foreign_key "fedora_object_aggregation_keys", "fedora_objects"

@@ -163,11 +163,11 @@ RSpec.describe MetricsReport do
         with_tag('td', text: '4')
       end
       expect(html).to have_tag('tr') do
-        with_tag('td', text: 'Art, Art History, and Design')
+        with_tag('td', text: '&nbsp &nbsp &nbsp Art, Art History, and Design')
         with_tag('td', text: '2')
-        with_tag('td', text: 'Music')
+        with_tag('td', text: '&nbsp &nbsp &nbsp Music')
         with_tag('td', text: '1')
-        with_tag('td', text: 'Applied and Computational Mathematics and Statistics')
+        with_tag('td', text: '&nbsp &nbsp &nbsp Applied and Computational Mathematics and Statistics')
         with_tag('td', text: '4')
       end
     end
