@@ -19,6 +19,8 @@ RSpec.describe MetricsReport do
     ]
   end
 
+  let(:persisted_report) { PeriodicMetricReport.new(id: '123', start_date: Date.today-7, end_date:Date.today, content:'bogus content') }
+
   subject { report.generate_report }
 
   context '#generate_report' do
@@ -28,6 +30,17 @@ RSpec.describe MetricsReport do
                                  object_count: 100, object_bytes: 123456)
       CurateStorageDetail.create(harvest_date: report_end_date, storage_type: 'Bendo',
                                  object_count: 10, object_bytes: 1234)
+      ActionMailer::Base.delivery_method = :test
+      ActionMailer::Base.perform_deliveries = true
+      ActionMailer::Base.deliveries = []
+      allow(ENV).to receive(:fetch).with("METRICS_REPORT_SENDER").and_return("")
+      allow(ENV).to receive(:fetch).with("METRICS_REPORT_RECIPIENT").and_return("bogus@bogus.com")
+      allow(persisted_report).to receive(:persisted?).and_return(true)
+      ReportMailer.email(persisted_report).deliver_now
+    end
+    after do
+      ActionMailer::Base.deliveries.clear
+      CurateStorageDetail.delete_all
     end
 
     it 'generate metrics report for given reporting dates', functional: true do
@@ -41,8 +54,43 @@ RSpec.describe MetricsReport do
       subject
     end
 
-    it "sends an email" do
-      expect { subject }.to change { ActionMailer::Base.deliveries.count }.by(1)
+    it '#send_report' do
+      subject
+      allow(PeriodicMetricReport).to receive(:find).and_return(persisted_report)
+      allow(report).to receive(:send_report).and_call_original
+      ActionMailer::Base.deliveries.count.should == 1
+      #expect { subject }.to change { ActionMailer::Base.deliveries.count }.by(1)
+    end
+  end
+
+  context "#report_administrative_unit_as_html" do
+    let (:blank_administrative_unit_hash) { {} }
+    let (:nested_administrative_unit_hash) do
+      {
+          "College of Arts and Letters"=>{"Art, Art History, and Design"=>2, "Music"=>1},
+          "College of Science"=>{"Applied and Computational Mathematics and Statistics"=>4}
+      }
+    end
+    it "returns blank for administrative unit listing when there is not administrative units" do
+      expect(report.report_administrative_unit_as_html).to eq("")
+    end
+
+    it "return tabulated administrative unit with count" do
+      html = report.report_administrative_unit_as_html(nested_administrative_unit_hash)
+      expect(html).to have_tag('tr', :with => { :class => 'department'}) do
+        with_tag('td', text: 'College of Arts and Letters')
+        with_tag('td', text: '3')
+        with_tag('td', text: 'College of Science')
+        with_tag('td', text: '4')
+      end
+      expect(html).to have_tag('tr') do
+        with_tag('td', text: '&nbsp &nbsp &nbsp Art, Art History, and Design')
+        with_tag('td', text: '2')
+        with_tag('td', text: '&nbsp &nbsp &nbsp Music')
+        with_tag('td', text: '1')
+        with_tag('td', text: '&nbsp &nbsp &nbsp Applied and Computational Mathematics and Statistics')
+        with_tag('td', text: '4')
+      end
     end
   end
 
@@ -139,37 +187,6 @@ RSpec.describe MetricsReport do
       subject
       expect(report.metrics.obj_by_academic_status.map{|result| result.fetch(:aggregation_key)}).to eq(["Faculty", "Staff"])
       expect(report.metrics.obj_by_administrative_unit).to eq(nested_administrative_unit_hash)
-    end
-  end
-
-  context "#report_administrative_unit_as_html" do
-    let (:blank_administrative_unit_hash) { {} }
-    let (:nested_administrative_unit_hash) do
-      {
-          "College of Arts and Letters"=>{"Art, Art History, and Design"=>2, "Music"=>1},
-          "College of Science"=>{"Applied and Computational Mathematics and Statistics"=>4}
-      }
-    end
-    it "returns blank for administrative unit listing when there is not administrative units" do
-      expect(report.report_administrative_unit_as_html).to eq("")
-    end
-
-    it "return tabulated administrative unit with count" do
-      html = report.report_administrative_unit_as_html(nested_administrative_unit_hash)
-      expect(html).to have_tag('tr', :with => { :class => 'department'}) do
-        with_tag('td', text: 'College of Arts and Letters')
-        with_tag('td', text: '3')
-        with_tag('td', text: 'College of Science')
-        with_tag('td', text: '4')
-      end
-      expect(html).to have_tag('tr') do
-        with_tag('td', text: '&nbsp &nbsp &nbsp Art, Art History, and Design')
-        with_tag('td', text: '2')
-        with_tag('td', text: '&nbsp &nbsp &nbsp Music')
-        with_tag('td', text: '1')
-        with_tag('td', text: '&nbsp &nbsp &nbsp Applied and Computational Mathematics and Statistics')
-        with_tag('td', text: '4')
-      end
     end
   end
 

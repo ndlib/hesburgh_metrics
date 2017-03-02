@@ -225,9 +225,6 @@ class MetricsReport
       content: render
     )
     send_report(report.id)
-    File.open(filename, 'w+') do |f|
-      f.write(render)
-    end
   end
 
   def send_report(report_id)
