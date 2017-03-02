@@ -18,6 +18,8 @@ bendo_adapter: sqlite3
 bendo_encoding: utf8
 bendo_pool: 5
 bendo_timeout: 5000
+METRICS_REPORT_RECIPIENT: library@nd.edu
+METRICS_REPORT_SENDER: no-reply@nd.edu
 
 development:
   fedora_user: fedora

@@ -39,8 +39,8 @@ class MetricsReport
   end
 
   def generate_report
-    # Storage Information
     begin
+      # Storage Information
       STORAGE_TYPES.each do |storage_type|
         storage_information_for(storage_type)
       end
@@ -55,11 +55,13 @@ class MetricsReport
       build_usage_by_location
       metrics.top_viewed_items = FedoraAccessEvent.top_viewed_objects
       metrics.top_download_items = FedoraAccessEvent.top_downloaded_objects
+      # Save report to database and send email
       save!
     rescue StandardError => e
       @exceptions << "Error: generate_report.  Error: #{e}"
+      raise e
     end
-    report_any_exceptions
+    #report_any_exceptions
   end
 
   #get all the count for administrative unit and present them hierarchical order
@@ -90,6 +92,8 @@ class MetricsReport
       "#{size} GB"
     end
   end
+
+  private
 
   def report_any_exceptions
     return unless @exceptions.any?
@@ -218,8 +222,21 @@ class MetricsReport
   end
 
   def save!
+    report = PeriodicMetricReport.find_or_initialize_by( start_date: metrics.report_start_date,
+                                                         end_date: metrics.report_end_date)
+    report.update!(
+      filename: filename,
+      content: render)
+
+    send_report(report.id)
+
     File.open(filename, 'w+') do |f|
       f.write(render)
     end
+  end
+
+  def send_report(report_id)
+    report = PeriodicMetricReport.find(report_id)
+    ReportMailer.notify(report).deliver
   end
 end

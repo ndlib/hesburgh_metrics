@@ -41,5 +41,18 @@ module HesburghMetrics
                        controller_specs: false,
                        request_specs: false
     end
+
+    SMTP_CONFIG = YAML.load_file(Rails.root.join("config/smtp_config.yml")).fetch(Rails.env)
+
+    config.action_mailer.delivery_method = SMTP_CONFIG['smtp_delivery_method'].to_sym
+    config.action_mailer.smtp_settings = {
+        address:              SMTP_CONFIG['smtp_host'],
+        port:                 SMTP_CONFIG['smtp_port'],
+        domain:               SMTP_CONFIG['smtp_domain'],
+        user_name:            SMTP_CONFIG['smtp_user_name'],
+        password:             SMTP_CONFIG['smtp_password'],
+        authentication:       SMTP_CONFIG['smtp_authentication_type'],
+        enable_starttls_auto: SMTP_CONFIG['smtp_enable_starttls_auto']
+    }
   end
 end
