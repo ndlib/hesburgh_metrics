@@ -117,17 +117,9 @@ namespace :deploy do
   end
 end
 
-set(:secret_repo_name) do
-  case rails_env
-  when 'staging' then 'secret_staging'
-  when 'pre_production' then 'secret_pprd'
-  when 'production' then 'secret_prod'
-  end
-end
-
 namespace :und do
   task :update_secrets do
-    run "cd #{release_path} && ./script/update_secrets.sh #{secret_repo_name}"
+    run "cd #{release_path} && ./script/update_secrets.sh && #{File.join(shared_path, 'secret')}"
   end
 
   desc 'Write the current environment values to file on targets'
