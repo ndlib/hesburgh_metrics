@@ -119,7 +119,7 @@ end
 
 namespace :und do
   task :update_secrets do
-    run "cd #{release_path} && ./script/update_secrets.sh && #{File.join(shared_path, 'secret')}"
+    run "cd #{release_path} && ./script/update_secrets.sh #{File.join(shared_path, 'secret')}"
   end
 
   desc 'Write the current environment values to file on targets'
