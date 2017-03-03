@@ -1,7 +1,7 @@
 # This class is responsible for creating/delivering email
 class ReportMailer < ActionMailer::Base
   def email(report)
-    mail from: sender_email,
+    mail from: default_sender,
          to: recipients_list,
          subject: subject(report),
          content_type: 'text/html; charset=UTF-8',
@@ -19,12 +19,7 @@ class ReportMailer < ActionMailer::Base
     @list
   end
 
-  def sender_email
-    ENV.fetch('METRICS_REPORT_SENDER').blank? ? default_sender : ENV.fetch('METRICS_REPORT_SENDER')
-  end
-
   def default_sender
-    @sender ||= YAML.load_file(Rails.root.join('config', 'smtp_config.yml'))
-    @sender[Rails.env]["smtp_user_name"]
+    ENV.fetch('METRICS_REPORT_SENDER')
   end
 end

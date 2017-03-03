@@ -33,10 +33,9 @@ RSpec.describe MetricsReport do
       ActionMailer::Base.delivery_method = :test
       ActionMailer::Base.perform_deliveries = true
       ActionMailer::Base.deliveries = []
-      allow(ENV).to receive(:fetch).with("METRICS_REPORT_SENDER").and_return("")
+      allow(ENV).to receive(:fetch).with("METRICS_REPORT_SENDER").and_return("noreply@nd.edu")
       allow(ENV).to receive(:fetch).with("METRICS_REPORT_RECIPIENT").and_return("bogus@bogus.com")
       allow(persisted_report).to receive(:persisted?).and_return(true)
-      ReportMailer.email(persisted_report).deliver_now
     end
     after do
       ActionMailer::Base.deliveries.clear
@@ -59,7 +58,6 @@ RSpec.describe MetricsReport do
       allow(PeriodicMetricReport).to receive(:find).and_return(persisted_report)
       allow(report).to receive(:send_report).and_call_original
       ActionMailer::Base.deliveries.count.should == 1
-      #expect { subject }.to change { ActionMailer::Base.deliveries.count }.by(1)
     end
   end
 
