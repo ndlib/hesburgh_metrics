@@ -18,7 +18,7 @@ for f in $files_to_copy; do
     then
         cp ${secret_dir}/$f $f
     else
-        echo "Fatal Error: File $f does not exist in $secret_dir/curate_nd"
+        echo "Fatal Error: File $f does not exist in $secret_dir"
         exit 1
     fi
 done

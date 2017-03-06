@@ -10,7 +10,7 @@ app_host=$2
 
 if [ -d "$secret_dir" ];
 then
-	  scp -r "$secret_dir" "app@$app_host:/home/app/metrics/shared/secret"
+	  scp -r "${secret_dir}/*" "app@$app_host:/home/app/metrics/shared/secret"
 else
           echo "Fatal Error: Source directory $secret_dir does not exist"
 	  exit 1
