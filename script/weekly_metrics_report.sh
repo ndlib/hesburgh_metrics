@@ -7,7 +7,7 @@
 
  cd /home/app/metrics/current
 
-# exec 200> "/tmp/weekly_metrics_report.sh"
+ exec 200> "/tmp/weekly_metrics_report.sh"
  flock -e --nonblock 200 || exit 0
 
 # source our ruby env

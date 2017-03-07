@@ -7,7 +7,7 @@
 # $ cd <CURRENT_WORKING_DIRECTORY>
 # $ bundle exec rails runner -e <RAILS_ENV> <__FILE__>
 # ```
-module UpdateParentType
+module UpdateAggregationKeys
   module_function
 
   def update_predicate_name_as_administrative_unit
@@ -23,7 +23,7 @@ module UpdateParentType
   def update_academic_status
     @exceptions = []
     @repo = Rubydora.connect url: Figaro.env.fedora_url!, user: Figaro.env.fedora_user!, password: Figaro.env.fedora_password!
-    FedoraObject.find_each do |fedora_object|
+    FedoraObject.all.limit(20).each do |fedora_object|
       begin
         pid = "und:#{fedora_object.pid}"
         predicate_name = "creator#affiliation"
@@ -36,15 +36,14 @@ module UpdateParentType
         end
         # if there are any aggregation keys now, add or update what is currently stored
         if agg_key_array.any?
-          # add any new aggregation keys which don't already exist
           agg_key_array.each do |key|
-            next if fedora_object.fedora_object_aggregation_keys.where(predicate_name: predicate_name, aggregation_key: key).present?
-            fedora_object.fedora_object_aggregation_keys.create!(predicate_name: predicate_name, aggregation_key: key)
+            # add any new aggregation keys which don't already exist
+            FedoraObjectAggregationKey.where(fedora_object: fedora_object, predicate_name: predicate_name, aggregation_key: key).first_or_initialize(&:save)
           end
         end
         # destroy any prior aggregation keys which no longer exist
-        fedora_object.fedora_object_aggregation_keys.where(predicate_name: predicate_name).each do |aggregation_key|
-          fedora_object.fedora_object_aggregation_keys.where(predicate_name: predicate_name).destroy unless agg_key_array.include? aggregation_key
+        fedora_object.fedora_object_aggregation_keys.where(predicate_name: predicate_name).each do |fedora_object_aggregation_key|
+          fedora_object_aggregation_key.destroy unless agg_key_array.include? fedora_object_aggregation_key.aggregation_key
         end
       rescue Exception => e
         logger.error "Error: error update_academic_status for #{fedora_object.pid}.  Error was #{e}"
@@ -52,7 +51,7 @@ module UpdateParentType
       end
     end
     unless @exceptions.empty?
-      logger.error @exceptions.join("\n")
+      logger.error @exceptions.join(" ")
     end
   end
 ## ============================================================================
@@ -72,7 +71,7 @@ module UpdateParentType
         @exceptions << "#{e.inspect}"
       end
     end
-    data_array
+    data_array.reject(&:empty?)
   end
 end
 
@@ -80,5 +79,5 @@ def logger
   Rails.logger
 end
 
-UpdateParentType.update_predicate_name_as_administrative_unit
-UpdateParentType.update_academic_status
+UpdateAggregationKeys.update_predicate_name_as_administrative_unit
+UpdateAggregationKeys.update_academic_status

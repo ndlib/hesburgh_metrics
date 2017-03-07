@@ -115,8 +115,8 @@ class FedoraObjectHarvester
       if agg_key_array.any?
         # add any new aggregation keys which don't already exist
         agg_key_array.each do |key|
-          next if fedora_object.fedora_object_aggregation_keys.where(predicate_name: predicate_name, aggregation_key: key).present?
-          fedora_object.fedora_object_aggregation_keys.create!(predicate_name: predicate_name, aggregation_key: key)
+          # add any new aggregation keys which don't already exist
+          FedoraObjectAggregationKey.where(fedora_object: fedora_object, predicate_name: predicate_name, aggregation_key: key).first_or_initialize(&:save)
         end
       end
       # destroy any prior aggregation keys which no longer exist
