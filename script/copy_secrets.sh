@@ -12,7 +12,7 @@ if [ -d "$secret_dir" ];
 then
 	for file in $(ls $secret_dir)
 	do
-	  scp -r "${secret_dir}/$file" "app@$app_host:/home/app/metrics/shared/secret"
+	  scp -r "${secret_dir}/$file" "app@$app_host:/home/app/metrics/shared/secret/$file"
 	done
 else
           echo "Fatal Error: Source directory $secret_dir does not exist"
