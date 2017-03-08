@@ -175,9 +175,6 @@ task :staging do
 
   default_environment['PATH'] = '/opt/ruby/current/bin:$PATH'
   server "#{user}@#{domain}", :app, :work, :web, :db, primary: true
-
-  after 'deploy:update_code', 'und:write_env_vars', 'und:write_build_identifier', 'und:update_secrets', 'deploy:symlink_update', 'deploy:migrate', 'db:seed'
-  after 'deploy', 'deploy:cleanup'
 end
 
 desc 'Setup for pre-production deploy'
@@ -194,9 +191,6 @@ task :pre_production do
 
   default_environment['PATH'] = '/opt/ruby/current/bin:$PATH'
   server 'app@curatesvrpprd.library.nd.edu', :app, :web, :db, primary: true
-
-  after 'deploy:update_code', 'und:write_env_vars', 'und:write_build_identifier', 'und:update_secrets', 'deploy:symlink_update', 'deploy:migrate', 'db:seed'
-  after 'deploy', 'deploy:cleanup'
 end
 
 desc 'Setup for production deploy'
@@ -218,3 +212,7 @@ task :production do
   after 'deploy:update_code', 'und:write_env_vars', 'und:write_build_identifier', 'und:update_secrets', 'deploy:symlink_update', 'deploy:migrate', 'db:seed'
   after 'deploy', 'deploy:cleanup'
 end
+
+before 'deploy:db_migrate', 'und:update_secrets'
+after 'deploy:update_code', 'und:write_env_vars', 'und:write_build_identifier', 'und:update_secrets', 'deploy:symlink_update', 'deploy:migrate', 'db:seed'
+after 'deploy', 'deploy:cleanup'
