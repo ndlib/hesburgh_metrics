@@ -117,17 +117,9 @@ namespace :deploy do
   end
 end
 
-set(:secret_repo_name) do
-  case rails_env
-  when 'staging' then 'secret_staging'
-  when 'pre_production' then 'secret_pprd'
-  when 'production' then 'secret_prod'
-  end
-end
-
 namespace :und do
   task :update_secrets do
-    run "cd #{release_path} && ./script/update_secrets.sh #{secret_repo_name}"
+    run "cd #{release_path} && ./script/update_secrets.sh #{File.join(shared_path, 'secret')}"
   end
 
   desc 'Write the current environment values to file on targets'
@@ -183,9 +175,6 @@ task :staging do
 
   default_environment['PATH'] = '/opt/ruby/current/bin:$PATH'
   server "#{user}@#{domain}", :app, :work, :web, :db, primary: true
-
-  after 'deploy:update_code', 'und:write_env_vars', 'und:write_build_identifier', 'und:update_secrets', 'deploy:symlink_update', 'deploy:migrate', 'db:seed'
-  after 'deploy', 'deploy:cleanup'
 end
 
 desc 'Setup for pre-production deploy'
@@ -202,9 +191,6 @@ task :pre_production do
 
   default_environment['PATH'] = '/opt/ruby/current/bin:$PATH'
   server 'app@curatesvrpprd.library.nd.edu', :app, :web, :db, primary: true
-
-  after 'deploy:update_code', 'und:write_env_vars', 'und:write_build_identifier', 'und:update_secrets', 'deploy:symlink_update', 'deploy:migrate', 'db:seed'
-  after 'deploy', 'deploy:cleanup'
 end
 
 desc 'Setup for production deploy'
@@ -226,3 +212,7 @@ task :production do
   after 'deploy:update_code', 'und:write_env_vars', 'und:write_build_identifier', 'und:update_secrets', 'deploy:symlink_update', 'deploy:migrate', 'db:seed'
   after 'deploy', 'deploy:cleanup'
 end
+
+before 'deploy:db_migrate', 'und:update_secrets'
+after 'deploy:update_code', 'und:write_env_vars', 'und:write_build_identifier', 'und:update_secrets', 'deploy:symlink_update', 'deploy:migrate', 'db:seed'
+after 'deploy', 'deploy:cleanup'

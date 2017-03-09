@@ -3,16 +3,9 @@
 # Copy the secrets to the correct place for deployment
 #
 # usage:
-#   ./update_secrets.sh <name of secret repo>
+#   ./update_secrets.sh <directory of secrets>
 
-secret_repo=$1
-
-if [ -d $secret_repo ]; then
-    echo "=-=-=-=-=-=-=-= delete $secret_repo"
-    rm -rf $secret_repo
-fi
-echo "=-=-=-=-=-=-=-= git clone $secret_repo"
-git clone "git@git.library.nd.edu:$secret_repo"
+secret_dir=$1
 
 files_to_copy="
     database.yml
@@ -21,11 +14,11 @@ files_to_copy="
 
 for f in $files_to_copy; do
     echo "=-=-=-=-=-=-=-= copy $f"
-    if [ -f $secret_repo/hesburgh_metrics/$f ];
+    if [ -f ${secret_dir}/$f ];
     then
-        cp $secret_repo/hesburgh_metrics/$f config/$f
+        cp ${secret_dir}/$f config/$f
     else
-        echo "Fatal Error: File $f does not exist in $secret_repo/curate_nd"
+        echo "Fatal Error: File $f does not exist in $secret_dir"
         exit 1
     fi
 done
@@ -35,6 +28,6 @@ if [ ! -d .bundle ]; then
 	mkdir .bundle
 fi
 
-cp $secret_repo/hesburgh_metrics/bundle_config .bundle/config
+cp -f  $secret_dir/bundle_config .bundle/config
 
-cp -f $secret_repo/hesburgh_metrics/metrics-env.sh /home/app/metrics/shared/system
+cp -f $secret_dir/metrics-env.sh /home/app/metrics/shared/system
