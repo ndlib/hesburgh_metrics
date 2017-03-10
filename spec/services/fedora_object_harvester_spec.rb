@@ -65,9 +65,41 @@ RSpec.describe FedoraObjectHarvester::SingleItem do
   let(:harvester) { FedoraObjectHarvester.new }
   let(:single_item) { described_class.new(doc, harvester) }
 
+  context '#get_and_add_or_delete_aggregation_keys' do
+    subject { single_item.send(:get_and_add_or_delete_aggregation_keys, fedora_object, 'test') }
+    let (:fedora_object) { FedoraObject.create(pid: 'some_pid', af_model: 'a model', resource_type: 'a resource type',
+                                               obj_ingest_date: '2015-12-12', obj_modified_date: '2015-12-12',
+                                               mimetype: 'a mime type', bytes: 100, access_rights: 'rights',
+                                               parent_pid: 'some_pid')   }
+    let(:fedora_aggregation_key) { FedoraObjectAggregationKey.new(aggregation_key:'Random Data') }
+    let(:stream) do
+      %(<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/title> "Collection with long description" .\n
+      <info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/description> "The most recent versions of V-Dem data" .\n
+      <info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/dateSubmitted> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .\n
+      <info:fedora/und:00000001s4s> <http://purl.org/dc/terms/language> "English" .\n
+      <info:fedora/und:00000001s4s> <http://purl.org/dc/terms/test> "My Test Data" .\n
+      <info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/modified> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .)
+    end
+    let(:doc) { double('DigitalObject',
+                       datastreams: { 'descMetadata' => double(content: stream) },
+                       pid: 'und:mp48sb41h1s', profile: {}) }
+    let(:single_item) { described_class.new(doc, harvester) }
+    it 'to create aggregation key and value' do
+      allow(fedora_object).to receive_message_chain("fedora_object_aggregation_keys.where") { [] }
+      allow(FedoraObjectAggregationKey).to receive(:first_or_initialize).and_call_original
+      expect{ subject }.to change { FedoraObjectAggregationKey.count }.by(1)
+    end
+    it 'to destroy FedoraObjectAggregationKey if not present as metadata' do
+      allow(fedora_object).to receive_message_chain("fedora_object_aggregation_keys.where") { [fedora_aggregation_key] }
+      FedoraObjectAggregationKey.any_instance.stub(:destroy).and_call_original
+      subject
+      expect(fedora_aggregation_key).to have_received(:destroy)
+    end
+  end
+
   context '#parent_pid' do
-    subject { single_item.send(:parent_pid) }
     context 'for non-GenericFile content' do
+      subject { single_item.send(:parent_pid) }
       before { allow(single_item).to receive(:af_model).and_return('Book') }
       it { is_expected.to eq(single_item.pid) }
     end
@@ -99,11 +131,137 @@ RSpec.describe FedoraObjectHarvester::SingleItem do
     end
   end
 
+  context '#access_rights' do
+    subject { single_item.send(:access_rights) }
+    context 'when no rightmetadata present' do
+      let (:doc) { double('DigitalObject', datastreams: { 'descMetadata' => double(content: '') }, pid: 'und:mp48sb41h1s', profile: {}) }
+      it { is_expected.to eq('private') }
+    end
+    context 'When rightsMetadata available' do
+      let (:rights) { %(<rightsMetadata xmlns="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1" version="0.1"><copyright><human type="title"/><human type="description"/><machine type="uri"/></copyright><access type="discover"><human/><machine/></access><access type="read"><human/><machine><group>public</group></machine></access><access type="edit"><human/><machine><person>msisk1</person></machine></access><embargo><human/><machine/></embargo></rightsMetadata>) }
+      let (:doc) { double('DigitalObject', datastreams: { 'descMetadata' => double(content: ''),
+                                                          'rightsMetadata' => double(content: rights) },
+                          pid: 'und:mp48sb41h1s', profile: {}) }
+      it { is_expected.to eq('public') }
+    end
+  end
+
+  context '#resource_type' do
+    subject { single_item.send(:resource_type) }
+    before { allow(single_item).to receive(:af_model).and_return('af_model') }
+    context 'without DescMetadata' do
+      let(:doc) { double('DigitalObject', datastreams: { }, pid: 'und:mp48sb41h1s', profile: {}) }
+      it { is_expected.to eq('af_model') }
+    end
+
+    context 'with DescMetadata' do
+      let (:stream) do
+        %(<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/title> "Collection with long description" .\n
+        <info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/description> "The most recent versions of V-Dem data" .\n
+        <info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/dateSubmitted> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .\n
+        <info:fedora/und:00000001s4s> <http://purl.org/dc/terms/language> "English" .\n
+        <info:fedora/und:00000001s4s> <http://purl.org/dc/terms/type> "some type" .\n
+        <info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/modified> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .)
+      end
+      let(:doc) { double('DigitalObject', datastreams: { 'descMetadata' => double(content: stream) }, pid: 'und:mp48sb41h1s', profile: {}) }
+      it { is_expected.to eq('some type') }
+    end
+
+    context 'with DescMetadata without type' do
+      let (:stream) do
+        %(<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/title> "Collection with long description" .\n
+        <info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/description> "The most recent versions of V-Dem data" .\n
+        <info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/dateSubmitted> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .\n
+        <info:fedora/und:00000001s4s> <http://purl.org/dc/terms/language> "English" .\n
+        <info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/modified> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .)
+      end
+      let(:doc) { double('DigitalObject', datastreams: { 'descMetadata' => double(content: stream) }, pid: 'und:mp48sb41h1s', profile: {}) }
+      it { is_expected.to eq('af_model') }
+    end
+  end
+
+  context '#mimetype' do
+    subject { single_item.send(:mimetype) }
+    context 'for non-GenericFile' do
+      let(:doc) { double('DigitalObject', datastreams: { 'descMetadata' => double(content: "descMetadataContent") }, pid: 'und:mp48sb41h1s', profile: {}) }
+      it { is_expected.to be_empty }
+    end
+    context 'for GenericFile' do
+      let(:doc) { double('DigitalObject', datastreams: { 'descMetadata' => double(content: "descMetadataContent"), 'content' => double(label:'fileName', mimeType: "mimetype")}, pid: 'und:mp48sb41h1s', profile: {}) }
+      it { is_expected.to eq('mimetype') }
+    end
+  end
+
+  context '#bytes' do
+    subject { single_item.send(:bytes) }
+    context 'for non-GenericFile' do
+      let(:doc) { double('DigitalObject', datastreams: { 'descMetadata' => double(content: "descMetadataContent") }, pid: 'und:mp48sb41h1s', profile: {}) }
+      it { is_expected.to eq(0) }
+    end
+    context 'for GenericFile' do
+      let(:doc) { double('DigitalObject', datastreams: { 'descMetadata' => double(content: "descMetadataContent"), 'content' => double(label:'fileName', size: "100")}, pid: 'und:mp48sb41h1s', profile: {}) }
+      it { is_expected.to eq('100') }
+    end
+  end
+
   context '#fedora_changed?' do
     subject { single_item.send(:fedora_changed?, content) }
     let (:content) { FedoraObject.new }
     context 'for new record' do
       it { is_expected.to eq(false) }
+    end
+  end
+
+  context 'for GenericFile content' do
+    let (:rels_ext) do
+      %(<?xml version='1.0' encoding='utf-8' ?>
+        <rdf:RDF xmlns:ns0='http://projecthydra.org/ns/relations#' xmlns:ns1='info:fedora/fedora-system:def/model#' xmlns:ns2='info:fedora/fedora-system:def/relations-external#' xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+          <rdf:Description rdf:about='info:fedora/und:02870v85054'>
+            <ns0:hasEditor rdf:resource='info:fedora/und:ks65h991r5x' />
+            <ns0:hasEditorGroup rdf:resource='info:fedora/und:ms35t724s3j' />
+            <ns0:hasViewerGroup rdf:resource='info:fedora/und:7m01bk14722' />
+            <ns1:hasModel rdf:resource='info:fedora/afmodel:GenericFile' />
+            <ns2:isPartOf rdf:resource='info:fedora/und:zs25x636043' />
+          </rdf:Description>
+        </rdf:RDF>)
+    end
+    let(:descMetdata) do
+      %(<info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/title> "Collection with long description" .\n
+        <info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/description> "The most recent versions of V-Dem data" .\n
+        <info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/dateSubmitted> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .\n
+        <info:fedora/und:00000001s4s> <http://purl.org/dc/terms/language> "English" .\n
+        <info:fedora/und:mp48sb41h1s> <http://purl.org/dc/terms/modified> "2014-12-19Z"^^<http://www.w3.org/2001/XMLSchema#date> .)
+    end
+    let(:gf_doc) { double('DigitalObject',
+                   datastreams: {'descMetdata' => double(descMetdata: descMetdata),
+                                 'RELS-EXT' => double(content: rels_ext),
+                                 'content' => double(label:'fileName') },
+                   pid: 'und:mp48sb41h1s', profile: {}) }
+    let(:single_gf_item) { described_class.new(gf_doc, harvester) }
+    before :each do
+      allow(single_gf_item).to receive(:af_model).and_return('GenericFile')
+    end
+    context '#parent_pid' do
+      subject { single_gf_item.send(:parent_pid) }
+      it { is_expected.to eq('zs25x636043') }
+    end
+
+    context '#parent_type' do
+      subject { single_gf_item.send(:parent_type) }
+      around do |spec|
+        VCR.use_cassette(VCR_CASSETTE_NAME) do
+          spec.call
+        end
+      end
+      before do
+        allow(FedoraObject).to receive(:find_by).and_return(nil)
+      end
+      it { is_expected.to eq('Dataset') }
+    end
+
+    context '#title' do
+      subject { single_gf_item.send(:title) }
+      it { is_expected.to eq('fileName') }
     end
   end
 

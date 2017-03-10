@@ -120,8 +120,8 @@ class FedoraObjectHarvester
         end
       end
       # destroy any prior aggregation keys which no longer exist
-      fedora_object.fedora_object_aggregation_keys.where(predicate_name: predicate_name).each do |aggregation_key|
-        fedora_object.fedora_object_aggregation_keys.where(predicate_name: predicate_name).destroy unless agg_key_array.include? aggregation_key
+      fedora_object.fedora_object_aggregation_keys.where(predicate_name: predicate_name).each do |fedora_object_aggregation_key|
+        fedora_object_aggregation_key.destroy unless agg_key_array.include? fedora_object_aggregation_key.aggregation_key
       end
     end
 
