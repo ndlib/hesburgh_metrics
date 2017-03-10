@@ -68,8 +68,6 @@ class FedoraObjectHarvester
       fedora_update(fedora_object) if fedora_object.new_record? || fedora_changed?(fedora_object)
     end
 
-    private
-
     def default_repository
       Rubydora.connect url: Figaro.env.fedora_url!, user: Figaro.env.fedora_user!, password: Figaro.env.fedora_password!
     end
@@ -117,13 +115,13 @@ class FedoraObjectHarvester
       if agg_key_array.any?
         # add any new aggregation keys which don't already exist
         agg_key_array.each do |key|
-          next if fedora_object.fedora_object_aggregation_keys.where(predicate_name: predicate_name, aggregation_key: key).present?
-          fedora_object.fedora_object_aggregation_keys.create!(predicate_name: predicate_name, aggregation_key: key)
+          # add any new aggregation keys which don't already exist
+          FedoraObjectAggregationKey.where(fedora_object: fedora_object, predicate_name: predicate_name, aggregation_key: key).first_or_initialize(&:save)
         end
       end
       # destroy any prior aggregation keys which no longer exist
-      fedora_object.fedora_object_aggregation_keys.where(predicate_name: predicate_name).each do |aggregation_key|
-        fedora_object.fedora_object_aggregation_keys.where(predicate_name: predicate_name).destroy unless agg_key_array.include? aggregation_key
+      fedora_object.fedora_object_aggregation_keys.where(predicate_name: predicate_name).each do |fedora_object_aggregation_key|
+        fedora_object_aggregation_key.destroy unless agg_key_array.include? fedora_object_aggregation_key.aggregation_key
       end
     end
 
@@ -289,7 +287,7 @@ class FedoraObjectHarvester
           harvester.exceptions << "PID: #{pid} -- #{e.inspect}"
         end
       end
-      data_array
+      data_array.reject(&:empty?)
     end
   end
 end

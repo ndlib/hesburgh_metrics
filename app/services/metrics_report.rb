@@ -29,38 +29,34 @@ class MetricsReport
   ACCESS_RIGHTS = %w(public local embargo private).freeze
   REPORTING_AF_MODELS = %w(Article Audio Dataset Document Etd FindingAid GenericFile Image OsfArchive SeniorThesis).freeze
 
-  attr_reader :metrics, :exceptions, :filename
+  attr_reader :metrics, :exceptions
 
   def initialize(report_start_date, report_end_date)
     @exceptions = []
     @metrics = MetricsDetail.new(report_start_date, report_end_date)
-    @filename = "CurateND-report-#{report_start_date}-through-#{report_end_date}.html"
     @template = Rails.root.join('app', 'templates', 'periodic_metrics.html.erb').read
   end
 
   def generate_report
     # Storage Information
-    begin
-      STORAGE_TYPES.each do |storage_type|
-        storage_information_for(storage_type)
-      end
-      # Holding Information
-      holding_object_counts
-      HOLDING_TYPES.each do |holding_type|
-        generic_files_for(holding_type)
-      end
-      objects_by_model_access_rights
-      build_nested_administrative_units
-      objects_by_academic_status
-      # Usage Information
-      build_usage_by_resource
-      build_usage_by_location
-      metrics.top_viewed_items = FedoraAccessEvent.top_viewed_objects
-      metrics.top_download_items = FedoraAccessEvent.top_downloaded_objects
-      save!
-    rescue StandardError => e
-      @exceptions << "Error: generate_report.  Error: #{e}"
+    STORAGE_TYPES.each do |storage_type|
+      storage_information_for(storage_type)
     end
+    # Holding Information
+    holding_object_counts
+    generic_files
+    objects_by_model_access_rights
+    build_nested_administrative_units
+    objects_by_academic_status
+    # Usage Information
+    build_usage_by_resource
+    build_usage_by_location
+    metrics.top_viewed_items = FedoraAccessEvent.top_viewed_objects
+    metrics.top_download_items = FedoraAccessEvent.top_downloaded_objects
+    # Save report to database and send email
+    save!
+  rescue StandardError => e
+    @exceptions << "Error: generate_report,#{e.message} \n  Error: #{e.backtrace.join("\n")}"
     report_any_exceptions
   end
 
@@ -72,14 +68,28 @@ class MetricsReport
       if count_by_administrative_unit.is_a?(Hash)
         count_by_department = count_by_administrative_unit.values
         metrics.administrative_units_count = metrics.administrative_units_count + count_by_department.sum
-        html << "<tr class=department>  <td>#{unit_name}</td>  <td>#{count_by_department.sum}</td> </tr> "
+        html << "<tr class=department>  <td>#{unit_name}</td>  <td align=\"right\">#{count_by_department.sum}</td> </tr> "
         report_administrative_unit_as_html(count_by_administrative_unit, html = html)
       else
-        html << "<tr>  <td>#{unit_name}</td> <td>#{count_by_administrative_unit}</td> </tr> "
+        html << "<tr>  <td>&nbsp &nbsp &nbsp #{unit_name}</td> <td align=\"right\">#{count_by_administrative_unit}</td> </tr> "
       end
     end
     ApplicationController.helpers.safe_join([html.html_safe])
   end
+
+  GIGABYTE = 10.0**9
+  def bytes_to_gb(bytes)
+    if bytes.zero?
+      "0"
+    elsif bytes < 500_000
+      "< 0.001 GB"
+    else
+      size = (bytes / GIGABYTE).round(3)
+      "#{size} GB"
+    end
+  end
+
+  private
 
   def report_any_exceptions
     return unless @exceptions.any?
@@ -90,8 +100,6 @@ class MetricsReport
       )
     end
   end
-
-  private
 
   def storage_information_for(storage_type)
     storage = CurateStorageDetail.where(storage_type: storage_type)
@@ -107,13 +115,20 @@ class MetricsReport
                                                       start_date: metrics.report_start_date, end_date: metrics.report_end_date).count
   end
 
-  def generic_files_for(holding_type)
-    generic_files_by_type = FedoraObject.generic_files(as_of: metrics.report_end_date, group: holding_type, reporting_models: REPORTING_AF_MODELS)
-    holding_type_objects = {}
-    generic_files_by_type.each do |type, objects|
-      holding_type_objects[type] = ReportingStorageDetail.new(count: objects.count, size: objects.map(&:bytes).sum)
+  def generic_files
+    HOLDING_TYPES.each do |holding_type|
+      method_name = "generic_files_by_#{holding_type}".to_sym
+      if FedoraObject.respond_to?(method_name)
+        generic_files_by_type = FedoraObject.send(method_name, as_of: metrics.report_end_date, reporting_models: REPORTING_AF_MODELS)
+        holding_type_objects = {}
+        generic_files_by_type.each do |fedora_object|
+          holding_type_objects[fedora_object.type] = ReportingStorageDetail.new(count: fedora_object.pid_count, size: fedora_object.total_bytes)
+        end
+        metrics.generic_files_by_holding[holding_type] = holding_type_objects
+      else
+        @exceptions << "Error: FedoraObject Undefine Methods #{method_name} to get generic_files"
+      end
     end
-    metrics.generic_files_by_holding[holding_type] = holding_type_objects
   end
 
   def objects_by_model_access_rights
@@ -203,8 +218,15 @@ class MetricsReport
   end
 
   def save!
-    File.open(filename, 'w+') do |f|
-      f.write(render)
-    end
+    report = PeriodicMetricReport.find_or_initialize_by(start_date: metrics.report_start_date,
+                                                        end_date: metrics.report_end_date)
+    report.update!(
+      content: render
+    )
+    send_report(report)
+  end
+
+  def send_report(report)
+    ReportMailer.email(report).deliver_now
   end
 end

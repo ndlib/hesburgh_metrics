@@ -19,6 +19,8 @@ RSpec.describe MetricsReport do
     ]
   end
 
+  let(:persisted_report) { PeriodicMetricReport.new(id: '123', start_date: Date.today-7, end_date:Date.today, content:'bogus content') }
+
   subject { report.generate_report }
 
   context '#generate_report' do
@@ -28,6 +30,14 @@ RSpec.describe MetricsReport do
                                  object_count: 100, object_bytes: 123456)
       CurateStorageDetail.create(harvest_date: report_end_date, storage_type: 'Bendo',
                                  object_count: 10, object_bytes: 1234)
+      ActionMailer::Base.delivery_method = :test
+      ActionMailer::Base.perform_deliveries = true
+      ActionMailer::Base.deliveries = []
+      allow(persisted_report).to receive(:persisted?).and_return(true)
+    end
+    after do
+      ActionMailer::Base.deliveries.clear
+      CurateStorageDetail.delete_all
     end
 
     it 'generate metrics report for given reporting dates', functional: true do
@@ -40,25 +50,77 @@ RSpec.describe MetricsReport do
       expect(Airbrake).to receive(:notify_sync).and_call_original
       subject
     end
+
+    it '#send_report' do
+      subject
+      allow(PeriodicMetricReport).to receive(:find).and_return(persisted_report)
+      allow(report).to receive(:send_report).and_call_original
+      ActionMailer::Base.deliveries.count.should == 1
+    end
   end
 
-  context '#generic_files_for' do
-    let(:mock_group_by_access_rights) do
-      { "public"=> [double(pid: "some pid", mimetype: "application/pdf", bytes: 14, access_rights: "public")],
-        "local"=> [double(pid: "some pid", mimetype: "application/pdf", bytes: 14, access_rights: "local")]
+  context "#report_administrative_unit_as_html" do
+    let (:blank_administrative_unit_hash) { {} }
+    let (:nested_administrative_unit_hash) do
+      {
+          "College of Arts and Letters"=>{"Art, Art History, and Design"=>2, "Music"=>1},
+          "College of Science"=>{"Applied and Computational Mathematics and Statistics"=>4}
       }
+    end
+    it "returns blank for administrative unit listing when there is not administrative units" do
+      expect(report.report_administrative_unit_as_html).to eq("")
+    end
+
+    it "return tabulated administrative unit with count" do
+      html = report.report_administrative_unit_as_html(nested_administrative_unit_hash)
+      expect(html).to have_tag('tr', :with => { :class => 'department'}) do
+        with_tag('td', text: 'College of Arts and Letters')
+        with_tag('td', text: '3')
+        with_tag('td', text: 'College of Science')
+        with_tag('td', text: '4')
+      end
+      expect(html).to have_tag('tr') do
+        with_tag('td', text: '&nbsp &nbsp &nbsp Art, Art History, and Design')
+        with_tag('td', text: '2')
+        with_tag('td', text: '&nbsp &nbsp &nbsp Music')
+        with_tag('td', text: '1')
+        with_tag('td', text: '&nbsp &nbsp &nbsp Applied and Computational Mathematics and Statistics')
+        with_tag('td', text: '4')
+      end
+    end
+  end
+
+  context "#bytes_to_gb" do
+    it 'will return 0 for 0 Bytes' do
+      expect(report.bytes_to_gb(0)).to eq("0")
+    end
+    it 'will return <0.001 GB when it is less than 5MB' do
+      expect(report.bytes_to_gb(399956)).to eq('< 0.001 GB')
+    end
+    it 'will convert to GB for given bytes' do
+      expect(report.bytes_to_gb(12354578789)).to eq("12.355 GB")
+    end
+  end
+
+  context '#generic_files' do
+    let(:mock_group_by_access_rights) do
+      [
+        double(pid_count: "6", total_bytes: 14, type: "public"),
+        double(pid_count: "6",  total_bytes: 14, type: "local")
+      ]
     end
     let(:mock_group_by_mime_type) do
-      {  "mimetype1"=> [double(pid: "some pid", mimetype: "mimetype1", bytes: 14, access_rights: "local")],
-         "mimetype2"=> [double(pid: "some pid", mimetype: "mimetype2", bytes: 14, access_rights: "public")]
-      }
+      [
+        double(pid_count: "5", type: "mimetype1", total_bytes: 14),
+        double(pid_count: "10", type: "mimetype2", total_bytes: 14)
+      ]
     end
     it 'get count and size for generic_files by mime_type', functional: true do
-      FedoraObject.stub(:generic_files).with({as_of: report_end_date, group: 'mimetype',
+      FedoraObject.stub(:generic_files_by_mimetype).with({as_of: report_end_date,
                                               reporting_models: ["Article", "Audio", "Dataset", "Document", "Etd", "FindingAid", "GenericFile", "Image", "OsfArchive", "SeniorThesis"]}) do |arg|
         mock_group_by_mime_type
       end
-      FedoraObject.stub(:generic_files).with({as_of: report_end_date, group: 'access_rights',
+      FedoraObject.stub(:generic_files_by_access_rights).with({as_of: report_end_date,
                                               reporting_models:["Article", "Audio", "Dataset", "Document", "Etd", "FindingAid", "GenericFile", "Image", "OsfArchive", "SeniorThesis"]}) do |arg|
         mock_group_by_access_rights
       end
@@ -67,6 +129,13 @@ RSpec.describe MetricsReport do
       end.to change { report.metrics.generic_files_by_holding.count }.by(2)
       expect(report.metrics.generic_files_by_holding.fetch("mimetype").keys).to eq(['mimetype1','mimetype2'])
       expect(report.metrics.generic_files_by_holding.fetch("access_rights").keys).to eq(['public', 'local'])
+    end
+    it "Log exception when not able to collect generic_files for given holding type  " do
+      stub_const("MetricsReport::HOLDING_TYPES", %w(bogus))
+      MetricsReport::HOLDING_TYPES.should eq(["bogus"])
+      expect do
+        subject
+      end.to change { report.metrics.generic_files_by_holding.count }.by(0)
     end
   end
 
@@ -114,37 +183,6 @@ RSpec.describe MetricsReport do
       subject
       expect(report.metrics.obj_by_academic_status.map{|result| result.fetch(:aggregation_key)}).to eq(["Faculty", "Staff"])
       expect(report.metrics.obj_by_administrative_unit).to eq(nested_administrative_unit_hash)
-    end
-  end
-
-  context "#report_administrative_unit_as_html" do
-    let (:blank_administrative_unit_hash) { {} }
-    let (:nested_administrative_unit_hash) do
-      {
-          "College of Arts and Letters"=>{"Art, Art History, and Design"=>2, "Music"=>1},
-          "College of Science"=>{"Applied and Computational Mathematics and Statistics"=>4}
-      }
-    end
-    it "returns blank for administrative unit listing when there is not administrative units" do
-      expect(report.report_administrative_unit_as_html).to eq("")
-    end
-
-    it "return tabulated administrative unit with count" do
-      html = report.report_administrative_unit_as_html(nested_administrative_unit_hash)
-      expect(html).to have_tag('tr', :with => { :class => 'department'}) do
-        with_tag('td', text: 'College of Arts and Letters')
-        with_tag('td', text: '3')
-        with_tag('td', text: 'College of Science')
-        with_tag('td', text: '4')
-      end
-      expect(html).to have_tag('tr') do
-        with_tag('td', text: 'Art, Art History, and Design')
-        with_tag('td', text: '2')
-        with_tag('td', text: 'Music')
-        with_tag('td', text: '1')
-        with_tag('td', text: 'Applied and Computational Mathematics and Statistics')
-        with_tag('td', text: '4')
-      end
     end
   end
 

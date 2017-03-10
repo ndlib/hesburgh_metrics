@@ -31,6 +31,6 @@ namespace :metrics do
   desc 'Create Periodic Metrics Report for given date Range'
   task generate_report: :environment do
     require 'metrics_report'
-    MetricsReport.new( ENV['START_DATE'],  ENV['END_DATE']).generate_report
+    MetricsReport.new( ENV['METRICS_START_DATE'],  ENV['METRICS_END_DATE']).generate_report
   end
 end

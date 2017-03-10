@@ -18,6 +18,14 @@ bendo_adapter: sqlite3
 bendo_encoding: utf8
 bendo_pool: 5
 bendo_timeout: 5000
+smtp_host: smtp.gmail.com
+smtp_port: 587
+smtp_domain: gmail.com
+smtp_authentication_type: plain
+smtp_user_name: noreply@nd.edu
+smtp_password: emailpwd
+smtp_enable_starttls_auto: true
+smtp_delivery_method: smtp
 
 development:
   fedora_user: fedora
@@ -25,6 +33,8 @@ development:
   fedora_url: https://something.com
   airbrake_host: https://fake-airbrake-host.nd.edu
   airbrake_project_key: ThisMeansNothingAtAll
+  METRICS_REPORT_RECIPIENT: library@nd.edu
+  METRICS_REPORT_SENDER: no-reply@nd.edu
 
 test:
   fedora_user: fedora
@@ -32,3 +42,6 @@ test:
   fedora_url: https://something.com # Keep the fedora_url as this is used as part of VCR tests.
   airbrake_host: https://fake-airbrake-host.nd.edu
   airbrake_project_key: ThisMeansNothingAtAll
+  METRICS_REPORT_RECIPIENT: bogus@bogus.com
+  METRICS_REPORT_SENDER: no-reply@nd.edu
+

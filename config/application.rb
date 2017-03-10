@@ -24,7 +24,7 @@ module HesburghMetrics
     config.active_record.raise_in_transactional_callbacks = true
 
     [
-      'services'
+      'mailers', 'services'
     ].each do |concept|
       config.autoload_paths << Rails.root.join("app/#{concept}")
     end
@@ -41,5 +41,16 @@ module HesburghMetrics
                        controller_specs: false,
                        request_specs: false
     end
+
+    config.action_mailer.delivery_method = :sendmail
+    config.action_mailer.smtp_settings = {
+        address:              Figaro.env.smtp_host!,
+        port:                 Figaro.env.smtp_port!.to_i,
+        domain:               Figaro.env.smtp_domain!,
+        user_name:            Figaro.env.smtp_user_name!,
+        password:             Figaro.env.smtp_password,
+        authentication:       Figaro.env.smtp_authentication_type!,
+        enable_starttls_auto: true
+    }
   end
 end
