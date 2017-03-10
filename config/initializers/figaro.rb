@@ -8,5 +8,15 @@ Figaro.require_keys(
   'bendo_adapter',
   'bendo_encoding',
   'bendo_pool',
-  'bendo_timeout'
+  'bendo_timeout',
+  'smtp_host',
+  'smtp_port',
+  'smtp_domain',
+  'smtp_authentication_type',
+  'smtp_user_name',
+  'smtp_password',
+  'smtp_enable_starttls_auto',
+  'smtp_delivery_method',
+  'METRICS_REPORT_RECIPIENT',
+  'METRICS_REPORT_SENDER'
 )

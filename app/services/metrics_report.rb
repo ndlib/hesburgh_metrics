@@ -223,11 +223,10 @@ class MetricsReport
     report.update!(
       content: render
     )
-    send_report(report.id)
+    send_report(report)
   end
 
-  def send_report(report_id)
-    report = PeriodicMetricReport.find(report_id)
+  def send_report(report)
     ReportMailer.email(report).deliver_now
   end
 end

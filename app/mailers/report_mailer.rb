@@ -11,15 +11,16 @@ class ReportMailer < ActionMailer::Base
   private
 
   def subject(report)
-    "CurateND Metrics Report: #{report.start_date} Through #{report.end_date} - [#{Rails.env}]"
+    subject = "CurateND Metrics Report: #{report.start_date} Through #{report.end_date}"
+    return "[#{Rails.env}] #{subject}" unless Rails.env.eql?("production")
+    subject
   end
 
   def recipients_list
-    @list ||= Array.wrap(ENV.fetch('METRICS_REPORT_RECIPIENT'))
-    @list
+    @list ||= Figaro.env.METRICS_REPORT_RECIPIENT!.split(',').map(&:strip)
   end
 
   def default_sender
-    ENV.fetch('METRICS_REPORT_SENDER')
+    Figaro.env.METRICS_REPORT_SENDER
   end
 end

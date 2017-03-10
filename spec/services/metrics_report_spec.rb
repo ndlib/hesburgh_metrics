@@ -33,8 +33,6 @@ RSpec.describe MetricsReport do
       ActionMailer::Base.delivery_method = :test
       ActionMailer::Base.perform_deliveries = true
       ActionMailer::Base.deliveries = []
-      allow(ENV).to receive(:fetch).with("METRICS_REPORT_SENDER").and_return("noreply@nd.edu")
-      allow(ENV).to receive(:fetch).with("METRICS_REPORT_RECIPIENT").and_return("bogus@bogus.com")
       allow(persisted_report).to receive(:persisted?).and_return(true)
     end
     after do
