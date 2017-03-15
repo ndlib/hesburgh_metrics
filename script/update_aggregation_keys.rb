@@ -23,7 +23,7 @@ module UpdateAggregationKeys
   def update_academic_status
     @exceptions = []
     @repo = Rubydora.connect url: Figaro.env.fedora_url!, user: Figaro.env.fedora_user!, password: Figaro.env.fedora_password!
-    FedoraObject.all.limit(20).each do |fedora_object|
+    FedoraObject.find_each do |fedora_object|
       begin
         pid = "und:#{fedora_object.pid}"
         predicate_name = "creator#affiliation"
@@ -33,12 +33,13 @@ module UpdateAggregationKeys
         if doc.datastreams.key?('descMetadata')
           # load new aggregation_key agg_key_array
           agg_key_array = parse_triples(doc.datastreams['descMetadata'].content, predicate_name)
+          logger.debug "value from triples :#{agg_key_array} for pid: #{pid}" unless agg_key_array.blank?
         end
         # if there are any aggregation keys now, add or update what is currently stored
         if agg_key_array.any?
           agg_key_array.each do |key|
-            # add any new aggregation keys which don't already exist
-            FedoraObjectAggregationKey.where(fedora_object: fedora_object, predicate_name: predicate_name, aggregation_key: key).first_or_initialize(&:save)
+            logger.debug("##KEY to insert: #{key.inspect} for pid: #{pid}")
+            FedoraObjectAggregationKey.where(fedora_object: fedora_object, predicate_name: predicate_name, aggregation_key: key).first_or_initialize(&:save!)
           end
         end
         # destroy any prior aggregation keys which no longer exist
