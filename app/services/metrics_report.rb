@@ -71,7 +71,7 @@ class MetricsReport
         html << "<tr class=department>  <td>#{unit_name}</td>  <td align=\"right\">#{count_by_department.sum}</td> </tr> "
         report_administrative_unit_as_html(count_by_administrative_unit, html = html)
       else
-        html << "<tr>  <td>&nbsp &nbsp &nbsp #{unit_name}</td> <td align=\"right\">#{count_by_administrative_unit}</td> </tr> "
+        html << "<tr>  <td>&nbsp; &nbsp; &nbsp; #{unit_name}</td> <td align=\"right\">#{count_by_administrative_unit}</td> </tr> "
       end
     end
     ApplicationController.helpers.safe_join([html.html_safe])

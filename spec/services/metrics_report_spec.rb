@@ -74,18 +74,18 @@ RSpec.describe MetricsReport do
     it "return tabulated administrative unit with count" do
       html = report.report_administrative_unit_as_html(nested_administrative_unit_hash)
       expect(html).to have_tag('tr', :with => { :class => 'department'}) do
-        with_tag('td', text: 'College of Arts and Letters')
-        with_tag('td', text: '3')
-        with_tag('td', text: 'College of Science')
-        with_tag('td', text: '4')
+        with_tag('td', text: /College of Arts and Letters/)
+        with_tag('td', text: /3/)
+        with_tag('td', text: /College of Science/)
+        with_tag('td', text: /4/)
       end
       expect(html).to have_tag('tr') do
-        with_tag('td', text: '&nbsp &nbsp &nbsp Art, Art History, and Design')
-        with_tag('td', text: '2')
-        with_tag('td', text: '&nbsp &nbsp &nbsp Music')
-        with_tag('td', text: '1')
-        with_tag('td', text: '&nbsp &nbsp &nbsp Applied and Computational Mathematics and Statistics')
-        with_tag('td', text: '4')
+        with_tag('td', text: /Art, Art History, and Design/)
+        with_tag('td', text: /2/)
+        with_tag('td', text: /Music/i)
+        with_tag('td', text: /1/)
+        with_tag('td', text: /Applied and Computational Mathematics and Statistics/)
+        with_tag('td', text: /4/)
       end
     end
   end
