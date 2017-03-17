@@ -16,15 +16,15 @@ bendo_password: password
 bendo_host: localhost
 bendo_adapter: sqlite3
 bendo_encoding: utf8
-bendo_pool: 5
-bendo_timeout: 5000
+bendo_pool: '5'
+bendo_timeout: '5000'
 smtp_host: smtp.gmail.com
-smtp_port: 587
+smtp_port: '587'
 smtp_domain: gmail.com
 smtp_authentication_type: plain
 smtp_user_name: noreply@nd.edu
 smtp_password: emailpwd
-smtp_enable_starttls_auto: true
+smtp_enable_starttls_auto: 'true'
 smtp_delivery_method: smtp
 
 development:
