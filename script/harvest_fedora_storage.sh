@@ -7,10 +7,10 @@
 # Need to manually copy this file to fedora server to run script after fedora-summary script complete
 
 INPUT_PATH="/path/to/input/csv"
-DBHOST= "dbhost"
-DBUSERNAME= "dbusername"
-DBPWD= "dbpassword"
-DBNAME= "database name"
+DBHOST= "DB_HOST"
+DBUSERNAME= "DB_USERNAME"
+DBPWD= "DB_PASSWORD"
+DBNAME= "DB_NAME"
 
 cd $INPUT_PATH
 input_file=$(ls -Ft | grep "[^/]$" | tail -n 1)
