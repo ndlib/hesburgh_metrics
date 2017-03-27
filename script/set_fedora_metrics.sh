@@ -26,11 +26,15 @@ function inject_secrets() {
   username=$(var_from_yml "$2/database.yml" 'username')
   db_password=$(var_from_yml "$2/database.yml" 'password')
   database=$(var_from_yml "$2/database.yml" 'database')
+  ds_store=$(var_from_yml "$2/application.yml" 'fedora_ds_store')
+  object_store=$(var_from_yml "$2/application.yml" 'fedora_object_store')
 
   sed -e "s/DB_HOST/$db_host/" -i -f ${temp_dir}/harvest_fedora_storage.sh
   sed -e "s/DB_USERNAME/$username/" -i -f ${temp_dir}/harvest_fedora_storage.sh
   sed -e "s/DB_PASSWORD/$db_password/" -i -f ${temp_dir}/harvest_fedora_storage.sh
   sed -e "s/DB_NAME/$database/" -i -f ${temp_dir}/harvest_fedora_storage.sh
+  sed -e "s?fedora_object_store?$object_store?" -i -f ${temp_dir}/fedora-summary.py
+  sed -e "s?fedora_ds_store?$ds_store?" -i  -f ${temp_dir}/fedora-summary.py
 }
 
 if [ ! -d "$secret_dir" ]; then

@@ -43,6 +43,15 @@ class lib_metrics( $env = "staging" ) {
 		hour => 2,
 		minute => 15,
 	}
+
+        # weekly report - Mondays
+	cron { 'weekly_metrics': 
+		command => '/home/app/metrics/current/script/weekly_metrics_report.sh',
+		user => 'app',
+		hour => 5,
+		minute => 15,
+		weekday => 1,
+	}
 } 
 
 

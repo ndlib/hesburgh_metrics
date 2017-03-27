@@ -4,8 +4,8 @@ import sys
 import re
 import os
 
-object_store = '/repo_data/fedora/fedora36_prod/objectStore/'
-ds_store = '/repo_data/fedora/fedora36_prod/datastreamStore/'
+object_store = 'fedora_object_store'
+ds_store = 'fedora_ds_store'
 
 class NamespaceInfo:
     def __init__(self):

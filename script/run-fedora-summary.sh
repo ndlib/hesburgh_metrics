@@ -1,3 +1,3 @@
 #!/bin/bash
-home=/global/home/dbrower
+home=/home/app/metrics
 $home/fedora-summary.py > "$home/stats/$(date '+%Y%m%d').csv"
