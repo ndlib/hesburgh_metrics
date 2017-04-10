@@ -7,10 +7,10 @@
 # Need to manually copy this file to fedora server to run script after fedora-summary script complete
 
 INPUT_PATH="/home/app/metrics/stats"
-DBHOST= "DB_HOST"
-DBUSERNAME= "DB_USERNAME"
-DBPWD= "DB_PASSWORD"
-DBNAME= "DB_NAME"
+DBHOST="DB_HOST"
+DBUSERNAME="DB_USERNAME"
+DBPWD="DB_PASSWORD"
+DBNAME="DB_NAME"
 
 cd $INPUT_PATH
 input_file=$(ls -Ft | grep "[^/]$" | tail -n 1)
