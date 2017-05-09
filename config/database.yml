@@ -50,7 +50,5 @@ bendo:
   host:     <%= Figaro.env.bendo_host %>
   adapter:  <%= Figaro.env.bendo_adapter %>
   encoding: <%= Figaro.env.bendo_encoding %>
-  pool:     <%= Figaro.env.bendo_pool %>
-  timeout:  <%= Figaro.env.bendo_timeout %>
-
-
+  pool:     <%= Figaro.env.bendo_pool.to_i %>
+  timeout:  <%= Figaro.env.bendo_timeout.to_i %>
