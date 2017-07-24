@@ -7,6 +7,22 @@ def logger
   Rails.logger
 end
 
+# A custom exception class to include PID
+class FedoraObjectHarvesterError < RuntimeError
+  attr_reader :pid, :exception
+  def initialize(pid, exception)
+    @pid = pid
+    @exception = exception
+    super(message)
+  end
+
+  delegate :backtrace, to: :exception
+
+  def message
+    "PID: #{pid} -- #{exception.inspect}"
+  end
+end
+
 # Harvest metrics data from Fedora Objects
 class FedoraObjectHarvester
   attr_reader :repo, :exceptions
@@ -22,7 +38,7 @@ class FedoraObjectHarvester
       begin
         single_item_harvest(doc)
       rescue StandardError => e
-        @exceptions << "PID: #{doc.pid} -- #{e.inspect}"
+        @exceptions << FedoraObjectHarvesterError.new(doc.pid, e)
       end
     end
     report_any_exceptions
@@ -36,10 +52,11 @@ class FedoraObjectHarvester
 
   def report_any_exceptions
     return unless @exceptions.any?
-    @exceptions.each do |error_message|
+    @exceptions.each do |exception|
       Airbrake.notify_sync(
-        'FedoraObjectHarvesterError',
-        errors: error_message
+        exception,
+        errors: exception.to_s,
+        backtrace: exception.backtrace
       )
     end
   end
@@ -284,7 +301,7 @@ class FedoraObjectHarvester
             data_array << statement.object.to_s
           end
         rescue RDF::ReaderError => e
-          harvester.exceptions << "PID: #{pid} -- #{e.inspect}"
+          harvester.exceptions << FedoraObjectHarvesterError.new(pid, e)
         end
       end
       data_array.reject(&:empty?)
