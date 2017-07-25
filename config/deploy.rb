@@ -49,7 +49,7 @@ set :secret_repo_name, Proc.new{
     when 'pre_production' then 'secret_pprd'
     when 'production' then 'secret_prod'
   end
-}`
+}
 
 #############################################################
 #  Environment
