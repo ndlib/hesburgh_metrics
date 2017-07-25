@@ -51,7 +51,6 @@ set :secret_repo_name, Proc.new{
   end
 }
 
-# removed extraneous grave accents -msuhovec
 #############################################################
 #  Environment
 #############################################################
