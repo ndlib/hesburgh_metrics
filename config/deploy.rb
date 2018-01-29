@@ -58,7 +58,7 @@ set :secret_repo_name, Proc.new{
 namespace :env do
   desc 'Set command paths'
   task :set_paths do
-    set :bundle_cmd, '/opt/ruby/current/bin/bundle'
+    set :bundle_cmd, '/usr/local/bin/bundle'
     set :rake, "#{bundle_cmd} exec rake"
   end
 end
@@ -126,7 +126,7 @@ end
 
 namespace :und do
   task :update_secrets do
-    run "cd #{release_path} && ./script/update_secrets.sh #{fetch(:secret_repo_name)}"
+    run "cd #{release_path} && ./script/update_secrets.sh staging
   end
 
   desc 'Write the current environment values to file on targets'
@@ -175,12 +175,12 @@ task :staging do
   set :rails_env, 'staging'
   set :deploy_to, '/home/app/metrics'
   set :user,      'app'
-  set :domain,    fetch(:host, 'libvirt9.library.nd.edu')
+  set :domain,    fetch(:host, '172.22.242.151')
   set :bundle_without, [:development, :test, :debug]
   set :shared_directories, %w(log)
   set :shared_files, %w()
 
-  default_environment['PATH'] = '/opt/ruby/current/bin:$PATH'
+  default_environment['PATH'] = '/usr/local/bin:/usr/bin:$PATH'
   server "#{user}@#{domain}", :app, :work, :web, :db, primary: true
 end
 
@@ -196,7 +196,7 @@ task :pre_production do
   set :shared_directories, %w(log)
   set :shared_files, %w()
 
-  default_environment['PATH'] = '/opt/ruby/current/bin:$PATH'
+  default_environment['PATH'] = '/usr/local/bin:/usr/bin:$PATH'
   server 'app@curatesvrpprd.library.nd.edu', :app, :web, :db, primary: true
 end
 
@@ -213,7 +213,7 @@ task :production do
   set :shared_directories, %w(log)
   set :shared_files, %w()
 
-  default_environment['PATH'] = '/opt/ruby/current/bin:$PATH'
+  default_environment['PATH'] = '/usr/local/bin:/usr/bin:$PATH'
   server 'app@curatesvrprod.library.nd.edu', :app, :web, :db, primary: true
 
   after 'deploy:update_code', 'und:write_env_vars', 'und:write_build_identifier', 'und:update_secrets', 'deploy:symlink_update', 'deploy:migrate', 'db:seed'
