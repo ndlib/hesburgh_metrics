@@ -49,7 +49,7 @@ set :secret_repo_name, Proc.new{
     when 'pre_production' then 'secret_pprd'
     when 'production' then 'secret_prod'
   end
-}`
+}
 
 #############################################################
 #  Environment
@@ -175,7 +175,7 @@ task :staging do
   set :rails_env, 'staging'
   set :deploy_to, '/home/app/metrics'
   set :user,      'app'
-  set :domain,    fetch(:host, '172.22.242.151')
+  set :domain,    fetch(:host, 'ec2-54-165-77-195.compute-1.amazonaws.com')
   set :bundle_without, [:development, :test, :debug]
   set :shared_directories, %w(log)
   set :shared_files, %w()
