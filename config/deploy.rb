@@ -126,7 +126,7 @@ end
 
 namespace :und do
   task :update_secrets do
-    run "cd #{release_path} && ./script/update_secrets.sh staging
+    run "cd #{release_path} && ./script/update_secrets.sh staging"
   end
 
   desc 'Write the current environment values to file on targets'

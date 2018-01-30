@@ -1,0 +1,5 @@
+export RAILS_ENV='staging'
+export METRICS_LOGDIR='/var/log/nginx'
+export METRICS_LOGFILE_MASK='access.log-*.gz'
+export METRICS_LOGFILE_FORMAT='curatenginx'
+export METRICS_WEBLOG_STATEFILE='/var/log/nginx/metrics_files_ingested'

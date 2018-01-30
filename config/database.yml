@@ -1,54 +1,20 @@
-#
-# FYI: This file is replaced by a copy for deploys
-#
+staging: &STAGING
+  database: metrics_staging
+  username: metrics
+  password: allthew0rld
+  host:     localhost
+  adapter:  mysql2
+  encoding: utf8
+  pool:     5
+  timeout:  5000
 
-<%
-  socket = [
-  ENV["BOXEN_MYSQL_SOCKET"],
-  "/var/run/mysql5/mysqld.sock",
-  "/tmp/mysql.sock"
-  ].detect { |f| f && File.exist?(f) }
-
-  port = ENV["BOXEN_MYSQL_PORT"] || "3306"
-%>
-
-mysql_connection: &mysql_connection
-<% if socket %>
-  host: localhost
-  socket: <%= socket %>
-<% else %>
-  host: 127.0.0.1
-  port: <%= port %>
-<% end %>
-
-mysql_settings: &mysql_settings
-  adapter:   mysql2
-  encoding:  utf8
-  reconnect: false
-  pool:      5
-
-local_user: &local_user
-  <<: *mysql_settings
-  <<: *mysql_connection
-  username: root
-  password:
-
-development: &development
-  <<: *local_user
-  host: localhost
-  database: metrics_dev
-  timeout: 5000
-
-test: &test
-  <<: *development
-  database: metrics_test
-
-bendo:
-  database: <%= Figaro.env.bendo_database %>
-  username: <%= Figaro.env.bendo_username %>
-  password: <%= Figaro.env.bendo_password %>
-  host:     <%= Figaro.env.bendo_host %>
-  adapter:  <%= Figaro.env.bendo_adapter %>
-  encoding: <%= Figaro.env.bendo_encoding %>
-  pool:     <%= Figaro.env.bendo_pool.to_i %>
-  timeout:  <%= Figaro.env.bendo_timeout.to_i %>
+staging_bendo_database:
+  <<: *STAGING
+  database: bendo_staging
+  username: bendo
+  password: bendoc1Adm1n
+  host:     localhost
+  adapter:  mysql2
+  encoding: utf8
+  pool:     5
+  timeout:  5000
