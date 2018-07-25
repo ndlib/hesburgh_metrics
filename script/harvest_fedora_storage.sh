@@ -8,12 +8,12 @@
 
 INPUT_PATH="/home/app/metrics/stats"
 DBHOST= "DB_HOST"
-DBUSERNAME= "DB_USERNAME"
+DBUSER= "DB_USERNAME"
 DBPWD= "DB_PASSWORD"
 DBNAME= "DB_NAME"
 
 cd $INPUT_PATH
-input_file=$(ls -Ft | grep "[^/]$" | tail -n 1)
+input_file=$(ls -Ft | grep "[^/]$" | head -n 1)
 echo "file_to_process: $INPUT_PATH/$input_file"
 [ ! -f "$INPUT_PATH/$input_file" ] && { echo "$input_file not found in $INPUT_PATH"; exit 99; }
 

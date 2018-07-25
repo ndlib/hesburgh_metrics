@@ -43,6 +43,13 @@ set :default_shell, '/bin/bash'
 
 set :scm, :git
 set :deploy_via, :remote_cache
+set :secret_repo_name, Proc.new{
+  case fetch(:rails_env)
+    when 'staging' then 'secret_staging'
+    when 'pre_production' then 'secret_pprd'
+    when 'production' then 'secret_prod'
+  end
+}
 
 #############################################################
 #  Environment
@@ -119,7 +126,7 @@ end
 
 namespace :und do
   task :update_secrets do
-    run "cd #{release_path} && ./script/update_secrets.sh #{File.join(shared_path, 'secret')}"
+    run "cd #{release_path} && ./script/update_secrets.sh #{fetch(:secret_repo_name)}"
   end
 
   desc 'Write the current environment values to file on targets'
