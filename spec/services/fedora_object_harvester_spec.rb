@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe FedoraObjectHarvester do
-  VCR_CASSETTE_NAME = 'single_item_search'
+  VCR_CASSETTE_NAME = 'test_cassette'
   context "rebuilding #{VCR_CASSETTE_NAME}" do
     # The following steps to rebuild:
     # 1) Get the Fedora production URL, User, and Password from the secrets, you will pass these as environment variables (see line 10)
@@ -11,12 +11,12 @@ RSpec.describe FedoraObjectHarvester do
     #     prod_fedora_user=<from-secrets> prod_fedora_password=<from-secrets> prod_fedora_url=<from-secrets> bundle exec rspec ./spec/services/fedora_object_harvester_spec.rb:12
     xit 'can be done!' do
       repository = Rubydora.connect(url: Figaro.env.prod_fedora_url!, user: Figaro.env.prod_fedora_user!, password: Figaro.env.prod_fedora_password!)
-      pid_from_cassette = 'und:02870v85054'
+      pid_from_cassette = 'und:ms35t724s3j'
       VCR.use_cassette(VCR_CASSETTE_NAME, record: :all) do
         described_class.new(repository).harvest("pid~#{pid_from_cassette}")
       end
 
-      path_to_cassette = File.join(VCR.configuration.cassette_library_dir, 'single_item_search.yml')
+      path_to_cassette = File.join(VCR.configuration.cassette_library_dir, 'test_cassette.yml')
       cassette_contents = File.read(path_to_cassette)
       File.open(path_to_cassette, 'w+') do |file|
         file.puts cassette_contents.gsub(Figaro.env.prod_fedora_url!, Figaro.env.fedora_url!)
@@ -35,13 +35,15 @@ RSpec.describe FedoraObjectHarvester do
     it 'will transform returned objects from a search into FedoraObjects for reporting', functional: true do
       expect do
         expect do
-          subject
-        end.to change { FedoraObject.count }.by(1)
-      end.to change { FedoraObjectAggregationKey.count }.by(2)
+          expect do
+              subject
+          end.to change { FedoraObject.count }.by(1)
+        end.to change { FedoraObjectAggregationKey.count }.by(2)
+      end.to change { FedoraObjectEditGroup.count }.by(1)
     end
     it 'will report to Airbrake any exceptions encountered' do
       allow(harvester).to receive(:single_item_harvest).and_raise(RuntimeError)
-      expect(Airbrake).to receive(:notify_sync).and_call_original
+      expect(Airbrake).to receive(:notify_sync).and_call_original.exactly(1).times
       subject
     end
   end
@@ -82,7 +84,8 @@ RSpec.describe FedoraObjectHarvester::SingleItem do
     end
     let(:doc) { double('DigitalObject',
                        datastreams: { 'descMetadata' => double(content: stream) },
-                       pid: 'und:mp48sb41h1s', profile: {}) }
+                       pid: 'und:mp48sb41h1s',
+                       profile: {}) }
     let(:single_item) { described_class.new(doc, harvester) }
     it 'to create aggregation key and value' do
       allow(fedora_object).to receive_message_chain("fedora_object_aggregation_keys.where") { [] }
@@ -94,6 +97,42 @@ RSpec.describe FedoraObjectHarvester::SingleItem do
       FedoraObjectAggregationKey.any_instance.stub(:destroy).and_call_original
       subject
       expect(fedora_aggregation_key).to have_received(:destroy)
+    end
+  end
+
+  context '#get_and_add_or_delete_edit_groups' do
+    subject { single_item.send(:get_and_add_or_delete_edit_groups, fedora_object) }
+    let(:fedora_object) { FedoraObject.create(pid: 'some_pid',
+                                              af_model: 'a model',
+                                              resource_type: 'a resource type',
+                                              obj_ingest_date: '2015-12-12',
+                                              obj_modified_date: '2015-12-12',
+                                              mimetype: 'a mime type',
+                                              bytes: 100,
+                                              access_rights: 'rights',
+                                              parent_pid: 'some_pid') }
+    let(:doc) do
+      double('DigitalObject', pid: 'und:mp48sb41h1s', profile: {}, datastreams: { 'rightsMetadata' => double(content: rights_stream) } )
+    end
+    let(:rights_stream) do
+      %(<rightsMetadata xmlns="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1" version="0.1"><copyright><human type="title"/><human type="description"/><machine type="uri"/></copyright><access type="discover"><human/><machine/></access><access type="read"><human/><machine><group>public</group></machine></access><access type="edit"><human/><machine><group>und:ms35t724s3j</group></machine></access><embargo><human/><machine><date>2030-06-01</date></machine></embargo></rightsMetadata>)
+    end
+    let(:single_item) { described_class.new(doc, harvester) }
+    let(:fedora_edit_group) { FedoraObjectEditGroup.new(fedora_object: fedora_object, edit_group_pid:'xxxxxxxx', edit_group_name: 'Some Group' ) }
+    around do |spec|
+      VCR.use_cassette(VCR_CASSETTE_NAME) do
+        spec.call
+      end
+    end
+    it 'to create FedoraObjectEditGroup' do
+      allow(FedoraObjectEditGroup).to receive(:first_or_initialize).and_call_original
+      expect{ subject }.to change { FedoraObjectEditGroup.count }.by(1)
+    end
+    it 'to destroy FedoraObjectEditGroup if not present as metadata' do
+      allow(fedora_object).to receive_message_chain("fedora_object_edit_groups") { [fedora_edit_group] }
+      FedoraObjectEditGroup.any_instance.stub(:destroy).and_call_original
+      subject
+      expect(fedora_edit_group).to have_received(:destroy)
     end
   end
 
@@ -281,6 +320,22 @@ RSpec.describe FedoraObjectHarvester::SingleItem do
       </rdf:RDF>)
       end
       it { is_expected.to eq('und:zs25x636043') }
+    end
+  end
+
+  context '#parse_edit_groups' do
+    subject { single_item.send(:parse_edit_groups, content) }
+    context 'for no edit groups' do
+      let (:content) { %(<rightsMetadata xmlns="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1" version="0.1"><copyright><human type="title"/><human type="description"/><machine type="uri"/></copyright><access type="discover"><human/><machine/></access><access type="read"><human/><machine><group>registered</group></machine></access><access type="edit"><human/><machine><person>msisk1</person></machine></access><embargo><human/><machine/></embargo></rightsMetadata>) }
+      it { is_expected.to eq([]) }
+    end
+    context 'for 1 group' do
+      let (:content) { %(<rightsMetadata xmlns="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1" version="0.1"><copyright><human type="title"/><human type="description"/><machine type="uri"/></copyright><access type="discover"><human/><machine/></access><access type="read"><human/><machine><group>registered</group></machine></access><access type="edit"><human/><machine><person>msisk1</person><group>und:ms35t724s3j</group></machine></access><embargo><human/><machine/></embargo></rightsMetadata>) }
+      it { is_expected.to eq(['und:ms35t724s3j']) }
+    end
+    context 'for 3 groups' do
+      let (:content) { %(<rightsMetadata xmlns="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1" version="0.1"><copyright><human type="title"/><human type="description"/><machine type="uri"/></copyright><access type="discover"><human/><machine/></access><access type="read"><human/><machine><group>registered</group></machine></access><access type="edit"><human/><machine><person>msisk1</person><group>und:1111111</group><group>und:2222222</group><group>und:3333333</group></machine></access><embargo><human/><machine/></embargo></rightsMetadata>) }
+      it { is_expected.to eq(['und:1111111', 'und:2222222', 'und:3333333']) }
     end
   end
 

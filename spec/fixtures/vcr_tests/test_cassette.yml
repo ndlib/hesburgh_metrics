@@ -8,7 +8,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - '*/*; q=0.5, application/xml'
+      - "*/*; q=0.5, application/xml"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -46,7 +46,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - '*/*; q=0.5, application/xml'
+      - "*/*; q=0.5, application/xml"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -89,7 +89,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - '*/*; q=0.5, application/xml'
+      - "*/*; q=0.5, application/xml"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -127,7 +127,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - '*/*; q=0.5, application/xml'
+      - "*/*; q=0.5, application/xml"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -174,7 +174,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - '*/*; q=0.5, application/xml'
+      - "*/*; q=0.5, application/xml"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -219,7 +219,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - '*/*; q=0.5, application/xml'
+      - "*/*; q=0.5, application/xml"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -266,7 +266,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - '*/*; q=0.5, application/xml'
+      - "*/*; q=0.5, application/xml"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -331,7 +331,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - '*/*; q=0.5, application/xml'
+      - "*/*; q=0.5, application/xml"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -369,7 +369,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - '*/*; q=0.5, application/xml'
+      - "*/*; q=0.5, application/xml"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -407,7 +407,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - '*/*; q=0.5, application/xml'
+      - "*/*; q=0.5, application/xml"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -450,7 +450,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - '*/*; q=0.5, application/xml'
+      - "*/*; q=0.5, application/xml"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -488,7 +488,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - '*/*; q=0.5, application/xml'
+      - "*/*; q=0.5, application/xml"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -534,7 +534,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - '*/*; q=0.5, application/xml'
+      - "*/*; q=0.5, application/xml"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -577,7 +577,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - '*/*; q=0.5, application/xml'
+      - "*/*; q=0.5, application/xml"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -624,7 +624,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - '*/*; q=0.5, application/xml'
+      - "*/*; q=0.5, application/xml"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -662,7 +662,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - '*/*; q=0.5, application/xml'
+      - "*/*; q=0.5, application/xml"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -706,7 +706,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - '*/*; q=0.5, application/xml'
+      - "*/*; q=0.5, application/xml"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -749,7 +749,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - '*/*; q=0.5, application/xml'
+      - "*/*; q=0.5, application/xml"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -787,7 +787,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - '*/*; q=0.5, application/xml'
+      - "*/*; q=0.5, application/xml"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -833,7 +833,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - '*/*; q=0.5, application/xml'
+      - "*/*; q=0.5, application/xml"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -876,7 +876,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - '*/*; q=0.5, application/xml'
+      - "*/*; q=0.5, application/xml"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -923,7 +923,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - '*/*; q=0.5, application/xml'
+      - "*/*; q=0.5, application/xml"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -961,7 +961,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - '*/*; q=0.5, application/xml'
+      - "*/*; q=0.5, application/xml"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -1005,7 +1005,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - '*/*; q=0.5, application/xml'
+      - "*/*; q=0.5, application/xml"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -1038,7 +1038,7 @@ http_interactions:
           </objectFields>
           </resultList>
         </result>
-    http_version:
+    http_version: 
   recorded_at: Thu, 23 Feb 2017 15:52:29 GMT
 - request:
     method: get
@@ -1048,7 +1048,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - '*/*; q=0.5, application/xml'
+      - "*/*; q=0.5, application/xml"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -1076,7 +1076,7 @@ http_interactions:
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
         http://www.fedora.info/definitions/1/0/objectProfile.xsd" pid="und:zs25x636043"
         ><objLabel></objLabel><objOwnerId>fedoraAdmin</objOwnerId><objModels><model>info:fedora/afmodel:Dataset</model><model>info:fedora/fedora-system:FedoraObject-3.0</model></objModels><objCreateDate>2015-01-20T19:57:53.352Z</objCreateDate><objLastModDate>2016-09-27T18:50:26.091Z</objLastModDate><objDissIndexViewURL>https://something.com/objects/und%3Azs25x636043/methods/fedora-system%3A3/viewMethodIndex</objDissIndexViewURL><objItemIndexViewURL>https://something.com/objects/und%3Azs25x636043/methods/fedora-system%3A3/viewItemIndex</objItemIndexViewURL><objState>A</objState></objectProfile>
-    http_version:
+    http_version: 
   recorded_at: Thu, 23 Feb 2017 15:52:29 GMT
 - request:
     method: get
@@ -1086,7 +1086,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - '*/*; q=0.5, application/xml'
+      - "*/*; q=0.5, application/xml"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -1113,15 +1113,14 @@ http_interactions:
       string: <?xml version="1.0" encoding="UTF-8"?><objectDatastreams xmlns="http://www.fedora.info/definitions/1/0/access/"
         xmlns:apim="http://www.fedora.info/definitions/1/0/management/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
-        https://something.com/schema/listDatastreams.xsd"
-        pid="und:zs25x636043"  baseURL="https://something.com/"
+        https://something.com/schema/listDatastreams.xsd" pid="und:zs25x636043"  baseURL="https://something.com/"
         ><datastreamProfile pid="und:zs25x636043" dsID="DC" ><apim:dsLabel>Dublin
         Core Record for this object</apim:dsLabel><apim:dsVersionID>DC1.0</apim:dsVersionID><apim:dsCreateDate>2015-01-20T19:57:53.352Z</apim:dsCreateDate><apim:dsState>A</apim:dsState><apim:dsMIME>text/xml</apim:dsMIME><apim:dsFormatURI>http://www.openarchives.org/OAI/2.0/oai_dc/</apim:dsFormatURI><apim:dsControlGroup>X</apim:dsControlGroup><apim:dsSize>344</apim:dsSize><apim:dsVersionable>true</apim:dsVersionable><apim:dsInfoType></apim:dsInfoType><apim:dsLocation>und:zs25x636043+DC+DC1.0</apim:dsLocation><apim:dsLocationType></apim:dsLocationType><apim:dsChecksumType>MD5</apim:dsChecksumType><apim:dsChecksum>97128e125d87c1f7de5d94b80ac6e22e</apim:dsChecksum></datastreamProfile><datastreamProfile
         pid="und:zs25x636043" dsID="RELS-EXT" ><apim:dsLabel></apim:dsLabel><apim:dsVersionID>RELS-EXT.12</apim:dsVersionID><apim:dsCreateDate>2016-09-27T18:50:21.380Z</apim:dsCreateDate><apim:dsState>A</apim:dsState><apim:dsMIME>application/rdf+xml</apim:dsMIME><apim:dsFormatURI></apim:dsFormatURI><apim:dsControlGroup>M</apim:dsControlGroup><apim:dsSize>619</apim:dsSize><apim:dsVersionable>true</apim:dsVersionable><apim:dsInfoType></apim:dsInfoType><apim:dsLocation>und:zs25x636043+RELS-EXT+RELS-EXT.12</apim:dsLocation><apim:dsLocationType>INTERNAL_ID</apim:dsLocationType><apim:dsChecksumType>MD5</apim:dsChecksumType><apim:dsChecksum>7333b2426c36478a1b969dfef3879b24</apim:dsChecksum></datastreamProfile><datastreamProfile
         pid="und:zs25x636043" dsID="rightsMetadata" ><apim:dsLabel></apim:dsLabel><apim:dsVersionID>rightsMetadata.20</apim:dsVersionID><apim:dsCreateDate>2016-09-27T18:50:25.587Z</apim:dsCreateDate><apim:dsState>A</apim:dsState><apim:dsMIME>text/xml</apim:dsMIME><apim:dsFormatURI></apim:dsFormatURI><apim:dsControlGroup>M</apim:dsControlGroup><apim:dsSize>633</apim:dsSize><apim:dsVersionable>true</apim:dsVersionable><apim:dsInfoType></apim:dsInfoType><apim:dsLocation>und:zs25x636043+rightsMetadata+rightsMetadata.20</apim:dsLocation><apim:dsLocationType>INTERNAL_ID</apim:dsLocationType><apim:dsChecksumType>MD5</apim:dsChecksumType><apim:dsChecksum>fcb03139c3af956e14e7d89b5cc14287</apim:dsChecksum></datastreamProfile><datastreamProfile
         pid="und:zs25x636043" dsID="descMetadata" ><apim:dsLabel></apim:dsLabel><apim:dsVersionID>descMetadata.20</apim:dsVersionID><apim:dsCreateDate>2016-09-27T18:50:26.091Z</apim:dsCreateDate><apim:dsState>A</apim:dsState><apim:dsMIME>text/plain</apim:dsMIME><apim:dsFormatURI></apim:dsFormatURI><apim:dsControlGroup>M</apim:dsControlGroup><apim:dsSize>1186</apim:dsSize><apim:dsVersionable>true</apim:dsVersionable><apim:dsInfoType></apim:dsInfoType><apim:dsLocation>und:zs25x636043+descMetadata+descMetadata.20</apim:dsLocation><apim:dsLocationType>INTERNAL_ID</apim:dsLocationType><apim:dsChecksumType>MD5</apim:dsChecksumType><apim:dsChecksum>86027ca779af976000b209e54d092bf3</apim:dsChecksum></datastreamProfile><datastreamProfile
         pid="und:zs25x636043" dsID="properties" ><apim:dsLabel></apim:dsLabel><apim:dsVersionID>properties.6</apim:dsVersionID><apim:dsCreateDate>2016-09-27T18:50:10.738Z</apim:dsCreateDate><apim:dsState>A</apim:dsState><apim:dsMIME>text/xml</apim:dsMIME><apim:dsFormatURI></apim:dsFormatURI><apim:dsControlGroup>M</apim:dsControlGroup><apim:dsSize>100</apim:dsSize><apim:dsVersionable>true</apim:dsVersionable><apim:dsInfoType></apim:dsInfoType><apim:dsLocation>und:zs25x636043+properties+properties.6</apim:dsLocation><apim:dsLocationType>INTERNAL_ID</apim:dsLocationType><apim:dsChecksumType>MD5</apim:dsChecksumType><apim:dsChecksum>c7107a90de5703effd5354fd68d301e3</apim:dsChecksum></datastreamProfile></objectDatastreams>
-    http_version:
+    http_version: 
   recorded_at: Thu, 23 Feb 2017 15:52:30 GMT
 - request:
     method: get
@@ -1131,7 +1130,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - '*/*; q=0.5, application/xml'
+      - "*/*; q=0.5, application/xml"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -1170,7 +1169,7 @@ http_interactions:
         <info:fedora/und:zs25x636043> <http://purl.org/dc/terms/spatial> "El Salvador" .
         <info:fedora/und:zs25x636043> <http://purl.org/dc/terms/rights> "All rights reserved" .
         <info:fedora/und:zs25x636043> <http://purl.org/dc/terms/modified> "2016-09-27Z"^^<http://www.w3.org/2001/XMLSchema#date> .
-    http_version:
+    http_version: 
   recorded_at: Thu, 23 Feb 2017 15:52:30 GMT
 - request:
     method: get
@@ -1180,7 +1179,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - '*/*; q=0.5, application/xml'
+      - "*/*; q=0.5, application/xml"
       Accept-Encoding:
       - gzip, deflate
       User-Agent:
@@ -1214,6 +1213,215 @@ http_interactions:
         \ </access>\n  <access type=\"edit\">\n    <human/>\n    <machine>\n      \n
         \     \n    <group>und:ms35t724s3j</group><person>ddressin</person></machine>\n
         \ </access>\n  <embargo>\n    <human/>\n    <machine/>\n  </embargo>\n</rightsMetadata>"
-    http_version:
+    http_version: 
   recorded_at: Thu, 23 Feb 2017 15:52:30 GMT
+- request:
+    method: get
+    uri: https://something.com/objects?pid=true&query=pid~und:ms35t724s3j&resultFormat=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*; q=0.5, application/xml"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+      Authorization:
+      - Basic ZmVkb3JhQWRtaW46M1dpYzR1WHk=
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Apache-Coyote/1.1
+      Set-Cookie:
+      - JSESSIONID=57581CC8BF64C08E44594DC0F7A2FEAB; Path=/fedora; Secure
+      Date:
+      - Fri, 27 Jul 2018 20:40:50 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '461'
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <result xmlns="http://www.fedora.info/definitions/1/0/types/" xmlns:types="http://www.fedora.info/definitions/1/0/types/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/types/ https://something.com/schema/findObjects.xsd">
+          <resultList>
+          <objectFields>
+              <pid>und:ms35t724s3j</pid>
+          </objectFields>
+          </resultList>
+        </result>
+    http_version: 
+  recorded_at: Fri, 27 Jul 2018 20:40:50 GMT
+- request:
+    method: get
+    uri: https://something.com/objects/und:ms35t724s3j?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*; q=0.5, application/xml"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+      Authorization:
+      - Basic ZmVkb3JhQWRtaW46M1dpYzR1WHk=
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Apache-Coyote/1.1
+      Set-Cookie:
+      - JSESSIONID=0CCCBAB4718E2473FD08092C19A3565C; Path=/fedora; Secure
+      Date:
+      - Fri, 27 Jul 2018 20:40:50 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '1004'
+    body:
+      encoding: UTF-8
+      string: <?xml version="1.0" encoding="UTF-8"?><objectProfile  xmlns="http://www.fedora.info/definitions/1/0/access/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        http://www.fedora.info/definitions/1/0/objectProfile.xsd" pid="und:ms35t724s3j"
+        ><objLabel></objLabel><objOwnerId>fedoraAdmin</objOwnerId><objModels><model>info:fedora/afmodel:Hydramata_Group</model><model>info:fedora/fedora-system:FedoraObject-3.0</model></objModels><objCreateDate>2015-01-20T19:51:38.240Z</objCreateDate><objLastModDate>2018-05-11T14:12:55.518Z</objLastModDate><objDissIndexViewURL>https://something.com/objects/und%3Ams35t724s3j/methods/fedora-system%3A3/viewMethodIndex</objDissIndexViewURL><objItemIndexViewURL>https://something.com/objects/und%3Ams35t724s3j/methods/fedora-system%3A3/viewItemIndex</objItemIndexViewURL><objState>A</objState></objectProfile>
+    http_version: 
+  recorded_at: Fri, 27 Jul 2018 20:40:50 GMT
+- request:
+    method: get
+    uri: https://something.com/objects/und:ms35t724s3j/datastreams?format=xml&profiles=true
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*; q=0.5, application/xml"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+      Authorization:
+      - Basic ZmVkb3JhQWRtaW46M1dpYzR1WHk=
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Apache-Coyote/1.1
+      Set-Cookie:
+      - JSESSIONID=2603D0C0BEE9818EB799537E16958392; Path=/fedora; Secure
+      Date:
+      - Fri, 27 Jul 2018 20:40:50 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '4210'
+    body:
+      encoding: UTF-8
+      string: <?xml version="1.0" encoding="UTF-8"?><objectDatastreams xmlns="http://www.fedora.info/definitions/1/0/access/"
+        xmlns:apim="http://www.fedora.info/definitions/1/0/management/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        https://something.com/schema/listDatastreams.xsd"
+        pid="und:ms35t724s3j"  baseURL="https://something.com/"
+        ><datastreamProfile pid="und:ms35t724s3j" dsID="DC" ><apim:dsLabel>Dublin
+        Core Record for this object</apim:dsLabel><apim:dsVersionID>DC1.0</apim:dsVersionID><apim:dsCreateDate>2015-01-20T19:51:38.240Z</apim:dsCreateDate><apim:dsState>A</apim:dsState><apim:dsMIME>text/xml</apim:dsMIME><apim:dsFormatURI>http://www.openarchives.org/OAI/2.0/oai_dc/</apim:dsFormatURI><apim:dsControlGroup>X</apim:dsControlGroup><apim:dsSize>344</apim:dsSize><apim:dsVersionable>true</apim:dsVersionable><apim:dsInfoType></apim:dsInfoType><apim:dsLocation>und:ms35t724s3j+DC+DC1.0</apim:dsLocation><apim:dsLocationType></apim:dsLocationType><apim:dsChecksumType>MD5</apim:dsChecksumType><apim:dsChecksum>b0e772434abdae5838cbc5a89b4d3567</apim:dsChecksum></datastreamProfile><datastreamProfile
+        pid="und:ms35t724s3j" dsID="RELS-EXT" ><apim:dsLabel>Fedora Object-to-Object
+        Relationship Metadata</apim:dsLabel><apim:dsVersionID>RELS-EXT.77</apim:dsVersionID><apim:dsCreateDate>2018-05-11T14:12:55.185Z</apim:dsCreateDate><apim:dsState>A</apim:dsState><apim:dsMIME>application/rdf+xml</apim:dsMIME><apim:dsFormatURI></apim:dsFormatURI><apim:dsControlGroup>X</apim:dsControlGroup><apim:dsSize>1220</apim:dsSize><apim:dsVersionable>true</apim:dsVersionable><apim:dsInfoType></apim:dsInfoType><apim:dsLocation>und:ms35t724s3j+RELS-EXT+RELS-EXT.77</apim:dsLocation><apim:dsLocationType></apim:dsLocationType><apim:dsChecksumType>MD5</apim:dsChecksumType><apim:dsChecksum>3afc5713a41a2f3d27784a43a782de94</apim:dsChecksum></datastreamProfile><datastreamProfile
+        pid="und:ms35t724s3j" dsID="rightsMetadata" ><apim:dsLabel></apim:dsLabel><apim:dsVersionID>rightsMetadata.16</apim:dsVersionID><apim:dsCreateDate>2018-05-11T14:12:55.518Z</apim:dsCreateDate><apim:dsState>A</apim:dsState><apim:dsMIME>text/xml</apim:dsMIME><apim:dsFormatURI></apim:dsFormatURI><apim:dsControlGroup>M</apim:dsControlGroup><apim:dsSize>665</apim:dsSize><apim:dsVersionable>true</apim:dsVersionable><apim:dsInfoType></apim:dsInfoType><apim:dsLocation>und:ms35t724s3j+rightsMetadata+rightsMetadata.16</apim:dsLocation><apim:dsLocationType>INTERNAL_ID</apim:dsLocationType><apim:dsChecksumType>MD5</apim:dsChecksumType><apim:dsChecksum>597d6e212b3e4ac005c078da2c851c5f</apim:dsChecksum></datastreamProfile><datastreamProfile
+        pid="und:ms35t724s3j" dsID="properties" ><apim:dsLabel></apim:dsLabel><apim:dsVersionID>properties.0</apim:dsVersionID><apim:dsCreateDate>2015-01-20T19:51:39.010Z</apim:dsCreateDate><apim:dsState>A</apim:dsState><apim:dsMIME>text/xml</apim:dsMIME><apim:dsFormatURI></apim:dsFormatURI><apim:dsControlGroup>M</apim:dsControlGroup><apim:dsSize>52</apim:dsSize><apim:dsVersionable>true</apim:dsVersionable><apim:dsInfoType></apim:dsInfoType><apim:dsLocation>und:ms35t724s3j+properties+properties.0</apim:dsLocation><apim:dsLocationType>INTERNAL_ID</apim:dsLocationType><apim:dsChecksumType>MD5</apim:dsChecksumType><apim:dsChecksum>16fc293ab673b2cb53065dc1052d575a</apim:dsChecksum></datastreamProfile><datastreamProfile
+        pid="und:ms35t724s3j" dsID="descMetadata" ><apim:dsLabel></apim:dsLabel><apim:dsVersionID>descMetadata.2</apim:dsVersionID><apim:dsCreateDate>2015-01-20T19:51:41.776Z</apim:dsCreateDate><apim:dsState>A</apim:dsState><apim:dsMIME>text/plain</apim:dsMIME><apim:dsFormatURI></apim:dsFormatURI><apim:dsControlGroup>M</apim:dsControlGroup><apim:dsSize>196</apim:dsSize><apim:dsVersionable>true</apim:dsVersionable><apim:dsInfoType></apim:dsInfoType><apim:dsLocation>und:ms35t724s3j+descMetadata+descMetadata.2</apim:dsLocation><apim:dsLocationType>INTERNAL_ID</apim:dsLocationType><apim:dsChecksumType>MD5</apim:dsChecksumType><apim:dsChecksum>8cd119152d6c945d763e5828555a1409</apim:dsChecksum></datastreamProfile></objectDatastreams>
+    http_version: 
+  recorded_at: Fri, 27 Jul 2018 20:40:50 GMT
+- request:
+    method: get
+    uri: https://something.com/objects/und:ms35t724s3j/datastreams/descMetadata/content
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*; q=0.5, application/xml"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+      Authorization:
+      - Basic ZmVkb3JhQWRtaW46M1dpYzR1WHk=
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Apache-Coyote/1.1
+      Set-Cookie:
+      - JSESSIONID=EB5D78223C990DF0828F91799453073C; Path=/fedora; Secure
+      Content-Disposition:
+      - inline; filename="descMetadata.txt"
+      Date:
+      - Fri, 27 Jul 2018 20:40:50 GMT
+      Content-Type:
+      - text/plain
+      Content-Length:
+      - '196'
+    body:
+      encoding: UTF-8
+      string: |
+        <info:fedora/und:ms35t724s3j> <http://purl.org/dc/terms/title> "LAPOP GROUP" .
+        <info:fedora/und:ms35t724s3j> <http://purl.org/dc/terms/description> "Latin American Public Opinion Project Group" .
+    http_version: 
+  recorded_at: Fri, 27 Jul 2018 20:40:50 GMT
+- request:
+    method: get
+    uri: https://something.com/objects/und:ms35t724s3j/datastreams/rightsMetadata/content
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*; q=0.5, application/xml"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+      Authorization:
+      - Basic ZmVkb3JhQWRtaW46M1dpYzR1WHk=
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Apache-Coyote/1.1
+      Set-Cookie:
+      - JSESSIONID=55C51DB8AA703D7C256CD7EC30FBC7C6; Path=/fedora; Secure
+      Content-Disposition:
+      - inline; filename="rightsMetadata.xml"
+      Date:
+      - Fri, 27 Jul 2018 20:40:50 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '665'
+    body:
+      encoding: UTF-8
+      string: "<rightsMetadata xmlns=\"http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1\"
+        version=\"0.1\">\n  <copyright>\n    <human type=\"title\"/>\n    <human type=\"description\"/>\n
+        \   <machine type=\"uri\"/>\n  </copyright>\n  <access type=\"discover\">\n
+        \   <human/>\n    <machine/>\n  </access>\n  <access type=\"read\">\n    <human/>\n
+        \   <machine/>\n  </access>\n  <access type=\"edit\">\n    <human/>\n    <machine>\n
+        \     \n    <person>dbrower</person><person>jfriesen</person><person>msisk1</person><person>apapson</person><person>lajamie</person><person>mmoore18</person><person>cnietoma</person></machine>\n
+        \ </access>\n  <embargo>\n    <human/>\n    <machine/>\n  </embargo>\n</rightsMetadata>"
+    http_version: 
+  recorded_at: Fri, 27 Jul 2018 20:40:51 GMT
 recorded_with: VCR 3.0.1

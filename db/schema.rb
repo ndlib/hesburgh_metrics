@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170227211456) do
+ActiveRecord::Schema.define(version: 20180725184352) do
 
   create_table "curate_storage_details", force: :cascade do |t|
     t.string   "storage_type", limit: 255, null: false
@@ -54,6 +54,18 @@ ActiveRecord::Schema.define(version: 20170227211456) do
   add_index "fedora_object_aggregation_keys", ["fedora_object_id"], name: "index_fedora_object_aggregation_keys_on_fedora_object_id", using: :btree
   add_index "fedora_object_aggregation_keys", ["predicate_name"], name: "index_fedora_object_aggregation_keys_on_predicate_name", using: :btree
 
+  create_table "fedora_object_edit_groups", force: :cascade do |t|
+    t.integer  "fedora_object_id", limit: 4,   null: false
+    t.string   "edit_group_pid",   limit: 255, null: false
+    t.string   "edit_group_name",  limit: 255, null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+  end
+
+  add_index "fedora_object_edit_groups", ["edit_group_name"], name: "index_fedora_object_edit_groups_on_edit_group_name", using: :btree
+  add_index "fedora_object_edit_groups", ["edit_group_pid"], name: "index_fedora_object_edit_groups_on_edit_group_pid", using: :btree
+  add_index "fedora_object_edit_groups", ["fedora_object_id"], name: "index_fedora_object_edit_groups_on_fedora_object_id", using: :btree
+
   create_table "fedora_objects", force: :cascade do |t|
     t.string   "pid",               limit: 255,              null: false
     t.string   "af_model",          limit: 255,              null: false
@@ -93,4 +105,5 @@ ActiveRecord::Schema.define(version: 20170227211456) do
   add_index "periodic_metric_reports", ["start_date"], name: "index_periodic_metric_reports_on_start_date", using: :btree
 
   add_foreign_key "fedora_object_aggregation_keys", "fedora_objects"
+  add_foreign_key "fedora_object_edit_groups", "fedora_objects"
 end
