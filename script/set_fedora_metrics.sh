@@ -48,10 +48,10 @@ else
 	  echo $temp_dir
 
 	  cp -R "${scripts_dir}/" "${temp_dir}"
-	  inject_secrets $temp_dir $secret_dir
+	  inject_secrets ${temp_dir}/script $secret_dir
 	  
 	  for file in $fedora_metric_files; do
-	  	scp  "${temp_dir}/$file" "app@$fedora_host:/home/app/metrics/"
+	  	scp  "${temp_dir}/script/$file" "app@$fedora_host:/home/app/metrics/"
 	  done
 fi
 

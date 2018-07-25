@@ -22,4 +22,4 @@
 #Run this weekly metrics report in cron
 export METRICS_START_DATE=$(date --date="7 days ago" +"%Y-%m-%d")
 export METRICS_END_DATE=$(date +"%Y-%m-%d")
-/opt/ruby/current/bin/bundle exec RAILS_ENV=$RAILS_ENV rake metrics:generate_report 2>/home/app/metrics/shared/log/weekly_metrics_report.log
+RAILS_ENV=$RAILS_ENV /opt/ruby/current/bin/bundle exec rake metrics:generate_report 2>/home/app/metrics/shared/log/weekly_metrics_report.log
