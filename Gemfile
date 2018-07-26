@@ -1,4 +1,8 @@
 source 'https://rubygems.org'
+git_source(:github) do |repo_name|
+  repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?("/")
+  "https://github.com/#{repo_name}.git"
+end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'debug_inspector', '0.0.2'
@@ -43,6 +47,7 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
   gem 'commitment', github: 'ndlib/commitment', ref: 'f7f83ca2f8437c018cd9083cf71ce57788c1c0f6'
+  gem 'rubocop', '0.40.0'
   gem 'rspec-rails', '~>3.4.0'
   gem 'rspec-html-matchers', '~>0.6'
   gem 'vcr', require: false
