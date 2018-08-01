@@ -272,7 +272,7 @@ class FedoraObjectHarvester
       # parse descMetadata for group's name
       return '' unless doc.datastreams.key?('descMetadata')
       stream = group_object.datastreams['descMetadata'].content
-      parse_triples(stream, 'title').first || ''
+      parse_triples(stream, 'title').first || 'Group name not found'
     end
 
     ## ============================================================================
