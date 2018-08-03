@@ -1,6 +1,7 @@
 # A reporting record for an object persisted in Fedora.
 class FedoraObject < ActiveRecord::Base
   has_many :fedora_object_aggregation_keys, dependent: :destroy
+  has_many :fedora_object_edit_groups, dependent: :destroy
 
   def self.generic_files_by_mimetype(options = {})
     sql = " SELECT mimetype as type, sum(bytes) as total_bytes, count(pid) as pid_count
