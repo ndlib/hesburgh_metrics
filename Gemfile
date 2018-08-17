@@ -7,7 +7,7 @@ end
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'debug_inspector', '0.0.2'
 gem 'mysql2'
-gem 'rails', '~> 4.2.6'
+gem 'rails', '4.2.6'
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
 # Use SCSS for stylesheets
@@ -17,7 +17,7 @@ gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.1.0'
 # See https://github.com/rails/execjs#readme for more supported runtimes
-# gem 'therubyracer', platforms: :ruby
+gem 'therubyracer', platforms: :ruby
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
@@ -42,13 +42,12 @@ gem 'rdf-rdfxml'
 gem 'figaro'
 gem 'deprecation', '~> 0.2.2'
 gem 'airbrake', '~> 5.0'
-gem 'rake', '~> 11.1'
+gem 'rubocop', '0.40.0' # Needed because later versions of rubocop need 2.2.x
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
   gem 'commitment', github: 'ndlib/commitment', ref: 'f7f83ca2f8437c018cd9083cf71ce57788c1c0f6'
-  gem 'rubocop', '0.40.0'
   gem 'rspec-rails', '~>3.4.0'
   gem 'rspec-html-matchers', '~>0.6'
   gem 'vcr', require: false
