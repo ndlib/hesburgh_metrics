@@ -1,4 +1,8 @@
 source 'https://rubygems.org'
+git_source(:github) do |repo_name|
+  repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?("/")
+  "https://github.com/#{repo_name}.git"
+end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'debug_inspector', '0.0.2'
@@ -38,6 +42,7 @@ gem 'rdf-rdfxml'
 gem 'figaro'
 gem 'deprecation', '~> 0.2.2'
 gem 'airbrake', '~> 5.0'
+gem 'rubocop', '0.40.0' # Needed because later versions of rubocop need 2.2.x
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
