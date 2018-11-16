@@ -12,7 +12,7 @@ VCR.configure do |c|
   c.cassette_library_dir = 'spec/fixtures/vcr_tests'
   c.hook_into :webmock
   c.ignore_request do |request|
-    request.uri =~ /^#{Figaro.env.airbrake_host}/
+    request.uri =~ /^#{Figaro.env.sentry_dsn}/
   end
 end
 

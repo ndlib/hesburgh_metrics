@@ -53,11 +53,7 @@ class FedoraObjectHarvester
   def report_any_exceptions
     return unless @exceptions.any?
     @exceptions.each do |exception|
-      Airbrake.notify_sync(
-        exception,
-        errors: exception.to_s,
-        backtrace: exception.backtrace
-      )
+      Raven.capture_exception(exception)
     end
   end
 

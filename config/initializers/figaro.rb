@@ -9,6 +9,7 @@ Figaro.require_keys(
   'bendo_encoding',
   'bendo_pool',
   'bendo_timeout',
+  'sentry_dsn',
   'smtp_host',
   'smtp_port',
   'smtp_domain',
