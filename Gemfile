@@ -42,7 +42,7 @@ gem 'rdf', '~> 1.1.2'
 gem 'rdf-rdfxml'
 gem 'figaro'
 gem 'deprecation', '~> 0.2.2'
-gem 'airbrake', '~> 5.0'
+gem 'sentry-raven', '~> 2.7'
 gem 'rubocop', '0.40.0' # Needed because later versions of rubocop need 2.2.x
 
 group :development, :test do

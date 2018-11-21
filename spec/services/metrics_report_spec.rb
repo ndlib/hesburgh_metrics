@@ -45,9 +45,9 @@ RSpec.describe MetricsReport do
       expect(report.metrics.storage.count).to eq(2)
     end
 
-    it 'will report to Airbrake any exceptions encountered' do
+    it 'will report to Sentry any exceptions encountered' do
       allow(report).to receive(:save!).and_raise(RuntimeError)
-      expect(Airbrake).to receive(:notify_sync).and_call_original
+      expect(Raven).to receive(:capture_exception).and_call_original
       subject
     end
 

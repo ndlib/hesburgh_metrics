@@ -94,9 +94,9 @@ class MetricsReport
   def report_any_exceptions
     return unless @exceptions.any?
     @exceptions.each do |error|
-      Airbrake.notify_sync(
+      Raven.capture_exception(
         'MetricsReportError: ' + error.class.to_s,
-        errors: error
+        extra: { errors: error }
       )
     end
   end
