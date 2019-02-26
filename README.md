@@ -17,9 +17,19 @@ details are reported weekly in Periodic Metrics Report.
 This repository is deployed using capistrano just like any other rails application.
 harvest_fedora.sh will harvest curate objects from fedora and store basic details
 about them in database. harvest_bendo will store number of curate bendo object and size in
-database. harvest_fedora_storage will store curate fedora objects and size in database.
+database. harvest_fedora_storage wi ll store curate fedora objects and size in database.
 Corn tab is setup to run weekly_metrics_report.sh to send weekly email about
 CurateND usage and access details.
+
+# Running Tests
+
+Looking at the `.travis.yml` file, use the `script` value (e.g. `bundle exec rake`). This
+is script is what Travis runs when we push builds. If you do not have mysql running, and
+installed via homebrew, you may need to run `mysql.server start` to launch mysql
+
+```console
+$ bundle exec rake
+```
 
 # Usage
 
@@ -36,4 +46,3 @@ To run locally:
 * `./harvest_metrics` - Run the executable to store curate access details;
 * `./harvest_bendo` - Run the executable to store bendo details;
 * `./weekly_metrics_report` - Run the executable to generate weekly usage report;
-

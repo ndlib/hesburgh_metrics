@@ -41,6 +41,7 @@ development: &development
 
 test: &test
   <<: *development
+  host: localhost
   database: metrics_test
 
 bendo:
