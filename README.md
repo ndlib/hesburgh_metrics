@@ -3,8 +3,8 @@
 [![Build Status](https://travis-ci.org/ndlib/hesburgh_metrics.png?branch=master)](https://travis-ci.org/ndlib/hesburgh_metrics)
 [![APACHE 2 License](http://img.shields.io/badge/APACHE2-license-blue.svg)](./LICENSE)
 
-This repository provides code to harvest fedora, bendo usage details and along with harvesting fedora objects
-and access details for [CurateND].  This repository also provides code for generating periodic reports for [CurateND].
+This repository provides code to harvest fedora and bendo usage details along with harvesting fedora objects
+and access details for [CurateND].  Additionally, it provides code for generating periodic reports for [CurateND].
 Fedora summary script is housed in script folder which runs overnite in fedora server.
 
 This repository receives input from various source like fedora storage details, bendo storage details,
@@ -14,17 +14,17 @@ details are reported weekly in Periodic Metrics Report.
 
 # Format of this Repository
 
-This repository is deployed using capistrano just like any other rails application.
+This repository is deployed using the rails deployment tool capistrano.
 harvest_fedora.sh will harvest curate objects from fedora and store basic details
-about them in database. harvest_bendo will store number of curate bendo object and size in
-database. harvest_fedora_storage wi ll store curate fedora objects and size in database.
-Corn tab is setup to run weekly_metrics_report.sh to send weekly email about
-CurateND usage and access details.
+about them in the database. harvest_bendo will store the number and size of curate bendo objects in
+the database. harvest_fedora_storage will store curate fedora objects and their size in database.
+Crontab is used as the scheduler to run, on a weekly basis, weekly_metrics_report.sh, and to send the report via email.
+
 
 # Running Tests
 
 Looking at the `.travis.yml` file, use the `script` value (e.g. `bundle exec rake`). This
-is script is what Travis runs when we push builds. If you do not have mysql running, and
+script is what Travis runs when we push builds. If you do not have mysql running, and
 installed via homebrew, you may need to run `mysql.server start` to launch mysql
 
 ```console
