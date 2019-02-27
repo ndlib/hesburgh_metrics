@@ -1,5 +1,9 @@
 require 'ipaddr'
 
+def logger
+  Rails.logger
+end
+
 # Harvest a Web Logg, and save to mysql
 #
 class HarvestWeblogs
@@ -15,7 +19,7 @@ class HarvestWeblogs
       @event = nil
       @status = fields[8]
       @method = fields[5].sub('"', '')
-      @path = fields[6]
+      @path = fields[6].sub(/\?.*/, '')
       @event_time = parse_time(fields[3] + fields[4])
       @pid = nil
       @agent = line.split('"')[5]
