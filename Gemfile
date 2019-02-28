@@ -10,7 +10,7 @@ gem 'mysql2', '~> 0.3.18'
 gem 'rails', '~> 4.2.6'
 gem 'rake', '~> 11.0'
 # Use sqlite3 as the database for Active Record
-gem 'sqlite3'
+gem 'sqlite3', '~> 1.3.13'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
@@ -43,7 +43,16 @@ gem 'rdf-rdfxml'
 gem 'figaro'
 gem 'deprecation', '~> 0.2.2'
 gem 'sentry-raven', '~> 2.7'
-gem 'rubocop', '0.40.0' # Needed because later versions of rubocop need 2.2.x
+gem 'rubocop', '0.40.0'
+# Put the next 5 gem requirements to address ruby security vulnerabilities DLTP-1623
+gem 'nokogiri', '~> 1.8.5'
+gem 'activejob', '~> 4.2.11'
+gem 'rack', '~> 1.6.11'
+gem 'loofah', '~> 2.2.3'
+gem 'yard', '~> 0.9.11'
+gem 'sass', '~> 3.4.22'
+gem 'scss_lint', '~> 0.38.0'
+
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -62,8 +71,4 @@ group :development do
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
-end
-
-group :doc do
-  gem 'yard', require: false
 end
