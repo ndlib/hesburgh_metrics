@@ -129,7 +129,7 @@ GEM
     minitest (5.11.3)
     multi_json (1.12.0)
     multipart-post (2.0.0)
-    mysql2 (0.4.4)
+    mysql2 (0.3.21)
     netrc (0.11.0)
     nokogiri (1.8.4)
       mini_portile2 (~> 2.3.0)
@@ -300,7 +300,7 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-rails
   memfs
-  mysql2
+  mysql2 (~> 0.3.18)
   rails (~> 4.2.6)
   rake (~> 11.0)
   rdf (~> 1.1.2)
@@ -322,4 +322,4 @@ DEPENDENCIES
   yard
 
 BUNDLED WITH
-   1.16.6
+   1.17.3

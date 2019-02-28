@@ -17,13 +17,15 @@ RSpec.describe HarvestWeblogs do
     FileUtils.cp('spec/fixtures/logfiles/access.log-20160517.gz', testdir)
     # Test data for https://github.com/ndlib/hesburgh_metrics/issues/48
     FileUtils.cp('spec/fixtures/logfiles/access.log-20160706.gz', testdir)
+    # Test data for DLTP-1622 
+    FileUtils.cp('spec/fixtures/logfiles/access.log-20190221.gz', testdir)
 
     begin
       # run 1 day's worth of data. This covers all the content types and bad return legs
       expect(File.exist?(ingestfile)).to be false
       expect do
         HarvestWeblogs.harvest_directory(harvest_config)
-      end.to change { FedoraAccessEvent.count }.by(968)
+      end.to change { FedoraAccessEvent.count }.by(1690)
 
       # ingested history should be created
       expect(File.exist?(ingestfile)).to be true
