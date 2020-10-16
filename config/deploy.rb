@@ -36,6 +36,7 @@ default_run_options[:pty] = true
 set :use_sudo, false
 ssh_options[:paranoid] = false
 set :default_shell, '/bin/bash'
+set :ruby_root, 'ruby2.6'
 
 #############################################################
 #  SCM
@@ -43,13 +44,6 @@ set :default_shell, '/bin/bash'
 
 set :scm, :git
 set :deploy_via, :remote_cache
-set :secret_repo_name, Proc.new{
-  case fetch(:rails_env)
-    when 'staging' then 'secret_staging'
-    when 'pre_production' then 'secret_pprd'
-    when 'production' then 'secret_prod'
-  end
-}
 
 #############################################################
 #  Environment
@@ -58,7 +52,7 @@ set :secret_repo_name, Proc.new{
 namespace :env do
   desc 'Set command paths'
   task :set_paths do
-    set :bundle_cmd, '/opt/ruby/current/bin/bundle'
+    set :bundle_cmd, '#{ruby_root}/root/usr/local/bin/bundle'
     set :rake, "#{bundle_cmd} exec rake"
   end
 end
@@ -126,7 +120,7 @@ end
 
 namespace :und do
   task :update_secrets do
-    run "cd #{release_path} && ./script/update_secrets.sh #{fetch(:secret_repo_name)}"
+    run "cd #{release_path} && ./script/update_secrets.sh"
   end
 
   desc 'Write the current environment values to file on targets'
@@ -140,15 +134,6 @@ RAILS_ROOT=#{current_path}
     put branch.to_s, "#{release_path}/BUILD_IDENTIFIER"
   end
 
-  def run_puppet
-    local_module_path = File.join(release_path, 'puppet', 'modules')
-    run %(sudo puppet apply --modulepath=/home/app/metrics/current/puppet/modules:/global/puppet_standalone/modules:/etc/puppet/modules -e "class { 'lib_metrics': }")
-  end
-
-  desc 'Run puppet using the modules supplied by the application'
-  task :puppet do
-    run_puppet
-  end
 end
 
 #############################################################
@@ -175,12 +160,13 @@ task :staging do
   set :rails_env, 'staging'
   set :deploy_to, '/home/app/metrics'
   set :user,      'app'
-  set :domain,    fetch(:host, 'libvirt9.library.nd.edu')
+  set :domain,    fetch(:host, 'curate-test3.lc.nd.edu')
   set :bundle_without, [:development, :test, :debug]
   set :shared_directories, %w(log)
   set :shared_files, %w()
 
-  default_environment['PATH'] = '/opt/ruby/current/bin:$PATH'
+ default_environment['PATH'] = "#{ruby_root}/root/usr/local/bin:/opt/rh/nodejs010/root/usr/bin:$PATH"
+ default_environment['LD_LIBRARY_PATH'] = "#{ruby_root}/root/lib64:/opt/rh/nodejs010/root/lib64:/opt/rh/v8314/root/lib64:$LD_LIBRARY_PATH"
   server "#{user}@#{domain}", :app, :work, :web, :db, primary: true
 end
 
@@ -191,13 +177,14 @@ task :pre_production do
   set :rails_env, 'pre_production'
   set :deploy_to, '/home/app/metrics'
   set :user,      'app'
-  set :domain,    fetch(:host, 'curatesvrpprd')
+  set :domain,    fetch(:host, 'curate-prep.lc.nd.edu')
   set :bundle_without, [:development, :test, :debug]
   set :shared_directories, %w(log)
   set :shared_files, %w()
 
-  default_environment['PATH'] = '/opt/ruby/current/bin:$PATH'
-  server 'app@curatesvrpprd.library.nd.edu', :app, :web, :db, primary: true
+ default_environment['PATH'] = "#{ruby_root}/root/usr/local/bin:/opt/rh/nodejs010/root/usr/bin:$PATH"
+ default_environment['LD_LIBRARY_PATH'] = "#{ruby_root}/root/lib64:/opt/rh/nodejs010/root/lib64:/opt/rh/v8314/root/lib64:$LD_LIBRARY_PATH"
+  server 'app@curatesvr-prep.lc.nd.edu', :app, :web, :db, primary: true
 end
 
 desc 'Setup for production deploy'
@@ -207,14 +194,15 @@ task :production do
   set :rails_env, 'production'
   set :deploy_to, '/home/app/metrics'
   set :user,      'app'
-  set :domain,    fetch(:host, 'curatesvrprod')
+  set :domain,    fetch(:host, 'curatesvr-prod.lc.nd.edu')
   set :bundle_without, [:development, :test, :debug]
 
   set :shared_directories, %w(log)
   set :shared_files, %w()
 
-  default_environment['PATH'] = '/opt/ruby/current/bin:$PATH'
-  server 'app@curatesvrprod.library.nd.edu', :app, :web, :db, primary: true
+ default_environment['PATH'] = "#{ruby_root}/root/usr/local/bin:/opt/rh/nodejs010/root/usr/bin:$PATH"
+ default_environment['LD_LIBRARY_PATH'] = "#{ruby_root}/root/lib64:/opt/rh/nodejs010/root/lib64:/opt/rh/v8314/root/lib64:$LD_LIBRARY_PATH"
+  server 'app@curatesvr-prod.library.nd.edu', :app, :web, :db, primary: true
 
   after 'deploy:update_code', 'und:write_env_vars', 'und:write_build_identifier', 'und:update_secrets', 'deploy:symlink_update', 'deploy:migrate', 'db:seed'
   after 'deploy', 'deploy:cleanup'

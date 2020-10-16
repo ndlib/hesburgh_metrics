@@ -3,16 +3,12 @@
 # Copy the secrets to the correct place for deployment
 #
 # usage:
-#   ./update_secrets.sh <name of secret repo>
+#   ./update_secrets.sh 
 
-secret_repo=$1
+# A prior build step for this environment should have built the config files for this env,
+# and copied them to /home/app/curatend/shared/secrets on the target machine
 
-if [ -d $secret_repo ]; then
-        echo "=-=-=-=-=-=-=-= delete $secret_repo"
-        rm -rf $secret_repo
-fi
-echo "=-=-=-=-=-=-=-= git clone $secret_repo"
-git clone "git@git.library.nd.edu:$secret_repo"
+shared_config_dir=/home/app/metrics/shared/secrets
 
 files_to_copy="
     database.yml
@@ -21,9 +17,9 @@ files_to_copy="
 
 for f in $files_to_copy; do
     echo "=-=-=-=-=-=-=-= copy $f"
-    if [ -f ${secret_repo}/hesburgh_metrics/$f ];
+    if [ -f $shared_config_dir/$f ];
     then
-        cp ${secret_repo}/hesburgh_metrics/$f config/$f
+        cp $shared_config_dir/$f config/$f
     else
         echo "Fatal Error: File $f does not exist in ${secret_repo}/hesburgh_metrics"
         exit 1
@@ -35,6 +31,7 @@ if [ ! -d .bundle ]; then
 	mkdir .bundle
 fi
 
-cp -f  $secret_repo/hesburgh_metrics/bundle_config .bundle/config
+cp -f  $shared_config_dir/bundle_config .bundle/config
+cp -f  $shared_config_dir/env-vars env-vars
 
-cp -f $secret_repo/hesburgh_metrics/metrics-env.sh /home/app/metrics/shared/system
+cp -f $shared_config_dir/hesburgh_metrics/metrics-env.sh /home/app/metrics/shared/system
