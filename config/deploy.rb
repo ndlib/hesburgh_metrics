@@ -172,9 +172,9 @@ end
 
 desc 'Setup for pre-production deploy'
 # new one
-task :pre_production do
+task :prep do
   set :branch,    fetch(:branch, fetch(:tag, 'master'))
-  set :rails_env, 'pre_production'
+  set :rails_env, 'prep'
   set :deploy_to, '/home/app/metrics'
   set :user,      'app'
   set :domain,    fetch(:host, 'curate-prep.lc.nd.edu')
