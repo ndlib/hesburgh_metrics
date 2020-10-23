@@ -36,7 +36,7 @@ default_run_options[:pty] = true
 set :use_sudo, false
 ssh_options[:paranoid] = false
 set :default_shell, '/bin/bash'
-set :ruby_root, 'ruby2.6'
+set :ruby_root, '/opt/rh/rh-ruby26'
 
 #############################################################
 #  SCM
@@ -52,7 +52,7 @@ set :deploy_via, :remote_cache
 namespace :env do
   desc 'Set command paths'
   task :set_paths do
-    set :bundle_cmd, '#{ruby_root}/root/usr/local/bin/bundle'
+    set :bundle_cmd, "#{ruby_root}/root/usr/local/bin/bundle"
     set :rake, "#{bundle_cmd} exec rake"
   end
 end
