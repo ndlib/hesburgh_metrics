@@ -35,10 +35,10 @@ gem 'jbuilder', '~> 2.0'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
+gem 'capistrano', '~> 2.15'
 
 # for fedora harvester
 gem 'rubydora', '~> 1.7.4'
-gem 'capistrano', '~> 2.1.5'
 gem 'rdf', '~> 1.1.2'
 gem 'rdf-rdfxml'
 gem 'figaro'
