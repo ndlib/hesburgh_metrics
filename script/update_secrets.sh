@@ -34,4 +34,4 @@ fi
 cp -f  $shared_config_dir/bundle_config .bundle/config
 cp -f  $shared_config_dir/env-vars env-vars
 
-cp -f $shared_config_dir/hesburgh_metrics/metrics-env.sh /home/app/metrics/shared/system
+cp -f $shared_config_dir/metrics-env.sh /home/app/metrics/shared/system
