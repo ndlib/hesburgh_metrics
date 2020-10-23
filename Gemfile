@@ -38,6 +38,7 @@ gem 'jbuilder', '~> 2.0'
 
 # for fedora harvester
 gem 'rubydora', '~> 1.7.4'
+gem 'capistrano', '~> 2.1.5'
 gem 'rdf', '~> 1.1.2'
 gem 'rdf-rdfxml'
 gem 'figaro'
