@@ -46,7 +46,7 @@ gem 'deprecation', '~> 0.2.2'
 gem 'sentry-raven', '~> 2.7'
 gem 'rubocop', '0.40.0'
 # Put the next 5 gem requirements to address ruby security vulnerabilities DLTP-1623
-gem 'nokogiri', '~> 1.8.5'
+gem 'nokogiri', '~> 1.10.8'
 gem 'activejob', '~> 4.2.11'
 gem 'rack', '~> 1.6.11'
 gem 'loofah', '~> 2.2.3'
