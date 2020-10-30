@@ -10,11 +10,8 @@ cd /home/app/metrics/current
 exec 200> "/tmp/harvest-metrics"
 flock -e --nonblock 200 || exit 0
 
-# source our ruby env
-source /etc/profile.d/ruby.sh
-
 # source our app environment. 
 
 source /home/app/metrics/shared/system/metrics-env.sh
 
-/opt/ruby/current/bin/bundle exec rake metrics:harvest_weblogs
+bundle exec rake metrics:harvest_weblogs

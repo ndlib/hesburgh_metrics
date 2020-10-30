@@ -59,6 +59,12 @@ GEM
     brakeman (4.4.0)
     builder (3.2.3)
     byebug (11.0.0)
+    capistrano (2.15.9)
+      highline
+      net-scp (>= 1.0.0)
+      net-sftp (>= 2.0.0)
+      net-ssh (>= 2.0.14)
+      net-ssh-gateway (>= 1.1.0)
     codeclimate-test-reporter (1.0.9)
       simplecov (<= 0.13)
     coffee-rails (4.1.1)
@@ -97,6 +103,7 @@ GEM
     haml (4.0.7)
       tilt
     hashdiff (0.3.8)
+    highline (2.0.3)
     hooks (0.3.6)
       uber (~> 0.0.4)
     htmlentities (4.3.4)
@@ -133,6 +140,13 @@ GEM
     multi_json (1.13.1)
     multipart-post (2.0.0)
     mysql2 (0.3.21)
+    net-scp (3.0.0)
+      net-ssh (>= 2.6.5, < 7.0.0)
+    net-sftp (3.0.0)
+      net-ssh (>= 5.0.0, < 7.0.0)
+    net-ssh (6.1.0)
+    net-ssh-gateway (2.0.0)
+      net-ssh (>= 4.0.0)
     netrc (0.11.0)
     nokogiri (1.8.5)
       mini_portile2 (~> 2.3.0)
@@ -303,6 +317,7 @@ PLATFORMS
 DEPENDENCIES
   activejob (~> 4.2.11)
   byebug
+  capistrano (~> 2.15)
   coffee-rails (~> 4.1.0)
   commitment!
   debug_inspector (= 0.0.2)
