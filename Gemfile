@@ -48,7 +48,7 @@ gem 'rubocop', '0.40.0'
 # Put the next 5 gem requirements to address ruby security vulnerabilities DLTP-1623
 gem 'nokogiri', '~> 1.8.5'
 gem 'activejob', '~> 4.2.11'
-gem 'rack', '~> 1.6.11'
+gem 'rack', '~> 1.6.13'
 gem 'loofah', '~> 2.2.3'
 gem 'yard', '~> 0.9.11'
 gem 'sass', '~> 3.4.22'

@@ -154,7 +154,7 @@ GEM
       ast (~> 2.4.0)
     powerpack (0.1.2)
     public_suffix (3.0.3)
-    rack (1.6.11)
+    rack (1.6.13)
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (4.2.11)
@@ -329,7 +329,7 @@ DEPENDENCIES
   memfs
   mysql2 (~> 0.3.18)
   nokogiri (~> 1.8.5)
-  rack (~> 1.6.11)
+  rack (~> 1.6.13)
   rails (~> 4.2.6)
   rake (~> 11.0)
   rdf (~> 1.1.2)
