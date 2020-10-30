@@ -183,7 +183,7 @@ GEM
       thor (>= 0.18.1, < 2.0)
     rainbow (2.2.2)
       rake
-    rake (11.3.0)
+    rake (12.3.3)
     rdf (1.1.17.1)
       link_header (~> 0.0, >= 0.0.8)
     rdf-aggregate-repo (1.1.0.1)
@@ -331,7 +331,7 @@ DEPENDENCIES
   nokogiri (~> 1.8.5)
   rack (~> 1.6.11)
   rails (~> 4.2.6)
-  rake (~> 11.0)
+  rake (~> 12.3)
   rdf (~> 1.1.2)
   rdf-rdfxml
   rspec-html-matchers (~> 0.6)

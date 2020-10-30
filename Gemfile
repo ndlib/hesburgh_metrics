@@ -8,7 +8,7 @@ end
 gem 'debug_inspector', '0.0.2'
 gem 'mysql2', '~> 0.3.18'
 gem 'rails', '~> 4.2.6'
-gem 'rake', '~> 11.0'
+gem 'rake', '~> 12.3'
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3', '~> 1.3.13'
 # Use SCSS for stylesheets
