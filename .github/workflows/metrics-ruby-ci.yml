@@ -16,7 +16,10 @@ jobs:
     - name: Install sqlite
       run: sudo apt-get -yqq install sqlite3
     - name: Install sendmail
-      run: sudo apt-get -yqq install sendmail
+      run: |
+        sudo apt-get -yqq install sendmail
+        sudo sendmailconfig
+        sudo service restart sendmail
     - name: Install bundler
       run: gem install bundler -v 1.16.3
     - name: Install bundled dependencies
