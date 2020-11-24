@@ -13,8 +13,10 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: 2.6
-    - name: Install dependencies
+    - name: Install bundler
       run: gem install bundler -v 1.16.3
+    - name: Install bundled dependencies
+      run: bundle install
     - name: Run tests
       run: bundle exec rake
 
