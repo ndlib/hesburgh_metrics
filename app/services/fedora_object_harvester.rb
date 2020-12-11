@@ -206,7 +206,9 @@ class FedoraObjectHarvester
     def parent_pid
       if af_model == 'GenericFile'
         return pid unless doc.datastreams.key?('RELS-EXT')
-        strip_pid(extract_parent_pid_from_doc)
+        parent = extract_parent_pid_from_doc
+        return pid if parent.blank? # treat orphaned files as their own parent
+        strip_pid(parent)
       else
         pid
       end
