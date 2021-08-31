@@ -1,19 +1,29 @@
+# frozen_string_literal: true
+
 # Add your own tasks in files placed in lib/tasks ending in .rake,
 # for example lib/tasks/capistrano.rake, and they will automatically be available to Rake.
 
-require File.expand_path('../config/application', __FILE__)
+require File.expand_path('config/application', __dir__)
+
+# patch for rake removing `last_comment`. Unsure which remaining gems are using it.
+module TempFixForRakeLastComment
+  def last_comment
+    last_description
+  end
+end
+Rake::Application.include TempFixForRakeLastComment
 
 Rails.application.load_tasks
 
 namespace :db do
   task prepare: :environment do
-    abort("Run this only in test or development") unless Rails.env.test? || Rails.env.development?
+    abort('Run this only in test or development') unless Rails.env.test? || Rails.env.development?
     begin
-      Rake::Task["db:drop"].invoke
-    rescue
-      $stdout.puts "Unable to drop database, moving on."
+      Rake::Task['db:drop'].invoke
+    rescue StandardError
+      $stdout.puts 'Unable to drop database, moving on.'
     end
-    Rake::Task["db:create"].invoke
+    Rake::Task['db:create'].invoke
     Rake::Task['db:schema:load'].invoke
   end
 end
@@ -34,7 +44,9 @@ if defined?(RSpec)
       end
 
       types = begin
-        dirs = Dir['./app/**/*.rb'].map { |f| f.sub(%r{^\./(app/\w+)/.*}, '\\1') }.uniq.select { |f| File.directory?(f) }
+        dirs = Dir['./app/**/*.rb'].map do |f|
+                 f.sub(%r{^\./(app/\w+)/.*}, '\\1')
+               end.uniq.select { |f| File.directory?(f) }
         Hash[dirs.map { |d| [d.split('/').last, d] }]
       end
 
