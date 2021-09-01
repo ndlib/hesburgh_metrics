@@ -61,6 +61,7 @@ class HarvestWeblogs
     id = set_pid_event(record, id)
 
     return if id.nil?
+
     record.pid = id
     # we made it! save the record
     record.save
@@ -87,12 +88,14 @@ class HarvestWeblogs
 
   def self.check_is_download(record, p)
     return nil if record.path.index('thumbnail') # skip thumbnail downloads
+
     record.event = 'download'
     p[2]
   end
 
   def self.check_is_concern(record, p)
     return nil if record.path.index('new') # don't record /concern/:class/new
+
     record.event = 'view'
     p[3]
   end
@@ -124,11 +127,11 @@ class HarvestWeblogs
     generate_ingested_filelist(config, ingested_files)
   end
 
-  #
   def self.parse_files(config, past_files, ingested_files)
     Dir.glob(File.join(config['LOGDIR'], config['LOGFILE_MASK'])) do |fname|
       ingested_files << fname
       next if past_files.include?(fname)
+
       parse_file_gz(fname)
     end
   end

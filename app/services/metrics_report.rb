@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'erb'
 require 'action_view'
 
@@ -24,10 +26,11 @@ class MetricsReport
     end
   end
 
-  STORAGE_TYPES = %w(Fedora Bendo).freeze
-  HOLDING_TYPES = %w(mimetype access_rights).freeze
-  ACCESS_RIGHTS = %w(public local embargo private).freeze
-  REPORTING_AF_MODELS = %w(Article Audio Dataset Document Etd FindingAid GenericFile Image OsfArchive SeniorThesis).freeze
+  STORAGE_TYPES = %w[Fedora Bendo].freeze
+  HOLDING_TYPES = %w[mimetype access_rights].freeze
+  ACCESS_RIGHTS = %w[public local embargo private].freeze
+  REPORTING_AF_MODELS = %w[Article Audio Dataset Document Etd FindingAid GenericFile Image OsfArchive
+                           SeniorThesis].freeze
 
   attr_reader :metrics, :exceptions
 
@@ -62,7 +65,7 @@ class MetricsReport
 
   # get all the count for administrative unit and present them hierarchical order
   # with department wide count and total count
-  def report_administrative_unit_as_html(unit = metrics.obj_by_administrative_unit, html = "")
+  def report_administrative_unit_as_html(unit = metrics.obj_by_administrative_unit, html = '')
     unit.each do |unit_name, count_by_administrative_unit|
       # if given administrative_unit_hash is department hash, add department name and total count
       if count_by_administrative_unit.is_a?(Hash)
@@ -80,9 +83,9 @@ class MetricsReport
   GIGABYTE = 10.0**9
   def bytes_to_gb(bytes)
     if bytes.zero?
-      "0"
+      '0'
     elsif bytes < 500_000
-      "< 0.001 GB"
+      '< 0.001 GB'
     else
       size = (bytes / GIGABYTE).round(3)
       "#{size} GB"
@@ -93,9 +96,10 @@ class MetricsReport
 
   def report_any_exceptions
     return unless @exceptions.any?
+
     @exceptions.each do |error|
       Raven.capture_exception(
-        'MetricsReportError: ' + error.class.to_s,
+        "MetricsReportError: #{error.class}",
         extra: { errors: error }
       )
     end
@@ -104,7 +108,10 @@ class MetricsReport
   def storage_information_for(storage_type)
     storage = CurateStorageDetail.where(storage_type: storage_type)
                                  .where('harvest_date <= :as_of', as_of: metrics.report_end_date).last
-    metrics.storage[storage_type] = ReportingStorageDetail.new(count: storage.object_count, size: storage.object_bytes) if storage.present?
+    if storage.present?
+      metrics.storage[storage_type] =
+        ReportingStorageDetail.new(count: storage.object_count, size: storage.object_bytes)
+    end
   end
 
   def holding_object_counts
@@ -119,10 +126,15 @@ class MetricsReport
     HOLDING_TYPES.each do |holding_type|
       method_name = "generic_files_by_#{holding_type}".to_sym
       if FedoraObject.respond_to?(method_name)
-        generic_files_by_type = FedoraObject.send(method_name, as_of: metrics.report_end_date, reporting_models: REPORTING_AF_MODELS)
+        generic_files_by_type = FedoraObject.send(
+          method_name, 
+          as_of: metrics.report_end_date,
+          reporting_models: REPORTING_AF_MODELS
+        )
         holding_type_objects = {}
         generic_files_by_type.each do |fedora_object|
-          holding_type_objects[fedora_object.type] = ReportingStorageDetail.new(count: fedora_object.pid_count, size: fedora_object.total_bytes)
+          holding_type_objects[fedora_object.type] =
+            ReportingStorageDetail.new(count: fedora_object.pid_count, size: fedora_object.total_bytes)
         end
         metrics.generic_files_by_holding[holding_type] = holding_type_objects
       else
@@ -132,7 +144,10 @@ class MetricsReport
   end
 
   def objects_by_model_access_rights
-    holding_by_nd_access_rights = FedoraObject.group_by_af_model_and_access_rights(as_of: metrics.report_end_date, reporting_models: REPORTING_AF_MODELS)
+    holding_by_nd_access_rights = FedoraObject.group_by_af_model_and_access_rights(
+      as_of: metrics.report_end_date,
+      reporting_models: REPORTING_AF_MODELS
+    )
     metrics.obj_by_curate_nd_type = collect_access_rights(holding_by_nd_access_rights)
   end
 
@@ -143,7 +158,7 @@ class MetricsReport
       model_key = access_rights_array.first.to_sym
       accumulator[model_key] ||= {}
       rights_key = access_rights_array.last
-      rights_key = rights_key.include?("embargo") ? "embargo".to_sym : rights_key.to_sym
+      rights_key = rights_key.include?('embargo') ? :embargo : rights_key.to_sym
       accumulator[model_key][rights_key] ||= 0
       accumulator[model_key][rights_key] += object_count
     end
@@ -152,7 +167,10 @@ class MetricsReport
 
   # Create nested hash of access_rights with resource
   def build_usage_by_resource
-    usage_by_model_event = FedoraAccessEvent.item_usage_by_type(start_date: metrics.report_start_date, end_date: metrics.report_end_date)
+    usage_by_model_event = FedoraAccessEvent.item_usage_by_type(
+      start_date: metrics.report_start_date,
+      end_date: metrics.report_end_date
+    )
     accumulator = {}
     usage_by_model_event.each do |fedora_object|
       accumulator[fedora_object.item_type.to_sym] ||= {}
@@ -165,12 +183,31 @@ class MetricsReport
   def build_usage_by_location
     all_usage = []
     distinct_usage = []
-    all_usage << collect_usage("on_campus", FedoraAccessEvent.all_on_campus_usage(start_date: metrics.report_start_date, end_date: metrics.report_end_date))
-    all_usage << collect_usage("off_campus", FedoraAccessEvent.all_off_campus_usage(start_date: metrics.report_start_date, end_date: metrics.report_end_date))
-    distinct_usage << collect_usage("on_campus", FedoraAccessEvent.distinct_on_campus_usage(start_date: metrics.report_start_date, end_date: metrics.report_end_date))
-    distinct_usage << collect_usage("off_campus", FedoraAccessEvent.distinct_off_campus_usage(start_date: metrics.report_start_date, end_date: metrics.report_end_date))
-    metrics.location_usage["all"] = all_usage
-    metrics.location_usage["distinct"] = distinct_usage
+    all_usage << collect_usage(
+      'on_campus',
+      FedoraAccessEvent.all_on_campus_usage(
+        start_date: metrics.report_start_date,
+        end_date: metrics.report_end_date)
+      )
+    all_usage << collect_usage(
+      'off_campus',
+       FedoraAccessEvent.all_off_campus_usage(
+         start_date: metrics.report_start_date,                     end_date: metrics.report_end_date)
+       )
+    distinct_usage << collect_usage(
+      'on_campus',
+       FedoraAccessEvent.distinct_on_campus_usage(
+         start_date: metrics.report_start_date,
+         end_date: metrics.report_end_date)
+        )
+    distinct_usage << collect_usage(
+      'off_campus',
+      FedoraAccessEvent.distinct_off_campus_usage(
+        start_date: metrics.report_start_date,
+        end_date: metrics.report_end_date)
+      )
+    metrics.location_usage['all'] = all_usage
+    metrics.location_usage['distinct'] = distinct_usage
   end
 
   # Create nested hash of usage with type
@@ -205,7 +242,7 @@ class MetricsReport
       count = administrative_unit.fetch(:object_count)
       accumulator[department_name] ||= {}
       # Check if it is department or college level
-      college = aggregation_keys.present? ? aggregation_keys.shift : "non-departmental"
+      college = aggregation_keys.present? ? aggregation_keys.shift : 'non-departmental'
       accumulator[department_name][college] ||= 0
       accumulator[department_name][college] += count.to_i
       administrative_unit_array << accumulator
@@ -214,7 +251,7 @@ class MetricsReport
   end
 
   def render
-    ERB.new(@template, nil, '-').result(binding)
+    ERB.new(@template, trim_mode: '-').result(binding)
   end
 
   def save!

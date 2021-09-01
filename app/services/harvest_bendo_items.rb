@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Harvest Bendo Item Count and Size, save to mysql
 # using Activerecord magic
 class HarvestBendoItems

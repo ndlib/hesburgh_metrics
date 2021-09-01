@@ -46,7 +46,8 @@ gem 'rubydora', '~> 1.7.4'
 gem 'sentry-raven', '~> 2.7'
 
 gem 'rubocop', '>= 0.49.0'
-gem 'rubocop-rails', require: false
+gem 'rubocop-rails'
+gem 'rubocop-rake'
 
 # gem requirements to address security vulnerabilities
 gem 'activejob', '~> 4.2.11'

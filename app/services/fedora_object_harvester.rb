@@ -10,6 +10,7 @@ end
 # A custom exception class to include PID
 class FedoraObjectHarvesterError < RuntimeError
   attr_reader :pid, :exception
+
   def initialize(pid, exception)
     @pid = pid
     @exception = exception
@@ -35,11 +36,9 @@ class FedoraObjectHarvester
   # query for objects and process one result at a time
   def harvest(query = 'pid~und:*')
     @repo.search(query) do |doc|
-      begin
-        single_item_harvest(doc)
-      rescue StandardError => e
-        @exceptions << FedoraObjectHarvesterError.new(doc.pid, e)
-      end
+      single_item_harvest(doc)
+    rescue StandardError => e
+      @exceptions << FedoraObjectHarvesterError.new(doc.pid, e)
     end
     report_any_exceptions
   end
@@ -52,6 +51,7 @@ class FedoraObjectHarvester
 
   def report_any_exceptions
     return unless @exceptions.any?
+
     @exceptions.each do |exception|
       Raven.capture_exception(exception)
     end
@@ -92,6 +92,7 @@ class FedoraObjectHarvester
     def fedora_changed?(fedora_object)
       return true if fedora_object.updated_at.present? && fedora_object.updated_at < doc_last_modified
       return true if !fedora_object.new_record? && fedora_object.access_rights.include?('embargo')
+
       false
     end
 
@@ -130,12 +131,18 @@ class FedoraObjectHarvester
         # add any new aggregation keys which don't already exist
         agg_key_array.each do |key|
           # add any new aggregation keys which don't already exist
-          FedoraObjectAggregationKey.where(fedora_object: fedora_object, predicate_name: predicate_name, aggregation_key: key).first_or_initialize(&:save)
+          FedoraObjectAggregationKey.where(
+            fedora_object: fedora_object, 
+            predicate_name: predicate_name,
+            aggregation_key: key
+          ).first_or_initialize(&:save)
         end
       end
       # destroy any prior aggregation keys which no longer exist
       fedora_object.fedora_object_aggregation_keys.where(predicate_name: predicate_name).each do |fedora_object_aggregation_key|
-        fedora_object_aggregation_key.destroy unless agg_key_array.include? fedora_object_aggregation_key.aggregation_key
+        unless agg_key_array.include? fedora_object_aggregation_key.aggregation_key
+          fedora_object_aggregation_key.destroy
+        end
       end
     end
 
@@ -153,7 +160,11 @@ class FedoraObjectHarvester
         edit_groups_list.each do |edit_group|
           group_pid = strip_pid(edit_group[:group_pid])
           group_name = edit_group[:group_name]
-          FedoraObjectEditGroup.where(fedora_object: fedora_object, edit_group_pid: group_pid, edit_group_name: group_name).first_or_initialize(&:save)
+          FedoraObjectEditGroup.where(
+            fedora_object: fedora_object, 
+            edit_group_pid: group_pid,
+            edit_group_name: group_name
+          ).first_or_initialize(&:save)
         end
       end
       # destroy any prior edit_groups which no longer exist
@@ -176,6 +187,7 @@ class FedoraObjectHarvester
     def parse_af_model
       doc.profile['objModels'].each do |model|
         next unless model.include?('afmodel')
+
         return model.split(':')[2]
       end
     end
@@ -185,8 +197,10 @@ class FedoraObjectHarvester
     # <info:fedora/und:02870v8524d> <http://purl.org/dc/terms/type> "GenericFile" .
     def resource_type
       return af_model unless doc.datastreams.key?('descMetadata')
+
       resource_types = parse_triples(doc.datastreams['descMetadata'].content, 'type')
       return af_model unless resource_types[0].present?
+
       resource_types[0] # this is an array but should only have one
     end
 
@@ -194,11 +208,13 @@ class FedoraObjectHarvester
     # if content datastream exists, use mimetype of datastream, else nil
     def mimetype
       return '' unless doc.datastreams.key?('content')
+
       doc.datastreams['content'].mimeType || DEFAULT_MIMETYPE
     end
 
     def bytes
       return 0 unless doc.datastreams.key?('content')
+
       doc.datastreams['content'].size || 0
     end
 
@@ -206,8 +222,10 @@ class FedoraObjectHarvester
     def parent_pid
       if af_model == 'GenericFile'
         return pid unless doc.datastreams.key?('RELS-EXT')
+
         parent = extract_parent_pid_from_doc
         return pid if parent.blank? # treat orphaned files as their own parent
+
         strip_pid(parent)
       else
         pid
@@ -221,9 +239,11 @@ class FedoraObjectHarvester
           parent_object.af_model
         else
           return 'Unknown' unless doc.datastreams.key?('RELS-EXT')
+
           parent_object = @repo.find extract_parent_pid_from_doc.to_s
           model = parent_object.profile['objModels'].select { |v| v.include?('afmodel') }
           return 'Unknown' if model.empty?
+
           model.first.split(':')[2]
         end
       else
@@ -235,9 +255,11 @@ class FedoraObjectHarvester
     def title
       if af_model == 'GenericFile'
         return '' unless doc.datastreams.key?('content')
+
         doc.datastreams['content'].label
       else
         return '' unless doc.datastreams.key?('descMetadata')
+
         stream = doc.datastreams['descMetadata'].content
         parse_triples(stream, 'title').first || ''
       end
@@ -246,6 +268,7 @@ class FedoraObjectHarvester
     # values: public, public (embargo), local, local (embargo), private, private (embargo)
     def access_rights
       return 'private' unless doc.datastreams.key?('rightsMetadata')
+
       parse_xml_rights(doc.datastreams['rightsMetadata'].content)
     end
 
@@ -269,6 +292,7 @@ class FedoraObjectHarvester
       group_object = @repo.find(group_pid)
       # parse descMetadata for group's name
       return '' unless doc.datastreams.key?('descMetadata')
+
       stream = group_object.datastreams['descMetadata'].content
       parse_triples(stream, 'title').first || 'Group name not found'
     end
@@ -328,6 +352,7 @@ class FedoraObjectHarvester
     def embargo_rights(this_access)
       machine_date_rights = this_access.elements['machine'].elements['date']
       return if machine_date_rights.nil? || machine_date_rights.first.blank?
+
       embargo_date = Date.parse(machine_date_rights.to_s)
       today = Time.zone.today
       return ' (embargo)' if embargo_date > today
@@ -342,6 +367,7 @@ class FedoraObjectHarvester
       RDF::RDFXML::Reader.new(stream).each do |thing|
         key = thing.predicate.to_s.split('#')
         next if key[1] != search_key
+
         value = thing.object.to_s.split('/')
         xml_hash[key[1]] = value[1]
       end
@@ -355,15 +381,15 @@ class FedoraObjectHarvester
       parse_uri = 'http://purl.org/dc/terms/'
       full_uri = parse_uri + search_key
       return data_array unless stream.include? full_uri
+
       RDF::NTriples::Reader.new(stream) do |reader|
-        begin
-          reader.each_statement do |statement|
-            next unless statement.predicate.to_s == full_uri
-            data_array << statement.object.to_s
-          end
-        rescue RDF::ReaderError => e
-          harvester.exceptions << FedoraObjectHarvesterError.new(pid, e)
+        reader.each_statement do |statement|
+          next unless statement.predicate.to_s == full_uri
+
+          data_array << statement.object.to_s
         end
+      rescue RDF::ReaderError => e
+        harvester.exceptions << FedoraObjectHarvesterError.new(pid, e)
       end
       data_array.reject(&:empty?)
     end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :metrics do
   desc 'Harvest log files. Directory is in METRICS_LOGDIR env variable.'
   task harvest_weblogs: :environment do
@@ -11,9 +13,7 @@ namespace :metrics do
     harvest_config['LOGFILE_MASK'] = ENV['METRICS_LOGFILE_MASK']
     harvest_config['LOGFILE_FORMAT'] = ENV['METRICS_LOGFILE_FORMAT']
     harvest_config['WEBLOG_STATEFILE'] = ENV['METRICS_WEBLOG_STATEFILE']
-    unless harvest_config['LOGDIR'].nil?
-      HarvestWeblogs.harvest_directory(harvest_config)
-    end
+    HarvestWeblogs.harvest_directory(harvest_config) unless harvest_config['LOGDIR'].nil?
   end
 
   desc 'Harvest fedora objects via the Fedora API.'
@@ -31,6 +31,6 @@ namespace :metrics do
   desc 'Create Periodic Metrics Report for given date Range'
   task generate_report: :environment do
     require 'metrics_report'
-    MetricsReport.new( ENV['METRICS_START_DATE'],  ENV['METRICS_END_DATE']).generate_report
+    MetricsReport.new(ENV['METRICS_START_DATE'], ENV['METRICS_END_DATE']).generate_report
   end
 end
