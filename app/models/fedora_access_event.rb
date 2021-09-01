@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 # A usage record for every access harvested from weblog.
 class FedoraAccessEvent < ActiveRecord::Base
-  REGEXP_FOR_CAMPUS_IP = '^129.74|^10.|^172.22|^192.168'.freeze
+  REGEXP_FOR_CAMPUS_IP = '^129.74|^10.|^172.22|^192.168'
 
   def self.all_on_campus_usage(options = {})
     sql = " select event, count(pid) as event_count

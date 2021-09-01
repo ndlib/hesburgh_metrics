@@ -15,9 +15,8 @@ require:
 AllCops:
   TargetRubyVersion: 2.6
   NewCops: enable
+  SuggestExtensions: false
   # Include: 
-  #   - 'app/**/*'
-  #   - 
   Exclude:
     - 'bin/**/*'
     - 'config/**/*'
@@ -26,15 +25,47 @@ AllCops:
     - 'tmp/**/*'
     - 'vendor/**/*'
     - 'script/**/*'
+    - 'app/services/metrics_report.rb'
 
 Metrics/BlockLength:
   Exclude:
     - 'Rakefile'
+    - 'lib/tasks/metrics.rake'
 
 Style/MultilineBlockChain:
   Exclude:
     - 'Rakefile'
 
 Layout/LineLength:
+  Max: 150
   Exclude:
+    - 'app/services/fedora_object_harvester.rb'
 
+Metrics/AbcSize:
+  Exclude:
+    - 'app/services/fedora_object_harvester.rb'
+
+Metrics/MethodLength:
+  Max: 150
+  Exclude:
+    - 'app/services/fedora_object_harvester.rb'
+
+Metrics/ClassLength:
+  Exclude:
+    - 'app/services/fedora_object_harvester.rb'
+
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - 'app/services/fedora_object_harvester.rb'
+
+Style/ExpandPathArguments:
+  Enabled: false
+
+Rails/WhereEquals:
+  Enabled: false
+
+Naming/MemoizedInstanceVariableName:
+  Enabled: false
+
+Naming/MethodParameterName:
+  Enabled: false

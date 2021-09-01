@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'ipaddr'
 
 def logger
@@ -14,7 +16,7 @@ class HarvestWeblogs
 
     # parse the line record
     def initialize(line)
-      fields = line.split(' ')
+      fields = line.split
       @ip = fields[0]
       @event = nil
       @status = fields[8]
@@ -118,9 +120,7 @@ class HarvestWeblogs
     past_files = []
     ingested_files = []
 
-    if config['WEBLOG_STATEFILE'] && File.exist?(config['WEBLOG_STATEFILE'])
-      past_files = JSON.parse(File.read(config['WEBLOG_STATEFILE']))
-    end
+    past_files = JSON.parse(File.read(config['WEBLOG_STATEFILE'])) if config['WEBLOG_STATEFILE'] && File.exist?(config['WEBLOG_STATEFILE'])
 
     parse_files(config, past_files, ingested_files)
 
@@ -137,10 +137,10 @@ class HarvestWeblogs
   end
 
   def self.generate_ingested_filelist(config, ingested_files)
-    if config['WEBLOG_STATEFILE']
-      File.open(config['WEBLOG_STATEFILE'], 'w') do |f|
-        f.write(JSON.generate(ingested_files))
-      end
+    return unless config['WEBLOG_STATEFILE']
+
+    File.open(config['WEBLOG_STATEFILE'], 'w') do |f|
+      f.write(JSON.generate(ingested_files))
     end
   end
 end

@@ -72,7 +72,7 @@ class MetricsReport
         count_by_department = count_by_administrative_unit.values
         metrics.administrative_units_count = metrics.administrative_units_count + count_by_department.sum
         html << "<tr class=department>  <td>#{unit_name}</td>  <td align=\"right\">#{count_by_department.sum}</td> </tr> "
-        report_administrative_unit_as_html(count_by_administrative_unit, html = html)
+        report_administrative_unit_as_html(count_by_administrative_unit, html)
       else
         html << "<tr>  <td>&nbsp; &nbsp; &nbsp; #{unit_name}</td> <td align=\"right\">#{count_by_administrative_unit}</td> </tr> "
       end
@@ -127,7 +127,7 @@ class MetricsReport
       method_name = "generic_files_by_#{holding_type}".to_sym
       if FedoraObject.respond_to?(method_name)
         generic_files_by_type = FedoraObject.send(
-          method_name, 
+          method_name,
           as_of: metrics.report_end_date,
           reporting_models: REPORTING_AF_MODELS
         )
@@ -187,25 +187,29 @@ class MetricsReport
       'on_campus',
       FedoraAccessEvent.all_on_campus_usage(
         start_date: metrics.report_start_date,
-        end_date: metrics.report_end_date)
+        end_date: metrics.report_end_date
       )
+    )
     all_usage << collect_usage(
       'off_campus',
-       FedoraAccessEvent.all_off_campus_usage(
-         start_date: metrics.report_start_date,                     end_date: metrics.report_end_date)
-       )
+      FedoraAccessEvent.all_off_campus_usage(
+        start_date: metrics.report_start_date, end_date: metrics.report_end_date
+      )
+    )
     distinct_usage << collect_usage(
       'on_campus',
-       FedoraAccessEvent.distinct_on_campus_usage(
-         start_date: metrics.report_start_date,
-         end_date: metrics.report_end_date)
-        )
+      FedoraAccessEvent.distinct_on_campus_usage(
+        start_date: metrics.report_start_date,
+        end_date: metrics.report_end_date
+      )
+    )
     distinct_usage << collect_usage(
       'off_campus',
       FedoraAccessEvent.distinct_off_campus_usage(
         start_date: metrics.report_start_date,
-        end_date: metrics.report_end_date)
+        end_date: metrics.report_end_date
       )
+    )
     metrics.location_usage['all'] = all_usage
     metrics.location_usage['distinct'] = distinct_usage
   end

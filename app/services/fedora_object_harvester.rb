@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rubydora'
 require 'rexml/document'
 require 'rdf/ntriples'
@@ -132,7 +134,7 @@ class FedoraObjectHarvester
         agg_key_array.each do |key|
           # add any new aggregation keys which don't already exist
           FedoraObjectAggregationKey.where(
-            fedora_object: fedora_object, 
+            fedora_object: fedora_object,
             predicate_name: predicate_name,
             aggregation_key: key
           ).first_or_initialize(&:save)
@@ -140,9 +142,7 @@ class FedoraObjectHarvester
       end
       # destroy any prior aggregation keys which no longer exist
       fedora_object.fedora_object_aggregation_keys.where(predicate_name: predicate_name).each do |fedora_object_aggregation_key|
-        unless agg_key_array.include? fedora_object_aggregation_key.aggregation_key
-          fedora_object_aggregation_key.destroy
-        end
+        fedora_object_aggregation_key.destroy unless agg_key_array.include? fedora_object_aggregation_key.aggregation_key
       end
     end
 
@@ -150,9 +150,7 @@ class FedoraObjectHarvester
     def get_and_add_or_delete_edit_groups(fedora_object)
       # find each of the edit_groups
       edit_groups_array = []
-      if doc.datastreams.key?('rightsMetadata')
-        edit_groups_array = parse_edit_groups(doc.datastreams['rightsMetadata'].content)
-      end
+      edit_groups_array = parse_edit_groups(doc.datastreams['rightsMetadata'].content) if doc.datastreams.key?('rightsMetadata')
       # load group name for each edit_group
       edit_groups_list = load_group_names_for(edit_groups_array)
       # add any new edit_groups which don't already exist
@@ -161,7 +159,7 @@ class FedoraObjectHarvester
           group_pid = strip_pid(edit_group[:group_pid])
           group_name = edit_group[:group_name]
           FedoraObjectEditGroup.where(
-            fedora_object: fedora_object, 
+            fedora_object: fedora_object,
             edit_group_pid: group_pid,
             edit_group_name: group_name
           ).first_or_initialize(&:save)
@@ -199,12 +197,12 @@ class FedoraObjectHarvester
       return af_model unless doc.datastreams.key?('descMetadata')
 
       resource_types = parse_triples(doc.datastreams['descMetadata'].content, 'type')
-      return af_model unless resource_types[0].present?
+      return af_model if resource_types[0].blank?
 
       resource_types[0] # this is an array but should only have one
     end
 
-    DEFAULT_MIMETYPE = 'application/octet-stream'.freeze
+    DEFAULT_MIMETYPE = 'application/octet-stream'
     # if content datastream exists, use mimetype of datastream, else nil
     def mimetype
       return '' unless doc.datastreams.key?('content')
@@ -340,8 +338,6 @@ class FedoraObjectHarvester
         'public'
       elsif rights_array.include? 'registered'
         'local'
-      elsif rights_array.include? 'private'
-        'private'
       else
         'private'
       end

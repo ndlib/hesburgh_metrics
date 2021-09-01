@@ -16,6 +16,7 @@ Rake::Application.include TempFixForRakeLastComment
 Rails.application.load_tasks
 
 namespace :db do
+  desc 'database management for test & development'
   task prepare: :environment do
     abort('Run this only in test or development') unless Rails.env.test? || Rails.env.development?
     begin
@@ -47,7 +48,7 @@ if defined?(RSpec)
         dirs = Dir['./app/**/*.rb'].map do |f|
                  f.sub(%r{^\./(app/\w+)/.*}, '\\1')
                end.uniq.select { |f| File.directory?(f) }
-        Hash[dirs.map { |d| [d.split('/').last, d] }]
+        dirs.index_by { |d| d.split('/').last }
       end
 
       types.each do |name, _dir|
@@ -61,7 +62,7 @@ if defined?(RSpec)
     end
 
     desc 'Run the Travis CI specs'
-    task :travis do
+    task travis: :environment do
       ENV['SPEC_OPTS'] ||= '--profile 5'
       Rake::Task[:default].invoke
     end
