@@ -65,10 +65,10 @@ group :development, :test do
   gem 'codeclimate-test-reporter', '1.0.9', require: nil
   gem 'commitment', github: 'ndlib/commitment', ref: '58f7adbae8bd027b59cba35b84183d049f015713'
   gem 'memfs', require: false
-  gem 'rspec', '~>3.4'
+  gem 'rspec'
   gem 'rspec-html-matchers'
   gem 'rspec-its', require: false
-  gem 'rspec-rails', '~>3.4'
+  gem 'rspec-rails'
   gem 'vcr', require: false
   gem 'webmock', require: false
 end
