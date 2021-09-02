@@ -65,7 +65,7 @@ class MetricsReport
 
   # get all the count for administrative unit and present them hierarchical order
   # with department wide count and total count
-  def report_administrative_unit_as_html(unit = metrics.obj_by_administrative_unit, html = '')
+  def report_administrative_unit_as_html(unit = metrics.obj_by_administrative_unit, html = String.new)
     unit.each do |unit_name, count_by_administrative_unit|
       # if given administrative_unit_hash is department hash, add department name and total count
       if count_by_administrative_unit.is_a?(Hash)

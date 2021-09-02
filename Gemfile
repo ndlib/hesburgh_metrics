@@ -62,11 +62,13 @@ gem 'yard', '~> 0.9.20'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
-  gem 'commitment', github: 'ndlib/commitment', ref: 'f7f83ca2f8437c018cd9083cf71ce57788c1c0f6'
+  gem 'codeclimate-test-reporter', '1.0.9', require: nil
+  gem 'commitment'
   gem 'memfs', require: false
-  gem 'rspec-core', '> 3.4.4'
-  gem 'rspec-html-matchers', '~> 0.6'
-  gem 'rspec-rails', '~> 3.6'
+  gem 'rspec', '~>3.4'
+  gem 'rspec-html-matchers'
+  gem 'rspec-its', require: false
+  gem 'rspec-rails', '~>3.4'
   gem 'vcr', require: false
   gem 'webmock', require: false
 end
