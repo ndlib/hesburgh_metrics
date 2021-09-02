@@ -3,6 +3,26 @@
 require 'erb'
 require 'action_view'
 
+# A custom exception class to include PID
+class UndefinedMethodError < RuntimeError
+  attr_reader :method_name, :exception
+
+  def initialize(method_name, exception)
+    @method_name = method_name
+    @exception = exception
+    super(message)
+  end
+end
+
+class ReportGenerationError < RuntimeError
+  attr_reader :exception
+
+  def initialize(exception)
+    @exception = exception
+    super("Error generating report, #{exception}")
+  end
+end
+
 # Create Metrics Report for given dates
 class MetricsReport
   # Helper class to store report details
@@ -58,8 +78,8 @@ class MetricsReport
     metrics.top_download_items = FedoraAccessEvent.top_downloaded_objects
     # Save report to database and send email
     save!
-  rescue StandardError => e
-    @exceptions << "Error: generate_report,#{e.message} \n  Error: #{e.backtrace.join("\n")}"
+  rescue StandardError => error
+    @exceptions << ReportGenerationError.new(error)
     report_any_exceptions
   end
 
@@ -98,10 +118,7 @@ class MetricsReport
     return unless @exceptions.any?
 
     @exceptions.each do |error|
-      Raven.capture_exception(
-        "MetricsReportError: #{error.class}",
-        extra: { errors: error }
-      )
+      Sentry.capture_exception(error)
     end
   end
 
@@ -138,9 +155,11 @@ class MetricsReport
         end
         metrics.generic_files_by_holding[holding_type] = holding_type_objects
       else
-        @exceptions << "Error: FedoraObject Undefine Methods #{method_name} to get generic_files"
+        raise UndefinedMethodError.new(method_name, e)
       end
     end
+    rescue UndefinedMethodError => error
+      @exceptions << error
   end
 
   def objects_by_model_access_rights

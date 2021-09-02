@@ -43,7 +43,7 @@ gem 'figaro'
 gem 'rdf', '~> 1.1.2'
 gem 'rdf-rdfxml'
 gem 'rubydora', '~> 1.7.4'
-gem 'sentry-raven', '~> 2.7'
+gem 'sentry-ruby'
 
 gem 'rubocop', '>= 0.49.0'
 gem 'rubocop-rails'

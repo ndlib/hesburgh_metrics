@@ -55,7 +55,7 @@ class FedoraObjectHarvester
     return unless @exceptions.any?
 
     @exceptions.each do |exception|
-      Raven.capture_exception(exception)
+      Sentry.capture_exception(exception)
     end
   end
 
