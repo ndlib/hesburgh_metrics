@@ -63,7 +63,7 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
   gem 'codeclimate-test-reporter', '1.0.9', require: nil
-  gem 'commitment'
+  gem 'commitment', github: 'ndlib/commitment', ref: '58f7adbae8bd027b59cba35b84183d049f015713'
   gem 'memfs', require: false
   gem 'rspec', '~>3.4'
   gem 'rspec-html-matchers'
