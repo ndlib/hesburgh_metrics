@@ -47,7 +47,7 @@ RSpec.describe MetricsReport do
 
     it 'will report to Sentry any exceptions encountered' do
       allow(report).to receive(:save!).and_raise(RuntimeError)
-      expect(Raven).to receive(:capture_exception).and_call_original
+      expect(Sentry).to receive(:capture_exception).and_call_original
       subject
     end
 

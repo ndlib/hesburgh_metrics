@@ -43,7 +43,7 @@ RSpec.describe FedoraObjectHarvester do
     end
     it 'will report to Sentry any exceptions encountered' do
       allow(harvester).to receive(:single_item_harvest).and_raise(RuntimeError)
-      expect(Raven).to receive(:capture_exception).and_call_original.exactly(1).times
+      expect(Sentry).to receive(:capture_exception).and_call_original.exactly(1).times
       subject
     end
   end

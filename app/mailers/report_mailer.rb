@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This class is responsible for creating/delivering email
 class ReportMailer < ActionMailer::Base
   def email(report)
@@ -12,7 +14,8 @@ class ReportMailer < ActionMailer::Base
 
   def subject(report)
     subject = "CurateND Metrics Report: #{report.start_date} Through #{report.end_date}"
-    return "[#{Rails.env}] #{subject}" unless Rails.env.eql?("production")
+    return "[#{Rails.env}] #{subject}" unless Rails.env.eql?('production')
+
     subject
   end
 

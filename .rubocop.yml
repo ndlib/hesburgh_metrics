@@ -1,0 +1,71 @@
+# The behavior of RuboCop can be controlled via the .rubocop.yml
+# configuration file. It makes it possible to enable/disable
+# certain cops (checks) and to alter their behavior if they accept
+# any parameters. The file can be placed either in your home
+# directory or in some project directory.
+#
+# RuboCop will start looking for the configuration file in the directory
+# where the inspected file is and continue its way up to the root directory.
+#
+# See https://docs.rubocop.org/rubocop/configuration
+require: 
+  - rubocop-rails
+  - rubocop-rake
+
+AllCops:
+  TargetRubyVersion: 2.6
+  NewCops: enable
+  SuggestExtensions: false
+  # Include: 
+  Exclude:
+    - 'bin/**/*'
+    - 'config/**/*'
+    - 'db/**/*'
+    - 'spec/**/*'
+    - 'tmp/**/*'
+    - 'vendor/**/*'
+    - 'script/**/*'
+    - 'app/services/metrics_report.rb'
+
+Metrics/BlockLength:
+  Exclude:
+    - 'Rakefile'
+    - 'lib/tasks/metrics.rake'
+
+Style/MultilineBlockChain:
+  Exclude:
+    - 'Rakefile'
+
+Layout/LineLength:
+  Max: 150
+  Exclude:
+    - 'app/services/fedora_object_harvester.rb'
+
+Metrics/AbcSize:
+  Exclude:
+    - 'app/services/fedora_object_harvester.rb'
+
+Metrics/MethodLength:
+  Max: 150
+  Exclude:
+    - 'app/services/fedora_object_harvester.rb'
+
+Metrics/ClassLength:
+  Exclude:
+    - 'app/services/fedora_object_harvester.rb'
+
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - 'app/services/fedora_object_harvester.rb'
+
+Style/ExpandPathArguments:
+  Enabled: false
+
+Rails/WhereEquals:
+  Enabled: false
+
+Naming/MemoizedInstanceVariableName:
+  Enabled: false
+
+Naming/MethodParameterName:
+  Enabled: false

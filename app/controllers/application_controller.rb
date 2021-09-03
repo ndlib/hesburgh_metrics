@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Base controller for sharing configuration across the application
 class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
