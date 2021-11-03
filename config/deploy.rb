@@ -147,7 +147,7 @@ before 'deploy', 'env:set_paths'
 #############################################################
 
 set :application, 'metrics'
-set :repository,  'git://github.com/ndlib/hesburgh_metrics.git'
+set :repository,  'https://github.com/ndlib/hesburgh_metrics.git'
 
 #############################################################
 #  Environments
