@@ -25,13 +25,20 @@ Crontab is used as the scheduler to run, on a weekly basis, weekly_metrics_repor
 
 Looking at the `.travis.yml` file, use the `script` value (e.g. `bundle exec rake`). This
 script is what Travis runs when we push builds. If you do not have mysql running, and
-installed via homebrew, you may need to run `mysql.server start` to launch mysql
+installed via homebrew, you may need to run `mysql.server start` to launch mysql.
 
 ```console
 $ bundle exec rake
 ```
 
 # Usage
+
+To test fedora harvester locally:
+* `mysql.server start` to launch mysql
+* `bundle exec rake db:drop db:create db:schema:load` to initialize database
+* Use jetty (see ndlib/curate_nd) to set up localhost fedora, and copy objects from production fedora to localhost (see ndlib/f3cp). Update application.yml to point to fedora storage location if not using localhost. 
+* `bundle exec rake metrics:harvest_fedora` to output to database
+* check /log/development.log for logged errors
 
 To run locally:
 
