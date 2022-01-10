@@ -101,22 +101,22 @@ class FedoraObjectHarvester
     # truncate title to first 255 char (https://github.com/ndlib/hesburgh_metrics/issues/53)
     def fedora_update(fedora_object)
       fedora_object.update!(
-      af_model: af_model,
-      resource_type: resource_type,
-      mimetype: mimetype,
-      bytes: bytes,
-      parent_pid: parent_pid,
-      parent_type: parent_type,
-      obj_ingest_date: doc.profile['objCreateDate'],
-      obj_modified_date: doc_last_modified,
-      access_rights: access_rights,
-      title: title.slice(0, 254)
-    )
-    predicate_names.each do |predicate_name|
-      get_and_add_or_delete_aggregation_keys(fedora_object, predicate_name)
-    end
-    get_and_add_or_delete_edit_groups(fedora_object)
-    rescue  ActiveRecord::RecordInvalid => e
+        af_model: af_model,
+        resource_type: resource_type,
+        mimetype: mimetype,
+        bytes: bytes,
+        parent_pid: parent_pid,
+        parent_type: parent_type,
+        obj_ingest_date: doc.profile['objCreateDate'],
+        obj_modified_date: doc_last_modified,
+        access_rights: access_rights,
+        title: title.slice(0, 254)
+      )
+      predicate_names.each do |predicate_name|
+        get_and_add_or_delete_aggregation_keys(fedora_object, predicate_name)
+      end
+      get_and_add_or_delete_edit_groups(fedora_object)
+    rescue ActiveRecord::RecordInvalid => e
       harvester.exceptions << FedoraObjectHarvesterError.new(pid, e)
     end
 
@@ -233,28 +233,22 @@ class FedoraObjectHarvester
     end
 
     def parent_type
-      if af_model == 'GenericFile'
-        # if there is no parent, use own
-        if pid == parent_pid
-          af_model
-        # find parent's type if a parent exists
-        else
-          parent_object = FedoraObject.find_by(pid: parent_pid)
-           if parent_object.present?
-            parent_object.af_model
-          else
-            return 'Unknown' unless doc.datastreams.key?('RELS-EXT')
+      return af_model unless af_model == 'GenericFile'
 
-            parent_object = @repo.find extract_parent_pid_from_doc.to_s
-            model = parent_object.profile['objModels'].select { |v| v.include?('afmodel') }
-            return 'Unknown' if model.empty?
+      # if there is no parent, use own type
+      return af_model if pid == parent_pid
 
-            model.first.split(':')[2]
-          end
-        end
-      else
-        af_model
-      end
+      # find parent's type if a parent exists
+      parent_object = FedoraObject.find_by(pid: parent_pid)
+      return parent_object.af_model if parent_object.present?
+
+      return 'Unknown' unless doc.datastreams.key?('RELS-EXT')
+
+      parent_object = @repo.find extract_parent_pid_from_doc.to_s
+      model = parent_object.profile['objModels'].select { |v| v.include?('afmodel') }
+      return 'Unknown' if model.empty?
+
+      model.first.split(':')[2]
     rescue Rubydora::RecordNotFound
       'Unknown'
     end
@@ -389,12 +383,12 @@ class FedoraObjectHarvester
       data_array = []
       parse_uri = 'http://purl.org/dc/terms/'
       full_uri = parse_uri + search_key
-      return data_array unless stream.include? full_uri;
+      return data_array unless stream.include? full_uri
 
       RDF::NTriples::Reader.new(stream) do |reader|
         loop do
           statement = reader.read_value
-          next unless statement.predicate.to_s == full_uri;
+          next unless statement.predicate.to_s == full_uri
 
           data_array << statement.object.to_s
         rescue EOFError
