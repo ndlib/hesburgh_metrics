@@ -116,6 +116,8 @@ class FedoraObjectHarvester
         get_and_add_or_delete_aggregation_keys(fedora_object, predicate_name)
       end
       get_and_add_or_delete_edit_groups(fedora_object)
+    rescue ActiveRecord::RecordInvalid => e
+      harvester.exceptions << FedoraObjectHarvesterError.new(pid, e)
     end
 
     # parse from triples: creator#administrative_unit
@@ -231,22 +233,24 @@ class FedoraObjectHarvester
     end
 
     def parent_type
-      if af_model == 'GenericFile'
-        parent_object = FedoraObject.find_by(pid: parent_pid)
-        if parent_object.present?
-          parent_object.af_model
-        else
-          return 'Unknown' unless doc.datastreams.key?('RELS-EXT')
+      return af_model unless af_model == 'GenericFile'
 
-          parent_object = @repo.find extract_parent_pid_from_doc.to_s
-          model = parent_object.profile['objModels'].select { |v| v.include?('afmodel') }
-          return 'Unknown' if model.empty?
+      # if there is no parent, use own type
+      return af_model if pid == parent_pid
 
-          model.first.split(':')[2]
-        end
-      else
-        af_model
-      end
+      # find parent's type if a parent exists
+      parent_object = FedoraObject.find_by(pid: parent_pid)
+      return parent_object.af_model if parent_object.present?
+
+      return 'Unknown' unless doc.datastreams.key?('RELS-EXT')
+
+      parent_object = @repo.find extract_parent_pid_from_doc.to_s
+      model = parent_object.profile['objModels'].select { |v| v.include?('afmodel') }
+      return 'Unknown' if model.empty?
+
+      model.first.split(':')[2]
+    rescue Rubydora::RecordNotFound
+      'Unknown'
     end
 
     # parse title from content datastream
@@ -289,10 +293,13 @@ class FedoraObjectHarvester
       # get Fedora record for group
       group_object = @repo.find(group_pid)
       # parse descMetadata for group's name
-      return '' unless doc.datastreams.key?('descMetadata')
+
+      return 'Group name not found' unless group_object.datastreams.key?('descMetadata')
 
       stream = group_object.datastreams['descMetadata'].content
       parse_triples(stream, 'title').first || 'Group name not found'
+    rescue Rubydora::RecordNotFound
+      'Group name not found'
     end
 
     ## ============================================================================
@@ -378,12 +385,16 @@ class FedoraObjectHarvester
       full_uri = parse_uri + search_key
       return data_array unless stream.include? full_uri
 
-      RDF::NTriples::Reader.new(stream) do |reader|
-        reader.each_statement do |statement|
-          next unless statement.predicate.to_s == full_uri
+      stream_reader = RDF::NTriples::Reader.new(stream)
+      loop do
+        statement = stream_reader.read_value
+        next unless statement.predicate.to_s == full_uri
 
-          data_array << statement.object.to_s
-        end
+        data_array << statement.object.to_s
+      rescue EOFError
+        break
+      rescue NoMethodError
+        next
       rescue RDF::ReaderError => e
         harvester.exceptions << FedoraObjectHarvesterError.new(pid, e)
       end

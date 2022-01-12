@@ -29,9 +29,9 @@ smtp_enable_starttls_auto: 'true'
 smtp_delivery_method: smtp
 
 development:
-  fedora_user: fedora
-  fedora_password: password
-  fedora_url: https://something.com
+  fedora_user: fedoraAdmin
+  fedora_password: fedoraAdmin
+  fedora_url: http://localhost:8983/fedora
   METRICS_REPORT_RECIPIENT: library@nd.edu
   METRICS_REPORT_SENDER: no-reply@nd.edu
  # sentry_dsn: 'put something here if you want it for testing and change  config.consider_all_requests_local = false'
