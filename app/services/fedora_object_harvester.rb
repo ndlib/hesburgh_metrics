@@ -385,19 +385,18 @@ class FedoraObjectHarvester
       full_uri = parse_uri + search_key
       return data_array unless stream.include? full_uri
 
-      RDF::NTriples::Reader.new(stream) do |reader|
-        loop do
-          statement = reader.read_value
-          next unless statement.predicate.to_s == full_uri
+      stream_reader = RDF::NTriples::Reader.new(stream)
+      loop do
+        statement = stream_reader.read_value
+        next unless statement.predicate.to_s == full_uri
 
-          data_array << statement.object.to_s
-        rescue EOFError
-          break
-        rescue NoMethodError
-          next
-        rescue RDF::ReaderError => e
-          harvester.exceptions << FedoraObjectHarvesterError.new(pid, e)
-        end
+        data_array << statement.object.to_s
+      rescue EOFError
+        break
+      rescue NoMethodError
+        next
+      rescue RDF::ReaderError => e
+        harvester.exceptions << FedoraObjectHarvesterError.new(pid, e)
       end
       data_array.reject(&:empty?)
     end
