@@ -8,7 +8,7 @@ end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'debug_inspector', '0.0.2'
-gem 'mysql2', '~> 0.3.18'
+gem 'mysql2', '~> 0.4.10'
 gem 'rails', '~> 4.2.6'
 gem 'rake', '>= 12.3.3'
 # Use sqlite3 as the database for Active Record
